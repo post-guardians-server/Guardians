@@ -80,105 +80,105 @@
             <artifactId>RukonCallback</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonCallback-1.0.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonCallback-1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonPayment</groupId>
             <artifactId>RukonPayment</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonPayment-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonPayment-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonInstance</groupId>
             <artifactId>RukonInstance</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonInstance-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonInstance-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonGUI</groupId>
             <artifactId>RukonGUI</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonGUI-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonGUI-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonRiding</groupId>
             <artifactId>RukonRiding</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonRiding-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonRiding-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonBoxes</groupId>
             <artifactId>RukonBoxes</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonBoxes-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonBoxes-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonWave</groupId>
             <artifactId>RukonWave</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonWave-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonWave-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>Teseion</groupId>
             <artifactId>Teseion</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\Teseion-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\Teseion-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonPVP</groupId>
             <artifactId>RukonPVP</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonPVP-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonPVP-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonBenta</groupId>
             <artifactId>RukonBenta</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonBenta-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonBenta-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonBuff</groupId>
             <artifactId>RukonBuff</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonBuff-1.0.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonBuff-1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonUtils</groupId>
             <artifactId>RukonUtils</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonUtils-1.0-SNAPSHOT.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonUtils-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonBackpack</groupId>
             <artifactId>RukonBackpack</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonBackpack-1.0.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonBackpack-1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>RukonSampling</groupId>
             <artifactId>RukonSampling</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\RukonSampling-1.0.jar</systemPath>
+            <systemPath>C:\pgzPlguins\RukonSampling-1.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>OpenAudioMC</groupId>
             <artifactId>OpenAudioMC</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:\Users\user\Desktop\openaudiomc-6.8.8.jar</systemPath>
+            <systemPath>C:\pgzPlguins\openaudiomc-6.8.8.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
