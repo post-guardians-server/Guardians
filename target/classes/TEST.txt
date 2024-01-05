@@ -1,0 +1,41 @@
+
+    public void setHealth(double value) {
+        NamespacedKey key = new NamespacedKey(plugin, "Health");
+        pdc.set(key, PersistentDataType.DOUBLE, value);
+    }
+    public double getHealth() {
+        NamespacedKey key = new NamespacedKey(plugin, "Health");
+        return pdc.get(key, PersistentDataType.DOUBLE);
+    }
+    public void setAttackDamage(double value) {
+        NamespacedKey key = new NamespacedKey(plugin, "AttackDamage");
+        pdc.set(key, PersistentDataType.DOUBLE, value);
+    }
+    public double getAttackDamage() {
+        NamespacedKey key = new NamespacedKey(plugin, "AttackDamage");
+        return pdc.get(key, PersistentDataType.DOUBLE);
+    }
+    public void setArmor(double value) {
+        NamespacedKey key = new NamespacedKey(plugin, "Armor");
+        pdc.set(key, PersistentDataType.DOUBLE, value);
+    }
+    public double getArmor() {
+        NamespacedKey key = new NamespacedKey(plugin, "Armor");
+        return pdc.get(key, PersistentDataType.DOUBLE);
+    }
+    public void setCriticalChance(double value) {
+        NamespacedKey key = new NamespacedKey(plugin, "CriticalChance");
+        pdc.set(key, PersistentDataType.DOUBLE, value);
+    }
+    public double getCriticalChance() {
+        NamespacedKey key = new NamespacedKey(plugin, "CriticalChance");
+        return pdc.get(key, PersistentDataType.DOUBLE);
+    }
+    public void setCriticalDamage(double value) {
+        NamespacedKey key = new NamespacedKey(plugin, "CriticalDamage");
+        pdc.set(key, PersistentDataType.DOUBLE, value);
+    }
+    public double getCriticalDamage() {
+        NamespacedKey key = new NamespacedKey(plugin, "CriticalDamage");
+        return pdc.get(key, PersistentDataType.DOUBLE);
+    }

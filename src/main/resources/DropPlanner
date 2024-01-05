@@ -1,0 +1,25 @@
+스킬 시스템
+
+- 매직스펠과 연동
+
+Skill 객체
+    아이콘의 이름과 스킬의 이름은 반드시 일치
+
+
+
+
+SkillManager
+    GUI, KeyBinding
+
+    Data저장
+
+
+path config를 이용
+
+configuration
+    스킬이름:
+        powerPerLevel: 0.1
+        cooldownPerLevel: 0.1
+        magicSpellName: "magicSpellInGameName"
+        lores: []
+        customModelData: 0

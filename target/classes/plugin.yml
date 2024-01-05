@@ -1,0 +1,232 @@
+name: Guardians
+version: 1.0.0
+api-version: 1.18
+author: Rukon
+main: me.rukon0621.guardians.main
+#libraries:
+#  - org.mariadb.jdbc:mariadb-java-client:3.1.2
+depend:
+  - RukonWorld
+  - MagicSpells
+  - MythicMobs
+  - DungeonParties
+  - UltimateClans
+load: POSTWORLD
+permissions:
+  guardians.user:
+    default: true
+  cosmeticscore.user.wardrobe.enterarea:
+    default: true
+  cosmeticscore.user.cosmetics.seeingui.*:
+    default: true
+commands:
+  chat:
+    usage: /test
+    permission: guardians.user
+    aliases:
+      - 채팅
+      - 채팅채널
+      - cc
+      - chc
+  dailyEvent:
+    usage: /test
+    permission: guardians.oper
+    aliases:
+      - 데일리이벤트
+      - 일일이벤트
+  test:
+    usage: /test
+    permission: guardians.oper
+  controlTitle:
+    usage: /controlTitle
+    permission: guardians.oper
+    aliases:
+      - 칭호관리
+  buffclear:
+    usage: /buffclear
+    permission: guardians.oper
+    aliases:
+    - /버프클리어
+  dialog:
+    usage: /dialog
+    permission: guardians.oper
+    aliases: [대화문]
+  quest:
+    usage: /quest
+    permission: guardians.oper
+    aliases: [퀘스트]
+  broadcastall:
+    usage: /broadcastall
+    permission: guardians.oper
+    aliases: [전체공지]
+  report:
+    usage: /report
+    permission: guardians.oper
+    aliases: [버그제보]
+  dqpdc:
+    usage: /dqpdc
+    permission: guardians.oper
+    aliases: [대화문퀘스트플레이어데이터설정]
+  sendmail:
+    usage: /sendmail
+    permission: guardians.oper
+    aliases: [메일보내기]
+  itemdata:
+    usage: /itemdata
+    permission: guardians.oper
+    aliases: [아이템데이터, idata]
+  region:
+    usage: /region
+    permission: guardians.oper
+    aliases: [지역]
+  story:
+    usage: /story
+    permission: guardians.oper
+    aliases: [스토리]
+  level:
+    usage: /test
+    permission: guardians.oper
+    aliases: [레벨관리]
+  exp:
+    usage: /exp
+    permission: guardians.oper
+    aliases: [경험치관리]
+  money:
+    usage: /money
+    permission: guardians.oper
+    aliases: [돈관리]
+  skilltree:
+    usage: /skilltree
+    permission: guardians.oper
+    aliases: [스킬트리]
+  skill:
+    usage: /skill
+    permission: guardians.oper
+    aliases: [스킬]
+  crafttable:
+    usage: /crafttable
+    permission: guardians.oper
+    aliases: [제작대]
+  recipe:
+    usage: /recipe
+    permission: guardians.oper
+    aliases: [레시피, 조합법]
+  mute:
+    usage: /mute
+    permission: guardians.mute
+    aliases: [뮤트, 채팅금지]
+  shop:
+    usage: /shop
+    permission: guardians.oper
+    aliases: [상점]
+  dropdata:
+    usage: /dropdata
+    permission: guardians.oper
+    aliases: [드롭]
+  item:
+    usage: /item
+    permission: guardians.oper
+    aliases: [아이템]
+  location:
+    usage: /location
+    permission: guardians.oper
+    aliases: [위치]
+  ev:
+    usage: /ev
+    permission: guardians.oper
+    aliases: [투명화]
+  modifypdc:
+    usage: /modifypdc
+    permission: guardians.oper
+    aliases: [pdc설정, setpdc, 플레이어데이터변경]
+  reloadall:
+    usage: /reloadall
+    permission: guardians.oper
+    aliases: [리로드, ral]
+  broadcast:
+    usage: /broadcast
+    permission: guardians.oper
+    aliases: [공지, brc]
+  forcecast:
+    usage: /forcecast
+    permission: guardians.oper
+    aliases: [스킬강제사용]
+  noticeboard:
+    usage: /noticeboard
+    permission: guardians.oper
+    aliases: [게시판]
+  stop:
+    usage: /stop
+    permission: guardians.oper
+    aliases: [서버리붓]
+  closeKick:
+    usage: /closeKick
+    permission: guardians.oper
+  area:
+    usage: /area
+    permission: guardians.oper
+    aliases: [에리어]
+  party:
+    usage: /party
+    permission: guardians.user
+    aliases: [invite, 파티초대, 파티, p, recruit]
+  accept:
+    usage: /accept
+    permission: guardians.user
+    aliases: [파티수락]
+  partyjoin:
+    usage: /partyjoin
+    permission: guardians.user
+    aliases: [파티참여]
+  recruit:
+    usage: /recruit
+    permission: guardians.user
+    aliases: [파티모집, 파티참가수락, 모집중단]
+  spawnutil:
+    usage: /spawnutil
+    permission: guardians.oper
+    aliases: [스포너]
+  account:
+    usage: /account
+    permission: guardians.oper
+    aliases: [계정]
+  getmoney:
+    usage: /수표
+    permission: guardians.user
+    aliases: [수표, 인출]
+  respawn:
+    usage: /리스폰
+    permission: guardians.user
+    aliases: [리스폰]
+  barcast:
+    usage: /보스바공지
+    permission: guardians.oper
+    aliases: [보스바공지]
+  heal:
+    usage: /heal
+    permission: guardians.oper
+    aliases: [힐]
+  mobType:
+    usage: /mobType
+    permission: guardians.oper
+    aliases: [몹타입]
+  blueprint:
+    usage: /blueprint
+    permission: guardians.oper
+    aliases: [청사진]
+  chattitle:
+    usage: /chattitle
+    permission: guardians.oper
+    aliases: [칭호]
+  channel:
+    usage: /channel
+    permission: guardians.oper
+    aliases: [채널]
+  getloc:
+    usage: /getloc
+    permission: guardians.oper
+    aliases: [위치복사]
+  wp:
+    usage: /wp
+    permission: guardians.user
+    aliases: [귓속말, 귓]
