@@ -10,6 +10,7 @@ me\rukon0621\guardians\listeners\DamagingListener$1.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$2.class
 me\rukon0621\guardians\data\PlayerData$1.class
 me\rukon0621\guardians\data\LevelData.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot.class
 me\rukon0621\guardians\dialogquest\QuestInProgress$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow$3.class
 me\rukon0621\guardians\offlineMessage\OfflineMessageManager$3$1.class
@@ -54,6 +55,7 @@ me\rukon0621\guardians\listeners\OpenAudioListener$4.class
 me\rukon0621\guardians\storage\StorageManager$1$1.class
 me\rukon0621\guardians\craft\CrafttableCommandTabComp.class
 me\rukon0621\guardians\GUI\item\enhance\EnhanceGUI$FAIL_STATUS$4.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$7.class
 me\rukon0621\guardians\addspells\BleedSpell$BleedTimer.class
 me\rukon0621\guardians\GUI\item\SuccessionGUI$FailStatus$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$4.class
@@ -184,6 +186,7 @@ me\rukon0621\guardians\dialogquest\DialogQuestManager$readString$1.class
 me\rukon0621\guardians\listeners\ItemUseListener$1.class
 me\rukon0621\guardians\fastboard\FastBoardBase$TeamMode.class
 me\rukon0621\guardians\data\Stat.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$8.class
 me\rukon0621\guardians\addspells\BlackOutSpell.class
 me\rukon0621\guardians\storage\StorageNameListener$2$1.class
 me\rukon0621\guardians\GUI\item\ItemDisassembleWindow$1.class
@@ -282,17 +285,20 @@ me\rukon0621\guardians\GUI\ChannelWindow$ServerButton.class
 me\rukon0621\guardians\commands\TitleControlCommand.class
 me\rukon0621\guardians\dropItem\DropManager$1$1.class
 me\rukon0621\guardians\listeners\ItemUseListener$3.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$6.class
 me\rukon0621\guardians\party\PartyRecruitListener.class
 me\rukon0621\guardians\addspells\TargetedMultiSpell$1.class
 me\rukon0621\guardians\region\RegionManager$2$1.class
 me\rukon0621\guardians\mailbox\MailBoxWindow$4$1.class
 me\rukon0621\guardians\addspells\RegenSpell.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$5.class
 me\rukon0621\guardians\commands\ChatChannelCommand.class
 me\rukon0621\guardians\dropItem\window\DropShowWindow.class
 me\rukon0621\guardians\fastboard\FastReflection.class
 me\rukon0621\guardians\story\StoryManager.class
 me\rukon0621\guardians\GUI\ChannelWindow$1.class
 me\rukon0621\guardians\afk\AfkConfirmWindow.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$4.class
 me\rukon0621\guardians\account\AccountCommandTabComp$1.class
 me\rukon0621\guardians\story\Scene.class
 me\rukon0621\guardians\story\StoryManager$18.class
@@ -301,6 +307,7 @@ me\rukon0621\guardians\equipment\EquipmentManager$1.class
 me\rukon0621\guardians\party\PartyJoinCommand.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$QuestType.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$1.class
 me\rukon0621\guardians\GUI\item\ItemLevelUpWindow.class
 me\rukon0621\guardians\afk\AfkManager.class
 me\rukon0621\guardians\fastboard\FastBoardBase.class
@@ -309,8 +316,10 @@ me\rukon0621\guardians\listeners\ItemUseListener$5.class
 me\rukon0621\guardians\areawarp\AreaCommandTabComp.class
 me\rukon0621\guardians\party\PartyAcceptCommand.class
 me\rukon0621\guardians\skillsystem\SkillManager$2$1.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$2.class
 me\rukon0621\guardians\story\Cinematic$1.class
 me\rukon0621\guardians\craft\craft\CraftResult.class
+me\rukon0621\guardians\skillsystem\SkillEquipSlot$3.class
 me\rukon0621\guardians\commands\ReportCommand.class
 me\rukon0621\guardians\offlineMessage\OfflineMessageManager$3.class
 me\rukon0621\guardians\mythicAddon\machanics\DamMechanic$1.class

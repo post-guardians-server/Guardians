@@ -233,7 +233,6 @@ public class main extends JavaPlugin {
         new TeseionListener();
         new ResourcePackListener();
         new TitleListener();
-        new PaymentListener();
         new OpenAudioListener();
         PlayerData.reloadStatDatabase();
         new BukkitRunnable() {

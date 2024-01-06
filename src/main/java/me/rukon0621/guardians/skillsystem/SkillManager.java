@@ -1,21 +1,15 @@
 package me.rukon0621.guardians.skillsystem;
 
 import com.nisovin.magicspells.events.SpellCastEvent;
-import com.nisovin.magicspells.spells.BuffSpell;
-import com.nisovin.magicspells.spells.instant.DummySpell;
-import com.nisovin.magicspells.spells.targeted.HealSpell;
 import me.rukon0621.guardians.GUI.MenuWindow;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
-import me.rukon0621.ridings.RideManager;
 import me.rukon0621.ridings.RukonRiding;
 import me.rukon0621.rinstance.RukonInstance;
 import me.rukon0621.rpvp.instance.BattleInstance;
-import me.rukon0621.teseion.Main;
-import me.rukon0621.teseion.TeseionInstance;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -51,6 +46,7 @@ public class SkillManager implements Listener {
     private static Set<Player> doubleSneakCheck;
     private static final Set<String> paths = new HashSet<>();
     //private static final Set<String> blockCasting = new HashSet<>();
+
 
     private static Configure getPathConfig() {
         return new Configure("skillPath.yml", FileUtil.getOuterPluginFolder()+"/skills");
@@ -265,6 +261,7 @@ public class SkillManager implements Listener {
         db.close();
     }
 
+
     //스킬 추가 효과
     @EventHandler(ignoreCancelled = true)
     public void onCast(SpellCastEvent e) {
@@ -292,6 +289,11 @@ public class SkillManager implements Listener {
             Location loc = e.getCaster().getLocation();
             loc.getWorld().playSound(loc, Sound.ITEM_CROSSBOW_SHOOT, 1, Rand.randFloat(0.8, 1.3));
         }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        playerSkillData.remove(e.getPlayer());
     }
 
     //어떤 클릭에 스킬을 장착할지

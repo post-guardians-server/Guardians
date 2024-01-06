@@ -1,19 +1,22 @@
 package me.rukon0621.guardians.bar;
 
+import com.nisovin.magicspells.MagicSpells;
+import com.nisovin.magicspells.Spell;
 import me.rukon0621.guardians.data.LevelData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.ActionBar;
 import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.listeners.ResourcePackListener;
 import me.rukon0621.guardians.main;
+import me.rukon0621.guardians.skillsystem.SkillEquipSlot;
+import me.rukon0621.guardians.skillsystem.Skill;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class BarManager implements Listener {
@@ -90,9 +93,42 @@ public class BarManager implements Listener {
             s.append("\\uE21").append(i[1]);
             s.append("\\uE21").append(i[0]);
         }
-        TextComponent text = new TextComponent(StringEscapeUtils.unescapeJava(s.toString()));
+
+        int skills = 0;
+        for(SkillEquipSlot slot : SkillEquipSlot.values()) {
+            skills += addSkillIcon(player, s, slot.getSkill(player), skills == 0);
+        }
+        String finalStr;
+        if(skills == 0) finalStr = "";
+        else finalStr = "\uF302" + "\uF306".repeat(skills - 1);
+        TextComponent text = new TextComponent(StringEscapeUtils.unescapeJava(finalStr + s));
         text.setFont("bar");
         ActionBar.sendActionBar(player, text);
+    }
+
+    public static int addSkillIcon(Player player, StringBuilder s, @Nullable Skill skill, boolean isFirst) {
+        if(skill == null) return 0;
+        int i = addIcon(player, s, skill.getUnicode(), MagicSpells.getSpellByInternalName(skill.getMagicSpellName()), isFirst);
+        if(skill.isRuneSkill() && skill.getShiftSpell().equals("null")) {
+            i += addIcon(player, s, skill.getShiftSkillUnicode(), MagicSpells.getSpellByInternalName(skill.getShiftSpell()), false);
+        }
+        return i;
+    }
+
+    private static int addIcon(Player player, StringBuilder s, String unicode, Spell spell, boolean isFirst) {
+        float cool = spell.getCooldown(player);
+        if(cool <= 0) return 0;
+        if(isFirst) s.append("\uF301");
+        else s.append("\uF305");
+        s.append(unicode);
+        s.append("\uF303");
+        int coolPer = (int) (cool / spell.getCooldown() * 24);
+        String hex = Integer.toHexString(coolPer + 32);
+        s.append("\\uF3").append(hex);
+        s.append("\uF304");
+        if(cool < 10 && cool >= 1) s.append("\uF34A");
+        else s.append("\\uF34").append((int) (cool - 1));
+        return 1;
     }
 
     public static void reloadBar(Player player) {

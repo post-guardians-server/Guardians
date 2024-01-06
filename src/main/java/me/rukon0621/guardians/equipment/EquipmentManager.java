@@ -14,6 +14,7 @@ import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.GUI.WeaponSkinWindow;
+import me.rukon0621.guardians.skillsystem.SkillManager;
 import me.rukon0621.pay.PaymentData;
 import me.rukon0621.pay.RukonPayment;
 import me.rukon0621.pay.shop.MONEY;
@@ -345,7 +346,6 @@ public class EquipmentManager implements Listener {
         AttributeInstance attr = player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
         assert attr != null;
         attr.setBaseValue(Stat.KB_RESISTANCE.getTotal(player));
-
         eqStatusData.put(player, equipmentStatus);
         BarManager.reloadBar(player);
     }
