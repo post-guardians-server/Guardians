@@ -1,6 +1,7 @@
 package me.rukon0621.guardians.skillsystem.skilltree;
 
 import me.rukon0621.guardians.data.PlayerData;
+import me.rukon0621.guardians.dialogquest.DialogQuestManager;
 import me.rukon0621.guardians.helper.Configure;
 import me.rukon0621.guardians.helper.FileUtil;
 import me.rukon0621.guardians.helper.Msg;
@@ -8,6 +9,7 @@ import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.skillsystem.skilltree.elements.SkillTree;
 import me.rukon0621.guardians.skillsystem.skilltree.windows.PreSkillWindow;
 import me.rukon0621.guardians.skillsystem.skilltree.windows.SkillWindowData;
+import me.rukon0621.guardians.story.StoryManager;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
@@ -69,12 +71,19 @@ public class SkillTreeManager {
     }
 
     public void openSkillTree(Player player) {
+
+        if(!(StoryManager.isRead(player, "스킬 설명") || DialogQuestManager.getCompletedQuests(player).contains("&c더 넓은 세계를 위하여"))) {
+            Msg.warn(player, "아직은 이 기능을 사용할 수 없습니다.");
+            return;
+        }
+
         player.closeInventory();
         new BukkitRunnable() {
             @Override
             public void run() {
                 PlayerData pdc = new PlayerData(player);
                 int skillPoint = (int) ((pdc.getLevel() - 1) * 3 + Math.floor(pdc.getSpiritOfHero() / 5));
+                int craftSkillPoint = (pdc.getLevel() - 1);
 
                 Iterator<String> itr = pdc.getSkillData().iterator();
                 while(itr.hasNext()) {
@@ -84,9 +93,11 @@ public class SkillTreeManager {
                         itr.remove();
                         continue;
                     }
-                    skillPoint -= tree.getPoint();
+                    if(tree.getTreeIndex() == 7) craftSkillPoint -= tree.getPoint();
+                    else skillPoint -= tree.getPoint();
                 }
                 pdc.setSkillPoint(skillPoint);
+                pdc.setCraftSkillPoint(craftSkillPoint);
                 new BukkitRunnable() {
                     @Override
                     public void run() {

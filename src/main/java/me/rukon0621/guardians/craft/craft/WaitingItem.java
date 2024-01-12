@@ -76,10 +76,10 @@ public class WaitingItem implements ConfigurationSerializable {
     }
 
     /**
-     * @return 분당 150루나르 청구 -> 시간당 9000루나르
+     * @return 1시간에 80루나르, 1분당 1.3루나르
      */
     public int getInstantFinishPrice() {
-        return (int) Math.max(((getRemainTime() / 60000L) * 19), 25);
+        return (int) Math.max((((double) getRemainTime() / 60000L) * 1.3d), 2);
     }
 
 }

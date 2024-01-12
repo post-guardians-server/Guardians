@@ -16,7 +16,7 @@ public enum SkillEquipSlot {
         @org.jetbrains.annotations.Nullable
         @Override
         public Skill getSkill(Player player) {
-            String s =  SkillManager.getEquipSkill(player).get("right");
+            String s =  SkillManager.getEquipSkill(player).get("Right");
             if (s == null) return null;
             return SkillManager.getSkill(s);
         }
@@ -62,10 +62,11 @@ public enum SkillEquipSlot {
         @Override
         public Skill getSkill(Player player) {
             HashMap<String, ItemStack> equipData = EquipmentManager.getEquipmentData(player);
-            ItemStack rune = equipData.get("룬1");
+            ItemStack rune = equipData.getOrDefault("룬1", new ItemStack(Material.AIR));
             if(!rune.getType().equals(Material.AIR)&&!rune.getType().equals(Material.BARRIER)) {
-                ItemData idata = new ItemData(rune);
-                return SkillManager.getSkill(Msg.uncolor(idata.getName()).split(":")[1].trim());
+                if(!rune.hasItemMeta()) return null;
+                if(!rune.getItemMeta().hasDisplayName()) return null;
+                return SkillManager.getSkill(Msg.uncolor(rune.getItemMeta().getDisplayName()).split(":")[1].trim());
             }
             else return null;
         }
@@ -75,10 +76,11 @@ public enum SkillEquipSlot {
         @Override
         public Skill getSkill(Player player) {
             HashMap<String, ItemStack> equipData = EquipmentManager.getEquipmentData(player);
-            ItemStack rune = equipData.get("룬2");
+            ItemStack rune = equipData.getOrDefault("룬2", new ItemStack(Material.AIR));
             if(!rune.getType().equals(Material.AIR)&&!rune.getType().equals(Material.BARRIER)) {
-                ItemData idata = new ItemData(rune);
-                return SkillManager.getSkill(Msg.uncolor(idata.getName()).split(":")[1].trim());
+                if(!rune.hasItemMeta()) return null;
+                if(!rune.getItemMeta().hasDisplayName()) return null;
+                return SkillManager.getSkill(Msg.uncolor(rune.getItemMeta().getDisplayName()).split(":")[1].trim());
             }
             else return null;
         }
@@ -88,10 +90,11 @@ public enum SkillEquipSlot {
         @Override
         public Skill getSkill(Player player) {
             HashMap<String, ItemStack> equipData = EquipmentManager.getEquipmentData(player);
-            ItemStack rune = equipData.get("룬3");
+            ItemStack rune = equipData.getOrDefault("룬3", new ItemStack(Material.AIR));
             if(!rune.getType().equals(Material.AIR)&&!rune.getType().equals(Material.BARRIER)) {
-                ItemData idata = new ItemData(rune);
-                return SkillManager.getSkill(Msg.uncolor(idata.getName()).split(":")[1].trim());
+                if(!rune.hasItemMeta()) return null;
+                if(!rune.getItemMeta().hasDisplayName()) return null;
+                return SkillManager.getSkill(Msg.uncolor(rune.getItemMeta().getDisplayName()).split(":")[1].trim());
             }
             else return null;
         }

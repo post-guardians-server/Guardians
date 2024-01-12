@@ -89,6 +89,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\blu
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\addspells\CoolModifySpell.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\skillsystem\RuneSkillManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\story\StoryCommands.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\AfkShopCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\craft\craft\CraftManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\storage\StorageNameListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dialogquest\QuestLogWindow.java
@@ -105,6 +106,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\com
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\ReflectionUtil.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\story\variable\VariableManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\ExpCommand.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\skillsystem\SkillEquipSlot.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\SoloMode.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\mythicAddon\machanics\ExecuteSpellMechanic.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\data\LevelData.java
@@ -184,7 +186,6 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\com
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\offlineMessage\OfflineMessageManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\equipment\EquipmentManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\AbstractCommand.java
-C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\listeners\PaymentListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dropItem\Drop.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\TpChannelCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\noticeboard\NoticeBoardCommand.java
@@ -210,6 +211,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\GUI
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\spawnerUtils\SpawnUtilCommandTabComp.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\NullManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\ChannelCommand.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\AfkCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\GUI\WeaponSkinWindow.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\mythicAddon\machanics\DamMechanic.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\GetLocCommand.java

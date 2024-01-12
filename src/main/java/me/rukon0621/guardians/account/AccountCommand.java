@@ -16,7 +16,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import static me.rukon0621.guardians.main.getPlugin;
@@ -79,8 +81,9 @@ public class AccountCommand implements CommandExecutor {
             String uuid;
             if (args[1].contains("-")) uuid = args[1];
             else uuid = main.getPlugin().getServer().getOfflinePlayer(args[1]).getUniqueId().toString();
-
-            CountDownLatch latch = new CountDownLatch(4);
+            PlayerData pdc = new PlayerData(player);
+            UUID guildID = pdc.getGuildID();
+            CountDownLatch latch = new CountDownLatch(5);
             PlayerData.loadPlayerStatFromDatabase(player, latch, uuid);
             DialogQuestManager.loadPlayerDqData(player, latch, uuid);
             PaymentData.loadDataFromDataBase(player, latch, uuid);
@@ -88,7 +91,23 @@ public class AccountCommand implements CommandExecutor {
             RankData.resetPvpData(player, latch);
             new WaveData(player, latch, uuid);
             StorageManager.copyStorageData(uuid, player.getUniqueId().toString());
-            Msg.send(player, "계정을 불러왔습니다.", pfix);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        latch.await();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            pdc.setGuildID(guildID);
+                            Msg.send(player, "계정을 불러왔습니다.", pfix);
+                        }
+                    }.runTask(main.getPlugin());
+                }
+            }.runTaskAsynchronously(main.getPlugin());
         }
         else {
             usages(player);

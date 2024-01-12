@@ -1,5 +1,6 @@
 package me.rukon0621.guardians.data;
 
+import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.rukon0621.buff.BuffData;
 import me.rukon0621.buff.RukonBuff;
 import me.rukon0621.dungeonwave.WaveData;
@@ -20,6 +21,8 @@ import me.rukon0621.guardians.skillsystem.skilltree.SkillTreeManager;
 import me.rukon0621.guardians.skillsystem.skilltree.elements.SkillTree;
 import me.rukon0621.guardians.storage.StorageManager;
 import me.rukon0621.guardians.story.StoryManager;
+import me.rukon0621.guild.RukonGuild;
+import me.rukon0621.guild.element.Guild;
 import me.rukon0621.pay.PaymentData;
 import me.rukon0621.ridings.Riding;
 import me.rukon0621.ridings.RukonRiding;
@@ -28,12 +31,9 @@ import me.rukon0621.rinstance.RukonInstance;
 import me.rukon0621.rpvp.RukonPVP;
 import me.rukon0621.rpvp.data.RankData;
 import me.rukon0621.teseion.Main;
-import me.ulrich.clans.Clans;
-import me.ulrich.clans.data.ClanData;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -55,7 +55,6 @@ public class PlayerData {
     private static final Set<Player> stunnedPlayer = new HashSet<>();
     private static final Set<Player> slowStunnedPlayer = new HashSet<>();
     private static final Map<Player, HashMap<String, Pair>> attributeAbility = new HashMap<>();
-
     private static final Map<Player, Map<String, Object>> playerDataMap = new HashMap<>();
     public static final int MAX_BACKPACK_SLOT = 300;
     private static final int MAX_FATIGUE = 15;
@@ -108,6 +107,7 @@ public class PlayerData {
         db.execute("ALTER TABLE playerData ADD weaponSkins mediumblob;");
         db.execute("ALTER TABLE playerData ADD mute bigint;");
         db.execute("ALTER TABLE playerData ADD offHand blob;");
+        db.execute("ALTER TABLE playerData ADD guild text;");
         db.close();
     }
 
@@ -123,7 +123,6 @@ public class PlayerData {
         if(instance != null) finalLocation = instance.getPreviousLocation(player);
         else if(playedStory != null) finalLocation = StoryManager.getPreviousLocation(player);
         else finalLocation = player.getLocation();
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -189,13 +188,18 @@ public class PlayerData {
                     statement.close();
 
 
-                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET completedSampling = ?, progressingSampling = ?, cntWeaponSkin = ?, weaponSkins = ?, mute = ?, offHand = ? WHERE uuid = '%s'", player.getUniqueId()));
+                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET completedSampling = ?, progressingSampling = ?, cntWeaponSkin = ?, weaponSkins = ?, mute = ?, offHand = ?, guild = ? WHERE uuid = '%s'", player.getUniqueId()));
                     statement.setBytes(1, Serializer.serialize(pdc.getCompletedSamplings()));
                     statement.setBytes(2, Serializer.serialize(pdc.getProgressingSamplings()));
                     statement.setInt(3, pdc.getWeaponSkinCmd());
                     statement.setBytes(4, Serializer.serializeBukkitObject(pdc.getWeaponSkins()));
                     statement.setLong(5, pdc.getMuteMillis());
                     statement.setBytes(6, Serializer.serializeBukkitObject(offHandItem));
+                    if(pdc.getGuildID() == null) {
+                        statement.setString(7, null);
+                    }
+                    else statement.setString(7, pdc.getGuildID().toString());
+
                     statement.executeUpdate();
                     statement.close();
                     db.close();
@@ -310,6 +314,11 @@ public class PlayerData {
             pdc.setWeaponSkins((List<ItemStack>) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(40)), new ArrayList<>()));
             pdc.setMuteMillis(resultSet.getLong(41));
             player.getInventory().setItemInOffHand((ItemStack) Serializer.deserializeBukkitObject(resultSet.getBytes(42)));
+            try {
+                pdc.setGuildID(UUID.fromString(resultSet.getString(43)));
+            } catch (NullPointerException e) {
+                pdc.setGuildID(null);
+            }
             resultSet.close();
             db.close();
             if(dailyEvent) {
@@ -367,21 +376,6 @@ public class PlayerData {
     //완전 이동 불능 상태인지 파악
     public static boolean isPlayerPerfectlyStunned(Player player) {
         return stunnedPlayer.contains(player);
-    }
-
-    @Nullable
-    public static ClanData getClan(Player player) {
-        return getClan(player.getUniqueId());
-    }
-    @Nullable
-    public static ClanData getClan(UUID uuid) {
-        Optional<ClanData> clanDataOptional = main.getPlugin().getClanPlugin().getPlayerAPI().getPlayerClan(uuid);
-        return clanDataOptional.orElse(null);
-    }
-
-    @Nullable
-    public static me.ulrich.clans.data.PlayerData getClanPlayerData(UUID uuid) {
-        return main.getPlugin().getClanPlugin().getPlayerAPI().getPlayerData(uuid).orElse(null);
     }
 
     public static boolean isPlayerSlowStunned(Player player) {
@@ -606,6 +600,10 @@ public class PlayerData {
         LevelData.reloadIndicator(player);
     }
 
+    public double getTotalPowerCached() {
+        return EquipmentManager.getCachedTotalPower().getOrDefault(player.getUniqueId(), -1D);
+    }
+
     //********************************************************//
     //                        MODIFIERS                       //
     //********************************************************//
@@ -616,6 +614,18 @@ public class PlayerData {
     }
     public String getArea() {
         return (String) data.get("area");
+    }
+
+    public void setGuildID(UUID value) {
+        data.put("guild", value);
+    }
+
+    @Nullable
+    public UUID getGuildID() {
+        return (UUID) data.get("guild");
+    }
+    public String getGuildName() {
+        return Guild.getGuildNameCache().getOrDefault(player.getUniqueId(), "로딩중...");
     }
 
     public void setStoryCode(int value) {
@@ -682,8 +692,17 @@ public class PlayerData {
     public void setSkillPoint(int value) {
         data.put("skillPoint", value);
     }
+    public int getSkillPoint(int skillTreeIndex) {
+        return skillTreeIndex == 7 ? getCraftSkillPoint() : getSkillPoint();
+    }
     public int getSkillPoint() {
         return ((Number) data.get("skillPoint")).intValue();
+    }
+    public void setCraftSkillPoint(int value) {
+        data.put("craftSkillPoint", value);
+    }
+    public int getCraftSkillPoint() {
+        return ((Number) data.getOrDefault("craftSkillPoint", 0)).intValue();
     }
 
     public void setUnlearnChance(int value) {
@@ -726,12 +745,6 @@ public class PlayerData {
     }
     public Map<String, Integer> getVariableData() {
         return (Map<String, Integer>) data.get("variableData");
-    }
-
-    @Nullable
-    public ClanData getClan() {
-        Optional<ClanData> clanDataOptional = main.getPlugin().getClanPlugin().getPlayerAPI().getPlayerClan(player.getUniqueId());
-        return clanDataOptional.orElse(null);
     }
 
     public int getVar(String varName) {

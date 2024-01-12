@@ -200,12 +200,12 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                         itemData.setCraftLevel(itemData.getCraftLevel());
                     }
 
-                    int l1 = itemData.getLevel(), l2;
+                    int level = itemData.getLevel();
                     double remainExp = itemData.addExp(getExpInFirst(), totemMap.containsKey(TOTEM.PROTECT_QUALITY_TOTEM));
-                    l2 = itemData.getLevel();
+                    int levelAfter = itemData.getLevel();
 
-                    if(l1==l2 && totemMap.containsKey(TOTEM.PROTECT_QUALITY_TOTEM)) {
-                        Msg.warn(player, "&c아이템이 레벨업 하지 않으면 품질 유지 토템을 사용할 필요가 없습니다.");
+                    if(totemMap.containsKey(TOTEM.PROTECT_QUALITY_TOTEM) && (level + 1) != levelAfter) {
+                        Msg.warn(player, "&c아이템이 레벨업 하지 않으면 품질 유지 토템을 사용할 필요가 없습니다. 또한 반드시 한 번에 1레벨만 올라가야 합니다.");
                         return;
                     }
 
@@ -229,7 +229,7 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                             MailBoxManager.giveOrMail(player, LevelData.getEquipmentExpBook((int) remainExp));
                         }
                         //업그레이드 성공 GUI 반영 (setOriginalItem 에 reloadGUI 포함)
-                        if(l1==l2) {
+                        if(level==levelAfter) {
                             player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2.0f);
                             Msg.send(player, "장비 경험치 부여를 성공했습니다!", pfix);
                         }
@@ -248,11 +248,8 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                                     }.runTask(main.getPlugin());
                                 }
                             }.runTaskAsynchronously(main.getPlugin());
-
                         }
                     }
-
-
                     for(int slot : SUPPORTER_SLOTS) {
                         map.remove(slot);
                     }
@@ -262,7 +259,6 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                         button.setOriginalItem(itemData.getItemStack());
                     }
                     else reloadGUI();
-
                 }
             }
 

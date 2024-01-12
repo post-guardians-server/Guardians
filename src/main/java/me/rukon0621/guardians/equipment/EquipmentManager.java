@@ -15,11 +15,15 @@ import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.GUI.WeaponSkinWindow;
 import me.rukon0621.guardians.skillsystem.SkillManager;
+import me.rukon0621.guild.RukonGuild;
+import me.rukon0621.guild.element.Guild;
+import me.rukon0621.guild.element.GuildPlayer;
 import me.rukon0621.pay.PaymentData;
 import me.rukon0621.pay.RukonPayment;
 import me.rukon0621.pay.shop.MONEY;
 import me.rukon0621.pay.trade.TradeData;
 import me.rukon0621.sampling.RukonSampling;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -42,9 +46,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 import static me.rukon0621.guardians.main.pfix;
@@ -58,9 +60,14 @@ public class EquipmentManager implements Listener {
     private static HashMap<String, Integer> equipmentSlotData;
     private static HashMap<String, String> equipmentTranslateData;
     private static HashMap<Player, Integer> playerInformationPage;
+    private static final HashMap<UUID, Double> cachedTotalPower = new HashMap<>();
     private static final int[] informationIconSlots = new int[]{18,19,20,27,28,29};
     private static final int informationMaxPage = 4; //내 정보의 페이지 수
     public static final double maxEvade = 25;
+
+    public static HashMap<UUID, Double> getCachedTotalPower() {
+        return cachedTotalPower;
+    }
 
     public EquipmentManager() {
 
@@ -336,9 +343,6 @@ public class EquipmentManager implements Listener {
         Stat.IGNORE_ARMOR.set(player, Stat.IGNORE_ARMOR.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.IGNORE_ARMOR_POWER.getTotal(player))), 3.0D) / 200.0D);
         Stat.COOL_DEC.set(player, Stat.COOL_DEC.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.COOL_DEC_POWER.getTotal(player))), 3.0D) / 300.0D);
         Stat.EVADE.set(player, Stat.EVADE.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.EVADE_POWER.getTotal(player))), 3.0D) / 300.0D);
-
-        Stat.PLAYER_ARMOR.set(player, Stat.getPlayerArmor(player, 0));
-
         player.setMaxHealth(Math.max(10, Stat.HEALTH.getTotal(player)));
         player.setHealth(player.getMaxHealth() * previousHealth);
         player.setWalkSpeed((float) (Math.min(Stat.MOVE_SPEED.getTotal(player), 200)/500.0));
@@ -348,6 +352,36 @@ public class EquipmentManager implements Listener {
         attr.setBaseValue(Stat.KB_RESISTANCE.getTotal(player));
         eqStatusData.put(player, equipmentStatus);
         BarManager.reloadBar(player);
+
+        cachedTotalPower.put(player.getUniqueId(), Stat.getTotalPower(player));
+        if(pdc.getGuildID() != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Guild guild = Guild.loadGuild(pdc.getGuildID());
+                    if(guild == null) {
+                        Bukkit.getLogger().severe(player.getName() + "님의 길드: " + pdc.getGuildID() + "는 존재하지 않는 길드입니다.");
+                        return;
+                    }
+                    GuildPlayer gp = guild.getMember(player.getUniqueId());
+                    if(gp == null) {
+                        Bukkit.getLogger().severe(player.getName() + "님의 길드: " + guild.getName() + "에 속하지 않은 맴버입니다.");
+                        return;
+                    }
+                    boolean change = false;
+                    if(!gp.getName().equals(player.getName())) {
+                        gp.setName(player.getName());
+                        change = true;
+                    }
+                    double totalPower = Stat.getTotalPower(player);
+                    if((int) gp.getTotalPower() != (int) totalPower) {
+                        gp.setTotalPower(totalPower);
+                        change = true;
+                    }
+                    if(change) guild.reloadMemberData();
+                }
+            }.runTaskAsynchronously(main.getPlugin());
+        }
     }
 
     //장착된 장비 해제 슬롯 확인 (슬롯이 없으면 -1, 있으면 해당 슬롯을 반환
@@ -392,11 +426,16 @@ public class EquipmentManager implements Listener {
         if(page==1){
             it.addLore("&7Lv. &f" + pdc.getLevel());
             it.addLore(String.format("&7Exp. %d / %d", pdc.getExp(), LevelData.expAtLevel.get(pdc.getLevel())));
+            if(pdc.getGuildID() != null) {
+                it.addLore("&7소속 길드: " + pdc.getGuildName());
+            }
+
             it.addLore(" ");
             it.addLore("&7현재 지역: &f"+pdc.getArea());
             it.addLore(String.format("&7소지금: &f%d 디나르", pdc.getMoney()));
             it.addLore(String.format("&7가진 루나르: &f%d", pyd.getRunar()));
             it.addLore(String.format("&7가진 스킬 포인트: &f%d", pdc.getSkillPoint()));
+            it.addLore(String.format("&7가진 제작 스킬 포인트: &f%d", pdc.getCraftSkillPoint()));
             it.addLore(String.format("&7가진 스킬 취소 포인트: &f%d", pdc.getUnlearnChance()));
             it.addLore(String.format("&7가진 에너지 코어: &f%d / %d", pdc.getEnergyCore(), pdc.getMaxEnergyCore()));
             it.addLore(String.format("&7피로도: &f%d / %d", pdc.getFatigue(), pdc.getMaxFatigue()));
@@ -480,6 +519,7 @@ public class EquipmentManager implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         eqStatusData.remove(e.getPlayer());
+        cachedTotalPower.remove(e.getPlayer().getUniqueId());
     }
 
     @EventHandler

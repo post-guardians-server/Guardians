@@ -32,6 +32,7 @@ public class ChatCommand extends AbstractCommand {
         Msg.send(player, "&7채팅의 범위를 설정합니다.");
         Msg.send(player, "&7- ALL : 모든 채널에서 사용되는 전체 채팅");
         Msg.send(player, "&7- CHANNEL : 현재 있는 채널에서 사용되는 채널 채팅");
+        Msg.send(player, "&7- GUILD : 길드 채팅");
         Msg.send(player, "&7- PARTY : 현재 있는 파티에서 사용되는 파티 채팅");
     }
 

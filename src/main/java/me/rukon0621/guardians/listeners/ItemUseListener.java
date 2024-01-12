@@ -110,41 +110,40 @@ public class ItemUseListener implements Listener {
             }
             case "신의 가호" -> { //??신의 가호 3일
                 int day = Integer.parseInt(name.split(" ")[2].replaceAll("일", ""));
-                PaymentData pdc = new PaymentData(player);
-                if (name.startsWith("작댁")) {
-                    if(pdc.getRemainOfJackBlessing() > 86000L * 1000 * 50) {
-                        Msg.warn(player, "한 종류의 가호가 50일 이상 지속될 수 없습니다.");
-                        return;
-                    }
-                    if(pdc.getRemainOfJackBlessing() <= 0) {
-                        PlayerData pd = new PlayerData(player);
-                        pd.setUnlearnChance(pd.getUnlearnChance() + 3);
-                    }
-                    pdc.setBlessOfJack(Math.max(System.currentTimeMillis(), pdc.getBlessOfJack()) + (day * 86400000L));
-                }
-                else if (name.startsWith("루콘")) {
-                    if(pdc.getRemainOfRukonBlessing() > 86000L * 1000 * 50) {
-                        Msg.warn(player, "한 종류의 가호가 50일 이상 지속될 수 없습니다.");
-                        return;
-                    }
-                    pdc.setBlessOfRukon(Math.max(System.currentTimeMillis(), pdc.getBlessOfRukon()) + (day * 86400000L));
-                }
-                else if (name.startsWith("버트")) {
-                    if(pdc.getRemainOfBertBlessing() > 86000L * 1000 * 50) {
-                        Msg.warn(player, "한 종류의 가호가 50일 이상 지속될 수 없습니다.");
-                        return;
-                    }
-                    PlayerData pd = new PlayerData(player);
-                    if(pd.getMaxEnergyCore() < 130) {
-                        pd.setEnergyCore(pd.getEnergyCore() + 30);
-                    }
-                    pdc.setBlessOfBert(Math.max(System.currentTimeMillis(), pdc.getBlessOfBert()) + (day * 86400000L));
-                }
-
                 new ConfirmWindow(player) {
                     @Override
                     public void execute() {
                         if(!e.consume()) return;
+                        PaymentData pdc = new PaymentData(player);
+                        if (finalName.startsWith("작댁")) {
+                            if(pdc.getRemainOfJackBlessing() > 86000L * 1000 * 50) {
+                                Msg.warn(player, "한 종류의 가호가 50일 이상 지속될 수 없습니다.");
+                                return;
+                            }
+                            if(pdc.getRemainOfJackBlessing() <= 0) {
+                                PlayerData pd = new PlayerData(player);
+                                pd.setUnlearnChance(pd.getUnlearnChance() + 3);
+                            }
+                            pdc.setBlessOfJack(Math.max(System.currentTimeMillis(), pdc.getBlessOfJack()) + (day * 86400000L));
+                        }
+                        else if (finalName.startsWith("루콘")) {
+                            if(pdc.getRemainOfRukonBlessing() > 86000L * 1000 * 50) {
+                                Msg.warn(player, "한 종류의 가호가 50일 이상 지속될 수 없습니다.");
+                                return;
+                            }
+                            pdc.setBlessOfRukon(Math.max(System.currentTimeMillis(), pdc.getBlessOfRukon()) + (day * 86400000L));
+                        }
+                        else if (finalName.startsWith("버트")) {
+                            if(pdc.getRemainOfBertBlessing() > 86000L * 1000 * 50) {
+                                Msg.warn(player, "한 종류의 가호가 50일 이상 지속될 수 없습니다.");
+                                return;
+                            }
+                            PlayerData pd = new PlayerData(player);
+                            if(pd.getMaxEnergyCore() < 130) {
+                                pd.setEnergyCore(pd.getEnergyCore() + 30);
+                            }
+                            pdc.setBlessOfBert(Math.max(System.currentTimeMillis(), pdc.getBlessOfBert()) + (day * 86400000L));
+                        }
                         Msg.send(player, "&a신의 가호가 당신과 함께합니다.", pfix);
                         player.playSound(player, Sound.BLOCK_BEACON_ACTIVATE, 1, 0.8f);
                         player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 0.7f);

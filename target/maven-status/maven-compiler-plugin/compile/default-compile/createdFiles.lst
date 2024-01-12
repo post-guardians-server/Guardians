@@ -1,6 +1,5 @@
 me\rukon0621\guardians\GUI\item\ItemAttrClearWindow$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$6.class
-me\rukon0621\guardians\listeners\LogInOutListener$2$1$2.class
 me\rukon0621\guardians\story\SpectatorShaking.class
 me\rukon0621\guardians\GUI\item\ItemLevelUpWindow$STATUS.class
 me\rukon0621\guardians\party\PartyCreateWindow$1.class
@@ -25,6 +24,7 @@ me\rukon0621\guardians\GUI\item\SuccessionGUI.class
 me\rukon0621\guardians\story\StoryManager$23.class
 me\rukon0621\guardians\GUI\TitleWindow.class
 me\rukon0621\guardians\story\StoryManager$10.class
+me\rukon0621\guardians\listeners\LogInOutListener$4$1.class
 me\rukon0621\guardians\mythicAddon\machanics\ExecuteSpellMechanic$1.class
 me\rukon0621\guardians\story\StoryManager$17.class
 me\rukon0621\guardians\account\AccountManager$1.class
@@ -39,6 +39,7 @@ me\rukon0621\guardians\helper\DataBase.class
 me\rukon0621\guardians\addspells\MythicPainSpell$1.class
 me\rukon0621\guardians\story\variable\VariableManager.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$readString.class
+me\rukon0621\guardians\listeners\LogInOutListener$3$1$1.class
 me\rukon0621\guardians\addspells\effect\MessageEffect.class
 me\rukon0621\guardians\afk\AfkManager$1.class
 me\rukon0621\guardians\story\StoryManager$4.class
@@ -98,6 +99,7 @@ me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow.class
 me\rukon0621\guardians\storage\StorageManager$4$2.class
 me\rukon0621\guardians\GUI\item\ItemDisassembleWindow.class
 me\rukon0621\guardians\helper\Serializer.class
+me\rukon0621\guardians\account\AccountCommand$1.class
 me\rukon0621\guardians\fastboard\adventure\FastBoard.class
 me\rukon0621\guardians\skillsystem\skilltree\elements\SkillElement.class
 me\rukon0621\guardians\mythicAddon\machanics\FlashbangMechanic.class
@@ -147,6 +149,7 @@ me\rukon0621\guardians\dialogquest\DialogQuestManager$6.class
 me\rukon0621\guardians\mobType\MobTypeCommand.class
 me\rukon0621\guardians\data\DataClass.class
 me\rukon0621\guardians\helper\DBStatic.class
+me\rukon0621\guardians\craft\craft\CraftManager$1.class
 me\rukon0621\guardians\fastboard\FastBoard.class
 me\rukon0621\guardians\mailbox\MailBoxManager$2$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow$2.class
@@ -221,6 +224,7 @@ me\rukon0621\guardians\commands\ItemDataCommands.class
 me\rukon0621\guardians\GUI\item\QualityUpgradeWindow.class
 me\rukon0621\guardians\mythicAddon\machanics\DamPerMechanic.class
 me\rukon0621\guardians\addspells\KnockdownSpell$1.class
+me\rukon0621\guardians\commands\AfkShopCommand.class
 me\rukon0621\guardians\party\PartyRecruitListener$1.class
 me\rukon0621\guardians\listeners\LogInOutListener$3$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$2.class
@@ -245,12 +249,14 @@ me\rukon0621\guardians\afk\AfkConfirmWindow$1$1$1.class
 me\rukon0621\guardians\data\PlayerData$2.class
 me\rukon0621\guardians\addspells\PowerSpell.class
 me\rukon0621\guardians\story\StoryManager$13.class
+me\rukon0621\guardians\account\AccountCommand$1$1.class
 me\rukon0621\guardians\account\AccountCommand.class
 me\rukon0621\guardians\storage\StorageManager$5.class
 me\rukon0621\guardians\GUI\item\enhance\LegacyEnhanceGUI.class
 me\rukon0621\guardians\GUI\item\SingleEquipmentSelectWindow$EquipmentButton.class
 me\rukon0621\guardians\story\StoryManager$2.class
 me\rukon0621\guardians\dialogquest\QuestLogWindow$1.class
+me\rukon0621\guardians\listeners\LogInOutListener$3$1$2.class
 me\rukon0621\guardians\storage\StorageManager$4.class
 me\rukon0621\guardians\mailbox\MailBoxManager$1$2.class
 me\rukon0621\guardians\story\StoryManager$14.class
@@ -289,6 +295,7 @@ me\rukon0621\guardians\skillsystem\SkillEquipSlot$6.class
 me\rukon0621\guardians\party\PartyRecruitListener.class
 me\rukon0621\guardians\addspells\TargetedMultiSpell$1.class
 me\rukon0621\guardians\region\RegionManager$2$1.class
+me\rukon0621\guardians\equipment\EquipmentManager$4.class
 me\rukon0621\guardians\mailbox\MailBoxWindow$4$1.class
 me\rukon0621\guardians\addspells\RegenSpell.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$5.class
@@ -317,7 +324,9 @@ me\rukon0621\guardians\areawarp\AreaCommandTabComp.class
 me\rukon0621\guardians\party\PartyAcceptCommand.class
 me\rukon0621\guardians\skillsystem\SkillManager$2$1.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$2.class
+me\rukon0621\guardians\listeners\LogInOutListener$7.class
 me\rukon0621\guardians\story\Cinematic$1.class
+me\rukon0621\guardians\commands\AfkCommand.class
 me\rukon0621\guardians\craft\craft\CraftResult.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$3.class
 me\rukon0621\guardians\commands\ReportCommand.class

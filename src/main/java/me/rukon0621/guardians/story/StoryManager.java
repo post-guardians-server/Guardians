@@ -1094,6 +1094,9 @@ public class StoryManager {
                     }
                 }.runTaskLater(plugin, 1);
             }
+            else if(actionKey.equalsIgnoreCase("SKILLTREE")) {
+                main.getPlugin().getSkillTreeManager().openSkillTree(player);
+            }
             else if(actionKey.equals("무기선택_검")) {
                 InvClass.giveOrDrop(player, ItemSaver.getItem("기본검").getItem());
                 Msg.send(player, "&a기본 무기를 지급 받았습니다!", pfix);

@@ -5,6 +5,7 @@ import com.nisovin.magicspells.Spell;
 import me.rukon0621.guardians.data.LevelData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.ActionBar;
+import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.listeners.ResourcePackListener;
 import me.rukon0621.guardians.main;
@@ -101,6 +102,7 @@ public class BarManager implements Listener {
         String finalStr;
         if(skills == 0) finalStr = "";
         else finalStr = "\uF302" + "\uF306".repeat(skills - 1);
+
         TextComponent text = new TextComponent(StringEscapeUtils.unescapeJava(finalStr + s));
         text.setFont("bar");
         ActionBar.sendActionBar(player, text);
@@ -108,8 +110,8 @@ public class BarManager implements Listener {
 
     public static int addSkillIcon(Player player, StringBuilder s, @Nullable Skill skill, boolean isFirst) {
         if(skill == null) return 0;
-        int i = addIcon(player, s, skill.getUnicode(), MagicSpells.getSpellByInternalName(skill.getMagicSpellName()), isFirst);
-        if(skill.isRuneSkill() && skill.getShiftSpell().equals("null")) {
+        int i = addIcon(player, s, skill.getUnicode(), MagicSpells.getSpellByInternalName(skill.getMagicSpellName(player)), isFirst);
+        if(skill.isRuneSkill() && !skill.getShiftSpell().equals("null")) {
             i += addIcon(player, s, skill.getShiftSkillUnicode(), MagicSpells.getSpellByInternalName(skill.getShiftSpell()), false);
         }
         return i;
@@ -122,12 +124,12 @@ public class BarManager implements Listener {
         else s.append("\uF305");
         s.append(unicode);
         s.append("\uF303");
-        int coolPer = (int) (cool / spell.getCooldown() * 24);
+        int coolPer = (int) (cool / spell.getCooldown() * 48);
         String hex = Integer.toHexString(coolPer + 32);
         s.append("\\uF3").append(hex);
         s.append("\uF304");
-        if(cool < 10 && cool >= 1) s.append("\uF34A");
-        else s.append("\\uF34").append((int) (cool - 1));
+        if(cool < 10) s.append("\\uF35").append((int) (Math.floor(cool)));
+        else s.append("\uF35A");
         return 1;
     }
 

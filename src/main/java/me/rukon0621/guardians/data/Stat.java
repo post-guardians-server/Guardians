@@ -27,7 +27,7 @@ public enum Stat {
     ABSOLUTE_ARMOR("absoluteArmor", "절대 방어율", 0.015,
             false, "#4809b5", true, true, -1D),
     PLAYER_ARMOR("playerArmor", "플레이어 방어력", 0,
-            false, "#8accad", true, true, -1D),
+            false, "#8accad", false, true, -1D),
     CRT_CHANCE("criticalChance", "치명타 확률", 0.025,
             true, "#fff866", true, true, -1D),
     CRT_CHANCE_PER("criticalChancePer", "치명타 확률", 0.025,
@@ -81,9 +81,10 @@ public enum Stat {
      * @param armorIgnore 0~1 사이의 double
      * @return 0~1 사이의 값 도출 0.2면 20%의 플레이어 방어력을 의미
      */
-    public static double getPlayerArmor(Player player, double armorIgnore) {
-        double x = Math.min(Stat.ARMOR.getTotal(player) * (1 - armorIgnore), Stat.PLAYER_ARMOR_CONST);
-        return -((x * (x - 2 * PLAYER_ARMOR_CONST)) / ((PLAYER_ARMOR_CONST * PLAYER_ARMOR_CONST) / MAX_PLAYER_ARMOR)) / 100;
+    public static double getPlayerArmor(Player player, double dam, double armorIgnore) {
+        double am = Stat.ARMOR.getTotal(player) * (1 - armorIgnore);
+        double per = (dam / (5 * am)) * 0.7;
+        return Math.min(per, 1);
     }
 
 

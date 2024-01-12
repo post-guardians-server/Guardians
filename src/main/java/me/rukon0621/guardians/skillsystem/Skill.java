@@ -29,7 +29,7 @@ public class Skill {
     private final double powerPerLevel; //레벨마다 파워가 몇 % 증가하는가 (0~100 백분율)
     private final double cooldownPerLevel; //레벨마다 쿨타임이 몇 % 줄어드는가 (0~100 백분율)
     private final ArrayList<String> requiredSkills; //스킬트리에서 이 스킬들이 있으면 1레벨씩 레벨업
-    private final boolean sendCooldownMessage;
+    //private final boolean sendCooldownMessage;
     private final boolean isRuneSkill;
     private final String  shiftSpell;
     private final String requiredEquipmentType;
@@ -46,8 +46,8 @@ public class Skill {
         requiredEquipmentType = config.getConfig().getString(skillName+".requiredEquipmentType", "null");
         isRuneSkill = config.getConfig().getBoolean(skillName+".isRuneSkill", false);
         shiftSpell = config.getConfig().getString(skillName+".magicSpellNameWithShift", "null");
-        unicode = config.getConfig().getString(skillName+".unicode", "\\uF000");
-        shiftSkillUnicode = config.getConfig().getString(skillName+".shiftUnicode", "\\uF000");
+        unicode = config.getConfig().getString(skillName+".unicode", "\\uF403");
+        shiftSkillUnicode = config.getConfig().getString(skillName+".shiftUnicode", "\\uF403");
         icon = new ItemClass(new ItemStack(Material.GHAST_TEAR), skillName);
         icon.setCustomModelData(config.getConfig().getInt(skillName+".customModelData", 0));
         ArrayList<String> lores = (ArrayList<String>) config.getConfig().getList(skillName+".lores", new ArrayList<>());
@@ -55,7 +55,7 @@ public class Skill {
             icon.addLore(lore);
         }
         requiredSkills = (ArrayList<String>) config.getConfig().getList(skillName+".requiredSkills", new ArrayList<>());
-        sendCooldownMessage = config.getConfig().getBoolean(skillName+".sendCooltimeMessage", true);
+        //sendCooldownMessage = config.getConfig().getBoolean(skillName+".sendCooltimeMessage", true);
         bannedSkills = config.getConfig().getStringList(skillName+".bannedSkills");
         for(String s : config.getConfig().getStringList(skillName+".changeMap")) {
             changeMap.add(new Couple<>(s.split(":")[0].trim(), s.split(":")[1].trim()));
@@ -164,7 +164,7 @@ public class Skill {
             }
 
             if(spell.onCooldown(player)) {
-                if(sendCooldownMessage) Msg.send(player, String.format("아직 이 스킬의 쿨타임은 &c%.1f&f초 남았습니다.", spell.getCooldown(player)), "&7[ "+ skillName +" &7] &f");
+                //if(sendCooldownMessage) Msg.send(player, String.format("아직 이 스킬의 쿨타임은 &c%.1f&f초 남았습니다.", spell.getCooldown(player)), "&7[ "+ skillName +" &7] &f");
                 return false;
             }
             level--;
@@ -199,7 +199,10 @@ public class Skill {
         return skillName;
     }
 
-    public String getMagicSpellName() {
+    public String getMagicSpellName(Player player) {
+        for(Couple<String, String> data : changeMap) {
+            if(new PlayerData(player).hasSkill(data.getFirst())) return data.getSecond();
+        }
         return magicSpellName;
     }
 

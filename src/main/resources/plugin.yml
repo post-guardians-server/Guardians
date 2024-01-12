@@ -7,10 +7,8 @@ main: me.rukon0621.guardians.main
 #  - org.mariadb.jdbc:mariadb-java-client:3.1.2
 depend:
   - RukonWorld
-  - MagicSpells
   - MythicMobs
   - DungeonParties
-  - UltimateClans
 load: POSTWORLD
 permissions:
   guardians.user:
@@ -37,6 +35,16 @@ commands:
   test:
     usage: /test
     permission: guardians.oper
+  afk:
+    usage: /test
+    permission: guardians.user
+    aliases:
+      - 잠수
+  afkShop:
+    usage: /test
+    permission: guardians.user
+    aliases:
+      - 잠수상점
   controlTitle:
     usage: /controlTitle
     permission: guardians.oper

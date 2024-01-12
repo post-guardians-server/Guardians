@@ -148,7 +148,8 @@ public class SkillTreeWindow extends ScrollableWindow {
                     if(pdc.getUnlearnChance() > 0) {
                         pdc.setUnlearnChance(pdc.getUnlearnChance() - 1);
                         pdc.getSkillData().remove(tree.getName());
-                        pdc.setSkillPoint(pdc.getSkillPoint() + tree.getPoint());
+                        if(tree.getTreeIndex() == 7) pdc.setCraftSkillPoint(pdc.getCraftSkillPoint() + tree.getPoint());
+                        else pdc.setSkillPoint(pdc.getSkillPoint() + tree.getPoint());
                         Msg.send(player, "배운 스킬을 취소시켰습니다.", pfix);
                         player.playSound(player, Sound.BLOCK_AMETHYST_CLUSTER_BREAK, 1, 1);
                     }
@@ -187,7 +188,7 @@ public class SkillTreeWindow extends ScrollableWindow {
                     }
                 }
 
-                if(pdc.getSkillPoint() < tree.getPoint()) {
+                if(pdc.getSkillPoint(tree.getTreeIndex()) < tree.getPoint()) {
                     Msg.warn(player, "스킬 포인트가 부족합니다.");
                     return;
                 }
@@ -199,7 +200,6 @@ public class SkillTreeWindow extends ScrollableWindow {
                 }
 
                 if(manager.isBasicSkill(tree.getName())) {
-
                     for(String s : manager.getBasicSkillNames()) {
                         if(pdc.hasSkill(s)) {
                             Msg.warn(player, "동시에 두 무기의 스킬 트리를 찍을 수 없습니다.");
@@ -213,7 +213,8 @@ public class SkillTreeWindow extends ScrollableWindow {
                     }
                 }
 
-                pdc.setSkillPoint(pdc.getSkillPoint() - tree.getPoint());
+                if(tree.getTreeIndex() == 7) pdc.setCraftSkillPoint(pdc.getCraftSkillPoint() - tree.getPoint());
+                else pdc.setSkillPoint(pdc.getSkillPoint() - tree.getPoint());
                 pdc.addSkill(tree.getName());
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1.5f);
                 Msg.send(player, "성공적으로 스킬을 습득했습니다.", pfix);
@@ -233,7 +234,8 @@ public class SkillTreeWindow extends ScrollableWindow {
                 item.addLore(" ");
                 item.addLore("&c\uE011\uE00C\uE00C이 스킬의 습득을 취소하려면 &4쉬프트 우클릭&c 하십시오.");
                 item.addLore("&6\uE011\uE00C\uE00C남은 스킬 취소 포인트: " + pdc.getUnlearnChance());
-                item.addLore("&6\uE011\uE00C\uE00C취소시 얻는 포인트: " + tree.getPoint());
+                if(tree.getTreeIndex() == 7) item.addLore("&6\uE011\uE00C\uE00C취소시 얻는 제작 스킬 포인트: " + tree.getPoint());
+                else item.addLore("&6\uE011\uE00C\uE00C취소시 얻는 스킬 포인트: " + tree.getPoint());
                 item.setCustomModelData(tree.getCmd());
                 return item.getItem();
             }
@@ -250,7 +252,7 @@ public class SkillTreeWindow extends ScrollableWindow {
                 if(pdc.getLevel() >= tree.getLevel()) item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &a" + tree.getLevel() + "&6레벨을 달성해야 합니다.");
                 else item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &c" + tree.getLevel() + "&6레벨을 달성해야 합니다.");
 
-                if(tree.getBannedSkills().size()>0) {
+                if(!tree.getBannedSkills().isEmpty()) {
                     item.addLore(" ");
                     item.addLore("#f8a59f\uE014\uE00C\uE00C이 스킬을 해금하면 아래의 스킬을 해금할 수 없습니다.");
                     for(String skillName : tree.getBannedSkills()) {
@@ -260,9 +262,10 @@ public class SkillTreeWindow extends ScrollableWindow {
                 }
 
                 item.addLore(" ");
-                item.addLore("&f\uE011\uE00C\uE00C&b가진 스킬 포인트: &9" + pdc.getSkillPoint());
+                if(tree.getTreeIndex() == 7) item.addLore("&f\uE011\uE00C\uE00C&b가진 제작 스킬 포인트: &9" + pdc.getCraftSkillPoint());
+                else item.addLore("&f\uE011\uE00C\uE00C&b가진 스킬 포인트: &9" + pdc.getSkillPoint());
 
-                if(tree.getRequiredSkills().size()>0) {
+                if(!tree.getRequiredSkills().isEmpty()) {
                     item.addLore(" ");
                     if(tree.isUsingOrCondition()) item.addLore("&f\uE011\uE00C\uE00C이 스킬을 해금하려면 먼저 &e아래 스킬 중 1개&f를 해금해야합니다.");
                     else item.addLore("&f\uE011\uE00C\uE00C이 스킬을 해금하려면 먼저 &e아래 스킬을 모두&f 해금해야합니다.");

@@ -127,7 +127,7 @@ public class MenuWindow implements Listener {
             lores.add(String.format("&7남은 용량: &f%d &7/ &e%d", pdc.getBackpackData().size(), pdc.getBackpackSlot()));
             setMenuItems(28, "#83bcfd전리품 가방", lores);
             setMenuItems(30, "#83bcfd메일함");
-            setMenuItems(32, "#83bcfd길드");
+            setMenuItems(32, "#83bcfd장터");
 
             lores = new ArrayList<>();
             double partyBonus = PartyManager.getPartyBonus(player);
@@ -152,7 +152,7 @@ public class MenuWindow implements Listener {
             setMenuItems(16, "#83bcfd청사진 (설계도)");
             setMenuItems(28, "#83bcfd채팅 설정");
             setMenuItems(30, "#83bcfd샘플링");
-            setMenuItems(32, "#83bcfd장터");
+            setMenuItems(32, "#83bcfd길드");
             setMenuItems(34, "#83bcfd무기 스킨");
         }
         blockCloseEvent = true;
@@ -222,7 +222,9 @@ public class MenuWindow implements Listener {
                 else new BackPackGUI(player);
             }
             else if(e.getRawSlot()==30) MailBoxManager.openMail(player);
-            else if(e.getRawSlot()==32) Opcmd.opCmd(player, "길드");
+            else if(e.getRawSlot()==32) {
+                RukonMarket.inst().getMarketManager().openMarket(player);
+            }
             else if(e.getRawSlot()==34) PartyManager.openPartyGUI(player);
 
         }
@@ -242,7 +244,7 @@ public class MenuWindow implements Listener {
                 new SamplingPacksWindow(player);
             }
             else if(e.getRawSlot()==32) {
-                RukonMarket.inst().getMarketManager().openMarket(player);
+                Msg.warn(player, "준비중인 기능입니다.");
             }
             else if(e.getRawSlot()==34) {
                 new WeaponSkinWindow(player);

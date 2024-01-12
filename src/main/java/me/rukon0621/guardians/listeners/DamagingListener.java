@@ -23,14 +23,12 @@ import me.rukon0621.guardians.mobType.MobTypeManager;
 import me.rukon0621.guardians.region.Region;
 import me.rukon0621.guardians.region.RegionManager;
 import me.rukon0621.guardians.skillsystem.SkillManager;
+import me.rukon0621.guild.RukonGuild;
 import me.rukon0621.ridings.RideManager;
 import me.rukon0621.ridings.RukonRiding;
 import me.rukon0621.rinstance.RukonInstance;
 import me.rukon0621.rpvp.RukonPVP;
 import me.rukon0621.teseion.TeseionInstance;
-import me.ulrich.clans.api.PlayerAPIManager;
-import me.ulrich.clans.data.ClanData;
-import me.ulrich.clans.interfaces.ClanAPI;
 import net.playavalon.avnparty.AvNParty;
 import net.playavalon.avnparty.player.AvalonPlayer;
 import org.bukkit.*;
@@ -45,6 +43,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -67,16 +66,13 @@ public class DamagingListener implements Listener {
     private static final double DEATH_PENALTY_ATTACK = -75;
     private static final double DEATH_PENALTY_ARMOR = -75;
     private static final double DEATH_PENALTY_MOVEMENT = -50;
-    private static final double DEATH_PENALTY_LUCK = -70;
+    private static final double DEATH_PENALTY_LUCK = -50;
 
     public static void clearCombatTime(Player player) {
         playersOnCombat.remove(player);
     }
 
-    private final PlayerAPIManager clanPlayerAPI;
-
     public DamagingListener() {
-        clanPlayerAPI = main.getPlugin().getClanPlugin().getPlayerAPI();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         new BukkitRunnable() {
             @Override
@@ -188,23 +184,6 @@ public class DamagingListener implements Listener {
                 }
 
 
-                //동일 길드
-                ClanData casterClan = PlayerData.getClan(caster);
-                ClanData targetClan = PlayerData.getClan(target);
-                if(casterClan != null && targetClan != null) {
-                    if(casterClan.getId().equals(targetClan.getId()) && !casterClan.isFf()) {
-                        e.setCancelled(true);
-                        return;
-                    }
-                    else if (casterClan.getRivalAlly().getAlly().contains(targetClan.getId()) && !(targetClan.isFf() && casterClan.isFf())) {
-                        e.setCancelled(true);
-                        return;
-                    }
-
-                }
-
-
-
                 //Check PVP
                 //PVP 비활성화 (타겟을 기준으로)
 
@@ -221,6 +200,14 @@ public class DamagingListener implements Listener {
                 }
 
                 PlayerData pdc = new PlayerData(target);
+                if(pdc.getGuildID() != null && pdc.getGuildID().equals(new PlayerData(caster).getGuildID())) {
+                    if(!RukonGuild.inst().getGuildManager().getGuildsUsingFF().contains(pdc.getGuildID())) {
+                        e.setCancelled(true);
+                        return;
+                    }
+                }
+
+
                 for(Region region : RegionManager.getRegionsOfPlayer(target)) {
                     if(region.getSpecialOptions().contains("blockPvp")) {
                         Msg.warn(caster, "이 플레이어는 PVP가 금지된 구역에 들어가있습니다.");
@@ -323,7 +310,7 @@ public class DamagingListener implements Listener {
             victim.setNoDamageTicks(0);
             if(attacker!=null) {
                 armor = 0;
-                multiply *= 1 - (Stat.getPlayerArmor(player, armorIgnore));
+                multiply *= (Stat.getPlayerArmor(player, e.getDamage(), armorIgnore));
                 //multiply *= 1 - Math.min(0.9, Stat.ARMOR.getTotal(player) / (Stat.ATTACK_DAMAGE.getTotal(player) * Stat.PLAYER_ARMOR_ATTACK_CONST));
             }
             else armor = Stat.ARMOR.getTotal(player);
@@ -478,9 +465,10 @@ public class DamagingListener implements Listener {
                     playersOnCombat.put(uuid, System.currentTimeMillis() + (1000L * dropCombatSecond)/5);
                     DropManager.giveDrop(player, name, level, contribution/100);
                     player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, Rand.randFloat(1.3, 1.7));
-                    Msg.send(player,  "&6"+name+"&f : &e몬스터를 성공적으로 처치하였습니다.", pfix);
-                    Msg.send(player, "&7     - 처치 참여 인원 : " + attackersSize + "명");
-                    Msg.send(player, String.format("&7     - 처치 기여도 : %.2f%%", contribution));
+                    //Msg.send(player,  "&6"+name+"&f : &e몬스터를 성공적으로 처치하였습니다.", pfix);
+                    //Msg.send(player, "&7     - 처치 참여 인원 : " + attackersSize + "명");
+                    //Msg.send(player, String.format("&7     - 처치 기여도 : %.2f%%", contribution));
+                    Msg.send(player, String.format("&6%s &f: &e몬스터를 처치했습니다. &7(토벌 인원: &f%d명 &8| &7기여도: &f%.2f%%&7)", name, attackersSize, contribution), pfix);
                 }
             }
         }.runTaskLater(plugin, 3);
@@ -527,7 +515,6 @@ public class DamagingListener implements Listener {
         player.playSound(e.getEntity(), Sound.ENTITY_WITHER_HURT, 1, 0.5f);
 
         PlayerData pdc = new PlayerData(player);
-        //if(AreaManger.getArea(pdc.getArea()).pvpEnabled()) stealItem(player);
         deathPenalty(player);
         playersOnCombat.remove(player);
         OpenAudioListener.stopSong(player, "bgm");
@@ -535,9 +522,9 @@ public class DamagingListener implements Listener {
 
     public static void deathPenalty(Player player) {
         PlayerData pdc = new PlayerData(player);
-        if(pdc.getLevel() <= 10) {
+        if(pdc.getLevel() <= 20) {
             Msg.send(player, " ");
-            Msg.send(player, "&e10레벨까지는 죽어도 데스 패널티를 받지 않습니다!");
+            Msg.send(player, "&e20레벨까지는 죽어도 데스 패널티를 받지 않습니다!");
             Msg.send(player, " ");
             return;
         }
@@ -555,7 +542,7 @@ public class DamagingListener implements Listener {
             return;
         }
 
-        int min = (int) Math.min(pdc.getLevel() * Rand.randDouble(0.3, 0.7), 30);
+        int min = (int) Math.min((float) pdc.getLevel() / 3, 10);
         if(ItemData.removeItem(player, new ItemData(ItemSaver.getItem("데스패널티 보호 물약")), true)) {
             Msg.send(player, " ");
             Msg.send(player, "&a데스패널티 보호 물약에 의해 데스 패널티를 받지 않았습니다.", pfix);
@@ -564,17 +551,25 @@ public class DamagingListener implements Listener {
         else {
             BuffData buffData = RukonBuff.inst().getBuffManager().getPlayerBuffData(player);
             ItemData buff = new ItemData(new ItemStack(Material.SCUTE));
-            int add = buffData.getRemainSecondOfBuff(Stat.ATTACK_DAMAGE_PER);
+            int add = buffData.getRemainSecondOfBuff(Stat.LUCK);
             if(add==-1) {
-                buff.setDuration( + min);
+                buff.setDuration(min);
             }
             else {
-                buff.setDuration((int) (Math.ceil(add / 60D) + min));
+                buff.setDuration(add / 60 + min);
             }
 
-            buff.setStat(Stat.ATTACK_DAMAGE_PER, DEATH_PENALTY_ATTACK);
-            buff.setStat(Stat.ARMOR_PER, DEATH_PENALTY_ARMOR);
-            buff.setStat(Stat.MOVE_SPEED, DEATH_PENALTY_MOVEMENT);
+            Msg.send(player, " ");
+            if(AreaManger.getArea(pdc.getArea()).pvpEnabled()) {
+                buff.setStat(Stat.ATTACK_DAMAGE_PER, DEATH_PENALTY_ATTACK);
+                buff.setStat(Stat.ARMOR_PER, DEATH_PENALTY_ARMOR);
+                buff.setStat(Stat.MOVE_SPEED, DEATH_PENALTY_MOVEMENT);
+                Msg.send(player, String.format("&c데스 패널티로 인해 %d분간 쇠약 상태에 걸렸습니다. &4(PVP 지역에서 사망하여 공격력, 방어력, 이속, 행운력이 크게 감소합니다.)", min), pfix);
+            }
+            else {
+                Msg.send(player, String.format("&6데스 패널티로 인해 %d분간 행운력 저하 상태에 걸렸습니다. 행운력이 " + -DEATH_PENALTY_LUCK + "만큼 감소합니다.", min), pfix);
+            }
+            Msg.send(player, " ");
             buff.setStat(Stat.LUCK, DEATH_PENALTY_LUCK);
 
             try {
@@ -583,58 +578,7 @@ public class DamagingListener implements Listener {
                 e.printStackTrace();
             }
 
-            Msg.send(player, " ");
-            Msg.send(player, String.format("&c데스 패널티로 인해 %d분간 쇠약 상태에 걸렸습니다.", min), pfix);
-            Msg.send(player, " ");
             EquipmentManager.reloadEquipment(player, false);
         }
-    }
-
-    public static void stealItem(Player victim) {
-        if(getRemainCombatTime(victim)==-1) return;
-
-        Msg.warn(victim, "PVP 허용구역에서 사망하여 아이템을 잃어버렸습니다.");
-        ArrayList<ItemStack> removed = new ArrayList<>();
-        for(ItemStack item : victim.getInventory().getStorageContents())  {
-            if(item==null) continue;
-            ItemData itemData = new ItemData(item);
-            if(itemData.isQuestItem()) continue;
-            if(itemData.isUntradable()) continue;
-            if(itemData.isUntradable()) continue;
-            if(itemData.getType().equals("null")) continue;
-            if(item.getType().equals(Material.PAPER)) continue;
-            if(item.getType().equals(Material.ENCHANTED_BOOK)) continue;
-            if(TypeData.getType(itemData.getType()).isMaterialOf("장비")) continue;
-            if(TypeData.getType(itemData.getType()).isMaterialOf("특수")) continue;
-            if(!Rand.chanceOf(70)) continue;
-            removed.add(item.clone());
-            item.setAmount(0);
-        }
-
-
-        MobData mobData = new MobData(victim);
-        int size;
-
-        if(mobData.getAttackers().isEmpty()) size = 0;
-        else size = removed.size() / mobData.getAttackers().size();
-        for(UUID uuid : mobData.getAttackers()) {
-            Player player = Bukkit.getPlayer(uuid);
-            if(player == null) continue;
-            player.playSound(player, Sound.ENTITY_ENDER_DRAGON_HURT, 1, 0.5f);
-            player.playSound(player, Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1.5f);
-            if(size==0) {
-                Msg.send(player, String.format("&6플레이어를 처치하였지만 상대가 가진 아이템이 거의 없어 약탈한 전리품은 존재하지 않습니다. &7(처치 기여도: %.2f%%)", mobData.getContributionProportion(player)), pfix);
-                continue;
-            }
-            Msg.send(player, String.format("&6플레이어를 처치하여 전리품을 일부 약탈했습니다! &7(처치 기여도: %.2f%%)", mobData.getContributionProportion(player)), pfix);
-            for(int i = 0; i < size; i++) {
-                if(!Rand.chanceOf(mobData.getContributionProportion(player))) continue;
-                ItemStack item = Rand.getRandomCollectionElement(removed);
-                removed.remove(item);
-                MailBoxManager.giveOrMail(player, item, true);
-                Msg.send(player, String.format("&7   - %s (x%d)", item.getItemMeta().getDisplayName(), item.getAmount()));
-            }
-        }
-
     }
 }

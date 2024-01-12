@@ -1,9 +1,11 @@
 package me.rukon0621.guardians.listeners;
 
 import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.nisovin.magicspells.shaded.org.apache.commons.analysis.function.Log;
 import me.rukon0621.buff.RukonBuff;
+import me.rukon0621.callback.ProxyCallBack;
 import me.rukon0621.dungeonwave.WaveData;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.data.PlayerData;
@@ -57,6 +59,7 @@ public class LogInOutListener implements Listener, PluginMessageListener {
     private static final Map<Player, String> previousStories = new HashMap<>();
 
     private static final Map<String, Couple<String, Boolean>> ptpMap = new HashMap<>();
+    private boolean proxyPlayerLoaded = false;
 
     public LogInOutListener() {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -151,6 +154,27 @@ public class LogInOutListener implements Listener, PluginMessageListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(!proxyPlayerLoaded) {
+                    proxyPlayerLoaded = true;
+                    new ProxyCallBack(e.getPlayer(), "getProxyPlayers") {
+                        @Override
+                        protected void constructExtraByteData(ByteArrayDataOutput byteArrayDataOutput) {}
+
+                        @Override
+                        public void done(ByteArrayDataInput in) {
+                            String v;
+                            while(!(v = in.readUTF()).equals("end")) proxyPlayerNames.add(v);
+                            System.out.println("proxied player name is fully loaded.");
+                        }
+                    };
+                }
+            }
+        }.runTaskLater(main.getPlugin(), 40);
+
         Player player = e.getPlayer();
         player.teleportAsync(LocationSaver.getLocation("tutoblack"));
         if(!isServerFullyEnabled) {

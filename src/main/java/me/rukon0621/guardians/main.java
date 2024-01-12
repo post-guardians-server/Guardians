@@ -53,10 +53,6 @@ import me.rukon0621.guardians.storage.StorageManager;
 import me.rukon0621.guardians.story.StoryCommands;
 import me.rukon0621.guardians.story.StoryManager;
 import me.rukon0621.guardians.story.variable.VariableManager;
-import me.ulrich.clans.Clans;
-import me.ulrich.clans.api.ClanAPIManager;
-import me.ulrich.clans.interfaces.ClanAPI;
-import me.ulrich.clans.interfaces.UClans;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -84,8 +80,7 @@ public class main extends JavaPlugin {
     private AfkManager afkManager;
     public static String DB_NAME;
     public static String PLUGIN_FOLDER_NAME;
-
-    private Clans clanPlugin;
+    private String channel;
 
 
     public static main getPlugin() {
@@ -94,6 +89,10 @@ public class main extends JavaPlugin {
 
     public static boolean isDevServer() {
         return Bukkit.getPort() >= 56220;
+    }
+
+    public String getChannel() {
+        return channel;
     }
 
     @Override
@@ -126,11 +125,6 @@ public class main extends JavaPlugin {
     public void onEnable() {
         Stat.resetKeyMap();
         EnhanceLevel.initialize();
-
-        if (Bukkit.getPluginManager().isPluginEnabled("UltimateClans")) {
-            clanPlugin = (Clans) Bukkit.getServer().getPluginManager().getPlugin("UltimateClans");
-        }
-        else clanPlugin = null;
         //BUNGEE
         getServer().getMessenger().registerOutgoingPluginChannel(this, mainChannel);
 
@@ -140,6 +134,9 @@ public class main extends JavaPlugin {
 
         DBStatic.getConnection("guardians");
 
+        if(getServer().getPort() == 56220) channel = "dev";
+        else if(getServer().getPort() == 56221) channel = "dev2";
+        else channel = String.valueOf(getServer().getPort() - 56210);
         //Managers
         LevelData.resetLevelData();
         new ItemSaver();
@@ -218,6 +215,8 @@ public class main extends JavaPlugin {
         new CloseAndKickCommand();
         new MuteCommand();
         new TitleControlCommand();
+        new AfkCommand();
+        new AfkShopCommand();
 
         //Events
         new SystemEventsListener();
@@ -297,9 +296,5 @@ public class main extends JavaPlugin {
 
     public AfkManager getAfkManager() {
         return afkManager;
-    }
-
-    public Clans getClanPlugin() {
-        return clanPlugin;
     }
 }

@@ -3,17 +3,21 @@ package me.rukon0621.guardians.listeners;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import me.rukon0621.callback.speaker.Speaker;
+import me.rukon0621.callback.speaker.SpeakerListenEvent;
 import me.rukon0621.guardians.GUI.ChatSettingWindow;
 import me.rukon0621.guardians.GUI.TitleWindow;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.DateUtil;
 import me.rukon0621.guardians.helper.Msg;
+import me.rukon0621.guardians.helper.NullManager;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.party.PartyManager;
 import me.rukon0621.guardians.story.StoryManager;
 import net.playavalon.avnparty.AvNParty;
 import net.playavalon.avnparty.party.Party;
 import net.playavalon.avnparty.player.AvalonPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,10 +30,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static me.rukon0621.guardians.main.chatChannel;
 import static me.rukon0621.guardians.main.pfix;
@@ -40,6 +41,7 @@ public class ChatEventListener implements Listener, PluginMessageListener {
         ALL("&a『 전체 』", "all", false, 84, 60),
         CHANNEL("&6『 채널 』", "channel", false, 85, 40),
         PARTY("&b『 파티 』", "party", false, 86, 0),
+        GUILD("&e『 길드 』", "guild", false, 86, 0),
         WHISPER("&7『 귓속말 』", "whisper", true, 0, 0);
 
         private final String channelPrefix;
@@ -221,6 +223,18 @@ public class ChatEventListener implements Listener, PluginMessageListener {
             out.writeUTF(e.getMessage());
             player.sendPluginMessage(plugin, main.chatChannel, out.toByteArray());
         }
+        else if (chatChannel==ChatChannel.GUILD) {
+            if(getRemainMuteSecond(player) > -1) {
+                Msg.warn(player, String.format("채팅 금지 시간이 %s초 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
+                return;
+            }
+            PlayerData pdc = new PlayerData(player);
+            if(pdc.getGuildID() == null) {
+                Msg.warn(player, "길드에 가입하여야 길드 채팅을 사용할 수 있습니다.");
+                return;
+            }
+            new Speaker("guildChat", pdc.getGuildID().toString(), player.getName(), (String) NullManager.defaultNull(pdc.getTitle(), "null"), e.getMessage());
+        }
 
         if(chatChannel.delayTick!=0) {
             if(player.isOp() || player.hasPermission("guardians.mute")) return;
@@ -237,6 +251,34 @@ public class ChatEventListener implements Listener, PluginMessageListener {
     public static Set<Player> getBlockedPlayers() {
         return blockedPlayers;
     }
+
+    @EventHandler
+    public void onSpeakerListen(SpeakerListenEvent e) {
+        if(e.getMainAction().equals("guildChat")) {
+            UUID guildID = UUID.fromString(e.getIn().readUTF());
+            String sender = e.getIn().readUTF();
+            String title = e.getIn().readUTF();
+            String msg = e.getIn().readUTF();
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(LogInOutListener.getLoadingPlayers().contains(player.getName())) continue;
+                PlayerData pdc = new PlayerData(player);
+                if(pdc.getGuildID() == null || !pdc.getGuildID().equals(guildID)) continue;
+                Msg.send(player, formatMessage(sender, title, msg, ChatChannel.GUILD));
+            }
+        }
+        else if(e.getMainAction().equals("guildBroadcast")) {
+            UUID guildID = UUID.fromString(e.getIn().readUTF());
+            String msg = e.getIn().readUTF();
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                if(LogInOutListener.getLoadingPlayers().contains(player.getName())) continue;
+                PlayerData pdc = new PlayerData(player);
+                if(pdc.getGuildID() == null || !pdc.getGuildID().equals(guildID)) continue;
+                Msg.send(player, msg, pfix);
+                player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.5f);
+            }
+        }
+    }
+
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -292,17 +334,13 @@ public class ChatEventListener implements Listener, PluginMessageListener {
 
     private String formatMessage(String playerName, @NotNull String title, String message, ChatChannel chatChannel) {
         message = message.replaceAll("%", "%%");
-        if(title.equals("null")) {
-            return Msg.color(String.format(chatChannel.channelPrefix + " &f<%s> " + message, playerName));
-        }
-        return Msg.color(String.format(chatChannel.channelPrefix + " " + TitleWindow.getPureTitle(title) + " &f<%s> " + message, playerName));
+        if(title.equals("null")) return Msg.color(String.format("%s &f<%s> %s",chatChannel.channelPrefix, playerName, message));
+        return Msg.color(String.format("%s %s &f<%s> %s",chatChannel.channelPrefix, TitleWindow.getPureTitle(title), playerName, message));
     }
     private String formatMessage(String playerName, @NotNull String title, String message, ChatChannel chatChannel, String channelFrom) {
         message = message.replaceAll("%", "%%");
-        if(title.equals("null")) {
-            return Msg.color(String.format(chatChannel.getChannelPrefix(channelFrom) + " &f<%s> " + message, playerName));
-        }
-        return Msg.color(String.format(chatChannel.getChannelPrefix(channelFrom) + " " + TitleWindow.getPureTitle(title) + " &f<%s> " + message, playerName));
+        if(title.equals("null")) return Msg.color(String.format("%s &f<%s> %s",chatChannel.getChannelPrefix(channelFrom), playerName, message));
+        return Msg.color(String.format("%s %s &f<%s> %s",chatChannel.getChannelPrefix(channelFrom), TitleWindow.getPureTitle(title), playerName, message));
     }
 
     /**

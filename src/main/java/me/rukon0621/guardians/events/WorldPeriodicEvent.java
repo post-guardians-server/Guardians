@@ -42,7 +42,7 @@ public class WorldPeriodicEvent {
                     BarManager.reloadBar(player);
                 }
                 turn++;
-                if(turn % 4 == 0) {
+                if(turn % 10 == 0) {
                     turn = 0;
                     ZonedDateTime date = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
                     secondEvent(date.getSecond());
@@ -65,7 +65,7 @@ public class WorldPeriodicEvent {
                     }
                 }
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 5);
+        }.runTaskTimerAsynchronously(plugin, 0, 2);
     }
 
     private static void minuteEvent() {
@@ -87,7 +87,7 @@ public class WorldPeriodicEvent {
                         if(second % 10 == 0) TitleWindow.reloadTitleOfPlayer(player);
                         if(second % 2 == 0) {
                             double regen = Stat.REGEN.getTotal(player);
-                            player.setHealth(Math.min(player.getHealth() + regen, player.getMaxHealth()));
+                            player.setHealth(Math.min(player.getHealth() + (regen / 2), player.getMaxHealth()));
                         }
                         player.setFoodLevel(20);
                     } catch (NullPointerException ignore) {

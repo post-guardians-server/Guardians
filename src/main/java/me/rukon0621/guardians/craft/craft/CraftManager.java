@@ -10,6 +10,7 @@ import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
+import me.rukon0621.gui.windows.util.ConfirmWindow;
 import me.rukon0621.pay.PaymentData;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -216,18 +217,23 @@ public class CraftManager implements Listener {
                 return;
             }
             else if (e.getClick()==ClickType.SHIFT_LEFT) {
-                int price = wait.getInstantFinishPrice();
-                PaymentData pyd = new PaymentData(player);
-                if(pyd.getRunar() < price) {
-                    Msg.warn(player, "루나르가 부족합니다.");
-                    return;
-                }
-                pyd.setRunar(pyd.getRunar() - price);
-                wait.setEndTime(new Date(System.currentTimeMillis()));
-                player.playSound(player, Sound.ITEM_TOTEM_USE, 1, 2);
-                Msg.send(player, "&6아이템의 제작을 즉시 완료했습니다.", pfix);
-                table.openCraftTableGUI(player, y);
-                return;
+                player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, 1.5f);
+                new ConfirmWindow(player) {
+                    @Override
+                    public void execute() {
+                        int price = wait.getInstantFinishPrice();
+                        PaymentData pyd = new PaymentData(player);
+                        if(pyd.getRunar() < price) {
+                            Msg.warn(player, "루나르가 부족합니다.");
+                            return;
+                        }
+                        pyd.setRunar(pyd.getRunar() - price);
+                        wait.setEndTime(new Date(System.currentTimeMillis()));
+                        player.playSound(player, Sound.ITEM_TOTEM_USE, 1, 2);
+                        Msg.send(player, "&6아이템의 제작을 즉시 완료했습니다.", pfix);
+                        table.openCraftTableGUI(player, y);
+                    }
+                };
             }
             else {
                 Msg.send(player, "&c해당 아이템은 아직 제작중인 아이템입니다.", pfix);
@@ -256,7 +262,7 @@ public class CraftManager implements Listener {
 
     //내부 제작대(제작하기 + 재료 넣기, 빼기) 및 레시피 보기 클릭
     @EventHandler
-    public void onInvClickCraftingGUI(InventoryClickEvent e) {
+    public void onInvClickCraftingGUI(InventoryClickEvent e)  {
         if (!(e.getWhoClicked() instanceof Player player)) return;
         if (Msg.recolor(e.getView().getTitle()).equals("&f\uF000\uF014")) { //레시피 보여주는 창
             e.setCancelled(true);

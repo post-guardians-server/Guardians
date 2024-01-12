@@ -3,6 +3,7 @@ package me.rukon0621.guardians.skillsystem.skilltree.windows;
 import me.rukon0621.guardians.GUI.MenuWindow;
 import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.helper.ItemClass;
+import me.rukon0621.guardians.story.StoryManager;
 import me.rukon0621.gui.buttons.Button;
 import me.rukon0621.gui.buttons.Icon;
 import me.rukon0621.gui.buttons.NullIcon;
@@ -153,6 +154,10 @@ public class PreSkillWindow extends Window {
             @Override
             public void execute(Player player, ClickType clickType) {
                 player.playSound(player, Sound.UI_BUTTON_CLICK, 1 ,1);
+                if(!StoryManager.isRead(player, "제작스킬트리설명")) {
+                    StoryManager.readStory(player, "제작스킬트리설명");
+                    return;
+                }
                 new SkillTreeWindow(player, 7);
             }
 

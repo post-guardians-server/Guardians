@@ -14,7 +14,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\user\Desktop</outputDirectory>
+                    <outputDirectory>C:\pgzPlugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -167,6 +167,13 @@
             <systemPath>C:/pgzPlugins/RukonSampling-1.0.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>RukonGuild</groupId>
+            <artifactId>RukonGuild</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>C:/pgzPlugins/RukonGuild-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>OpenAudioMC</groupId>
             <artifactId>OpenAudioMC</artifactId>
             <scope>system</scope>
@@ -202,12 +209,6 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.UlrichBR</groupId>
-            <artifactId>UClansV7-API</artifactId>
-            <version>7.0.0-beta.24</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <properties>
