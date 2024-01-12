@@ -47,12 +47,6 @@ public class ItemDisassembleWindow extends SingleEquipmentSelectWindow {
                     return;
                 }
                 ItemData itemData = new ItemData(inv.getSlot(EQUIPMENT_SLOT));
-                PlayerData pdc = new PlayerData(player);
-
-                if(pdc.getMoney() < getDinar(itemData.getLevel())) {
-                    Msg.warn(player, "디나르가 부족해 분해를 진행할 수 없습니다.");
-                    return;
-                }
 
                 int DIVISION = EXP_DIVISION * (1 + (itemData.getLevel() / DIVISION_LEVEL_STAGE));
                 int exp = itemData.getDisassembleExp(MAX_DISASSEMBLE_PROPORTION);
@@ -87,7 +81,6 @@ public class ItemDisassembleWindow extends SingleEquipmentSelectWindow {
                     items.add(LevelData.getEquipmentExpBook(remain));
                 }
                 MailBoxManager.giveAllOrMailAll(player, items);
-                pdc.setMoney(pdc.getMoney() - getDinar(itemData.getLevel()));
                 if(itemData.isDisassemble()) {
                     Msg.send(player, "장비를 분해했습니다. (장비의 영혼은 추출되지 않았습니다.)", pfix);
                 }
@@ -122,7 +115,6 @@ public class ItemDisassembleWindow extends SingleEquipmentSelectWindow {
                     }
                     icon.addLore(" ");
                     icon.addLore(String.format("&b\uE011\uE00C\uE00C분해시 돌려받는 경험치: %d ~ %d", id.getDisassembleExp(MIN_DISASSEMBLE_PROPORTION), id.getDisassembleExp(MAX_DISASSEMBLE_PROPORTION)));
-                    icon.addLore("&b\uE015\uE00C\uE00C요구 디나르: " + getDinar(id.getLevel()));
                     if(id.isDisassemble()) {
                         icon.addLore(" ");
                         icon.addLore("&c\uE014\uE00C\uE00C이 장비는 분해시 경험치만 등장합니다.");

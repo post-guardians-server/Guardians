@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,6 @@ public class ItemLevelDownWindow implements Listener {
     private enum Result {
         NO_ITEMS,
         NEED_SAME_ITEM,
-        NO_COST,
         POSSIBLE,
         ALL_SAME_LEVEL
     }
@@ -87,9 +87,16 @@ public class ItemLevelDownWindow implements Listener {
         if(size<2) result = Result.NO_ITEMS;
         else if (cost==0) result = Result.ALL_SAME_LEVEL;
         else if (name.equals("!")) result = Result.NEED_SAME_ITEM;
-        else if(pdc.getMoney() < cost) result = Result.NO_COST;
         else result = Result.POSSIBLE;
 
+        ItemClass item = getIcon();
+        inv.setItem(12, item.getItem());
+        inv.setItem(13, item.getItem());
+        inv.setItem(14, item.getItem());
+    }
+
+    @NotNull
+    private ItemClass getIcon() {
         ItemClass item = new ItemClass(new ItemStack(Material.SCUTE), "&6레벨 다운 진행하기");
         item.setCustomModelData(7);
 
@@ -105,11 +112,6 @@ public class ItemLevelDownWindow implements Listener {
         else if (result==Result.ALL_SAME_LEVEL) {
             item.addLore("&6모든 아이템의 레벨이 동일합니다.");
         }
-        else if (result==Result.NO_COST) {
-            item.addLore("&c레벨 다운을 진행할 비용이 부족합니다.");
-            item.addLore(" ");
-            item.addLore(String.format("&a\uE015\uE00C\uE00C필요 비용: %d 디나르", cost));
-        }
         else if (result==Result.NEED_SAME_ITEM) {
             item.addLore("&c같은 종류의 아이템만 레벨을 다운 할 수 있습니다.");
         }
@@ -117,11 +119,8 @@ public class ItemLevelDownWindow implements Listener {
             item.addLore("&f클릭하여 레벨 다운을 진행합니다.");
             item.addLore(" ");
             item.addLore(String.format("&e\uE011\uE00C\uE00C레벨 다운 결과: %d 레벨", targetLevel));
-            item.addLore(String.format("&a\uE015\uE00C\uE00C필요 비용: %d 디나르", cost));
         }
-        inv.setItem(12, item.getItem());
-        inv.setItem(13, item.getItem());
-        inv.setItem(14, item.getItem());
+        return item;
     }
 
     @EventHandler
@@ -182,9 +181,6 @@ public class ItemLevelDownWindow implements Listener {
         //레벨 다운 진행
         if(e.getRawSlot()==12||e.getRawSlot()==13||e.getRawSlot()==14) {
             if(result.equals(Result.POSSIBLE)) {
-                PlayerData pdc = new PlayerData(player);
-                pdc.setMoney(pdc.getMoney() - cost);
-
                 for(int slot : slots) {
                     if(inv.getItem(slot)==null) continue;
                     ItemData item = new ItemData(inv.getItem(slot));

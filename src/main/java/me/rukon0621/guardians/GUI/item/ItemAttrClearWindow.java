@@ -24,10 +24,11 @@ public class ItemAttrClearWindow extends ItemSelectableWindow {
         Button button = new Button() {
             @Override
             public void execute(Player player, ClickType clickType) {
-                if (ItemAttrClearWindow.this.getItems().size()==0) {
+                if (ItemAttrClearWindow.this.getItems().isEmpty()) {
                     Msg.warn(player, "아이템을 넣어주세요.");
                     return;
                 }
+                /*
                 int price = calculateCost();
                 PlayerData pdc = new PlayerData(player);
                 if(pdc.getMoney() < price) {
@@ -35,6 +36,7 @@ public class ItemAttrClearWindow extends ItemSelectableWindow {
                     return;
                 }
                 pdc.setMoney(pdc.getMoney() - price);
+                 */
 
                 List<ItemStack> items = new ArrayList<>();
                 for(int i : itemSlots) {
@@ -57,11 +59,8 @@ public class ItemAttrClearWindow extends ItemSelectableWindow {
                 ItemClass item = new ItemClass(new ItemStack(Material.SCUTE), "&e[ &6속성 제거 진행하기 &e]");
                 item.setCustomModelData(7);
 
-                if (ItemAttrClearWindow.this.getItems().size()==0) {
+                if (ItemAttrClearWindow.this.getItems().isEmpty()) {
                     item.addLore("&f아이템을 넣어주세요.");
-                }
-                else {
-                    item.addLore("&f비용: " + calculateCost() + "디나르");
                 }
                 return item.getItem();
             }
