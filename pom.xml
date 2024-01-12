@@ -178,7 +178,7 @@
             <artifactId>OpenAudioMC</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>C:/pgzPlugins/openaudiomc-6.8.8.jar</systemPath>
+            <systemPath>C:/pgzPlugins/openaudiomc-6.8.3.47f05789e124237d7083.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
