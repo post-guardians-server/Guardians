@@ -37,7 +37,7 @@ public class test extends AbstractCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(!(sender instanceof Player player)) return false;
-        DataBase db = new DataBase("guardians");
+        DataBase db = new DataBase();
         ResultSet set = db.executeQuery(String.format("SELECT * FROM chestData", player.getUniqueId()));
         try {
             while(set.next()) {

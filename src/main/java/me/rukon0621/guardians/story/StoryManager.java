@@ -1081,7 +1081,7 @@ public class StoryManager {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        new SuccessionGUI(player, 15, 3);
+                        new SuccessionGUI(player, 10, 1, 2);
                     }
                 }.runTaskLater(plugin, 1);
             }

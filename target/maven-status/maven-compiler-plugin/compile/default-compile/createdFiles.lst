@@ -71,6 +71,7 @@ me\rukon0621\guardians\commands\EntireBroadcastCommand.class
 me\rukon0621\guardians\data\PlayerData$3.class
 me\rukon0621\guardians\helper\FileUtil.class
 me\rukon0621\guardians\commands\GetLocCommand.class
+me\rukon0621\guardians\GUI\item\SuccessionGUI$FailStatus$3.class
 me\rukon0621\guardians\afk\AfkConfirmWindow$2.class
 me\rukon0621\guardians\listeners\DamagingListener$3.class
 me\rukon0621\guardians\addspells\effect\RandomSoundEffect$SoundData.class
@@ -95,6 +96,7 @@ me\rukon0621\guardians\dropItem\window\DropShowWindow$1$1$1.class
 me\rukon0621\guardians\skillsystem\SkillManager$3.class
 me\rukon0621\guardians\data\PlayerData$4.class
 me\rukon0621\guardians\addspells\TargetedMultiSpell.class
+me\rukon0621\guardians\listeners\SystemEventsListener$2$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow.class
 me\rukon0621\guardians\storage\StorageManager$4$2.class
 me\rukon0621\guardians\GUI\item\ItemDisassembleWindow.class
@@ -313,6 +315,7 @@ me\rukon0621\guardians\region\RegionManager$2$2.class
 me\rukon0621\guardians\equipment\EquipmentManager$1.class
 me\rukon0621\guardians\party\PartyJoinCommand.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1.class
+me\rukon0621\guardians\listeners\SystemEventsListener$7.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$QuestType.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$1.class
 me\rukon0621\guardians\GUI\item\ItemLevelUpWindow.class

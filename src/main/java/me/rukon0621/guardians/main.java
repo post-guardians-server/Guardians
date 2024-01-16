@@ -132,9 +132,12 @@ public class main extends JavaPlugin {
         notSolidBlock.add(Material.GRASS);
         notSolidBlock.add(Material.TALL_GRASS);
 
-        DBStatic.getConnection("guardians");
-
-        if(getServer().getPort() == 56220) channel = "dev";
+        if(getServer().getPort() == 56250) {
+            channel = "test";
+            DBStatic.getConnection("testGuardians");
+        }
+        else DBStatic.getConnection("guardians");
+        if (getServer().getPort() == 56220) channel = "dev";
         else if(getServer().getPort() == 56221) channel = "dev2";
         else channel = String.valueOf(getServer().getPort() - 56210);
         //Managers
@@ -269,9 +272,14 @@ public class main extends JavaPlugin {
         DBStatic.setUrl(config.getConfig().getString("dbUrl", "localhost:3306/"));
          */
 
-        if(isDevServer()) PLUGIN_FOLDER_NAME = "devGuardians";
-        else PLUGIN_FOLDER_NAME = "guardians";
         DB_NAME = "guardians";
+        if(getServer().getPort() == 56250) {
+            PLUGIN_FOLDER_NAME = "testGuardians";
+            DB_NAME = "testGuardians";
+
+        }
+        else if(isDevServer()) PLUGIN_FOLDER_NAME = "devGuardians";
+        else PLUGIN_FOLDER_NAME = "guardians";
     }
 
     public AccountManager getAccountManager() {

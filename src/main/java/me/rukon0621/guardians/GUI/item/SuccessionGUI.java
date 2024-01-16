@@ -21,12 +21,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuccessionGUI extends ItemSelectableWindow {
-    private static final int EXP_DIVISION = 150;
-    private static final int DIVISION_LEVEL_STAGE = 50;
+import static java.awt.SystemColor.window;
 
-    public static final double MIN_DISASSEMBLE_PROPORTION = 0.35;
-    public static final double MAX_DISASSEMBLE_PROPORTION = 0.65;
+public class SuccessionGUI extends ItemSelectableWindow {
+    private static final int ALLOWED_LEVEL_DIF = 6;
 
     private enum FailStatus {
         NOT_FILLED("&c아이템이 모두 채워지지 않았습니다.") {
@@ -48,6 +46,14 @@ public class SuccessionGUI extends ItemSelectableWindow {
                 return !typeB.isMaterialOf(category.getName());
             }
         },
+        LEVEL_OVER("&c요구 레벨이 6 이상 차이나면 계승할 수 없습니다.") {
+            @Override
+            boolean isUnpassed(SuccessionGUI window) {
+                ItemData dataA = new ItemData(window.itemA);
+                ItemData dataB = new ItemData(window.itemB);
+                return Math.abs(dataA.getRequiredLevel() - dataB.getRequiredLevel()) > ALLOWED_LEVEL_DIF;
+            }
+        },
         ;
 
         private final String msg;
@@ -65,7 +71,7 @@ public class SuccessionGUI extends ItemSelectableWindow {
     private ItemData dataA = null;
     private ItemData dataB = null;
     private FailStatus failStatus = FailStatus.NOT_FILLED;
-    public SuccessionGUI(Player player, int decreasingQuality, int decreasingEnhance) {
+    public SuccessionGUI(Player player, int decreasingQuality, int decreasingEnhance, int decreasingLevel) {
         super(player, "&f\uF000\uF03D", 3);
 
         map.put(11, new Button() {
@@ -108,34 +114,25 @@ public class SuccessionGUI extends ItemSelectableWindow {
                     Msg.warn(player, failStatus.msg);
                     return;
                 }
-
+                if(!clickType.equals(ClickType.SHIFT_LEFT)) {
+                    Msg.warn(player, "계승을 진행하려면 쉬프트 좌클릭 하십시오.");
+                    return;
+                }
                 if(dataA.isImportantItem() || dataA.isQuestItem()) {
                     Msg.warn(player, "중요한 물건이나 퀘스트 아이템은 계승의 재료가 될 수 없습니다.");
                     return;
                 }
-
                 //bookItem.setAmount(bookItem.getAmount() - 1);
-                dataB.setQuality(Math.max(dataA.getQuality() - decreasingQuality, 0));
+                dataB.setQuality(Math.max(dataA.getQuality() * (100 - decreasingQuality) / 100, 40));
                 dataB.setEnhanceLevel(EnhanceLevel.values()[Math.max(0, dataA.getEnhanceLevel().ordinal() - decreasingEnhance)]);
+                dataB.setLevel(dataA.getLevel() - decreasingLevel);
+                dataB.setExp((long) (dataA.getExpPercentage() / 100 * ItemData.getMaxExpAtLevel(dataB.getLevel())));
+                dataB.setCraftLevel(Math.max(dataA.getCraftLevel(), dataB.getCraftLevel()));
                 dataA.setQuality(0);
                 dataA.setEnhanceLevel(EnhanceLevel.ZERO);
                 itemA = null;
                 itemB = null;
-
                 List<ItemStack> list = new ArrayList<>();
-                int DIVISION = EXP_DIVISION * (1 + (dataA.getLevel() / DIVISION_LEVEL_STAGE));
-                int exp = dataA.getDisassembleExp(MAX_DISASSEMBLE_PROPORTION);
-                int amount = exp / DIVISION;
-                int remain = exp % DIVISION;
-                ItemStack book = LevelData.getEquipmentExpBook(DIVISION);
-                for(int i = 0; i < amount ; i++) {
-                    list.add(book);
-                }
-                if(remain!=0) {
-                    list.add(LevelData.getEquipmentExpBook(remain));
-                }
-                MailBoxManager.giveAllOrMailAll(player, list);
-
                 list.add(dataB.getItemStack());
                 MailBoxManager.giveAllOrMailAll(player, list);
                 player.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1.5f);
@@ -149,19 +146,16 @@ public class SuccessionGUI extends ItemSelectableWindow {
                 it.setCustomModelData(7);
                 it.addLore("&e\uE011\uE00C\uE00C계승이란?");
                 it.addLore("&f계승을 진행하면 &4원래의 무기는 소멸&f되고");
-                it.addLore("&f계승을 받은 장비는 품질이 " + decreasingQuality + "% 감소되며 강화 수치가 " + decreasingEnhance + " 감소되어 스펙이 귀속됩니다.");
-                it.addLore("&f또한 &b일부 경험치&f를 되돌려 받게 됩니다.");
+                it.addLore("&f계승을 받은 장비는 품질이 현재의 90%가 되며 강화 수치가 " + decreasingEnhance + " 감소되어 스펙이 귀속됩니다.");
+                it.addLore("&f단 품질은 40이하로 내려가지 않으며 장비 레벨은 원래 장비에서 " + decreasingLevel + "만큼 감소합니다.");
+                it.addLore("&7(기존 아이템의 품질이 40보다 낮았다면 품질이 40으로 복구됩니다.)");
+                it.addLore("&f두 장비의 요구레벨이 " + ALLOWED_LEVEL_DIF + " 초과로 차이나면 한 번에 계승할 수 없습니다.");
                 it.addLore(" ");
-                if(failStatus != null) {
-                    it.addLore("&c" + failStatus.msg);
-                }
-                else {
-                    it.addLore("&f\uE011\uE00C\uE00C클릭하여 계승을 진행합니다.");
-                }
+                if(failStatus != null) it.addLore("&c" + failStatus.msg);
+                else it.addLore("&f\uE011\uE00C\uE00C&e쉬프트 좌클릭&f하여 계승을 진행합니다.");
                 return it.getItem();
             }
         });
-
         reloadGUI();
         open();
     }

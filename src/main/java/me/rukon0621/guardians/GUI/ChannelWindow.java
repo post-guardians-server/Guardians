@@ -40,7 +40,6 @@ public class ChannelWindow extends Window implements PluginMessageListener {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("getServers");
         out.writeUTF(player.getName());
-
         player.sendPluginMessage(main.getPlugin(), mainChannel, out.toByteArray());
 
     }
@@ -70,7 +69,7 @@ public class ChannelWindow extends Window implements PluginMessageListener {
         while (true) {
             String data = in.readUTF();
             if(data.equalsIgnoreCase("end")) break;
-            if(!data.contains("ch")&&!this.player.isOp()) continue;
+            if(!(data.contains("ch") || data.contains("testServer"))&&!this.player.isOp()) continue;
             map.put(slot, new ServerButton(data));
             slot++;
         }
@@ -81,10 +80,10 @@ public class ChannelWindow extends Window implements PluginMessageListener {
             return;
         }
         CountDownLatch latch = new CountDownLatch(dataCategories);
-        LogInOutListener.saveAllDataToDB(player, latch);
         new BukkitRunnable() {
             @Override
             public void run() {
+                LogInOutListener.saveAllDataToDB(player, latch);
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
@@ -124,6 +123,14 @@ public class ChannelWindow extends Window implements PluginMessageListener {
                 Msg.warn(player, "이 채널은 이미 꽉 찼습니다. 다른 채널을 이용해주세요.");
                 return;
             }
+
+            if(serverName.contains("test")) {
+                if(new PlayerData(player).getLevel() < 28) {
+                    Msg.warn(player, "28레벨 이상만 테스트 서버를 진행할 수 있습니다.");
+                    return;
+                }
+            }
+
             disable();
             player.closeInventory();
 

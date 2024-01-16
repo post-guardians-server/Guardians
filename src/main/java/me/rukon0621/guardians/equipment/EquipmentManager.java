@@ -343,6 +343,9 @@ public class EquipmentManager implements Listener {
         Stat.IGNORE_ARMOR.set(player, Stat.IGNORE_ARMOR.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.IGNORE_ARMOR_POWER.getTotal(player))), 3.0D) / 200.0D);
         Stat.COOL_DEC.set(player, Stat.COOL_DEC.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.COOL_DEC_POWER.getTotal(player))), 3.0D) / 300.0D);
         Stat.EVADE.set(player, Stat.EVADE.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.EVADE_POWER.getTotal(player))), 3.0D) / 300.0D);
+        Stat.HEALTH.setBase(player, Stat.HEALTH.getBase(player) + LevelData.getLevelUpHealth(pdc.getLevel(), true));
+
+
         player.setMaxHealth(Math.max(10, Stat.HEALTH.getTotal(player)));
         player.setHealth(player.getMaxHealth() * previousHealth);
         player.setWalkSpeed((float) (Math.min(Stat.MOVE_SPEED.getTotal(player), 200)/500.0));
@@ -695,7 +698,7 @@ public class EquipmentManager implements Listener {
     //Equipment getter and setter
     //동시에 itemReload를 진행
     public static HashMap<String, ItemStack> getEquipmentData(Player player) {
-        return equipmentData.get(player);
+        return equipmentData.getOrDefault(player, new HashMap<>());
     }
     public static ItemStack getItem(Player player, String koreanKeyName) {
         PersistentDataContainer pdc = player.getPersistentDataContainer();

@@ -93,7 +93,7 @@ public class ItemData {
      */
     public static long getMaxExpAtLevel(int level) {
         if(level>maxLevel) return levelData.get(maxLevel);
-        return levelData.get(level);
+        return levelData.getOrDefault(level, levelData.get(1));
     }
 
 
@@ -463,9 +463,7 @@ public class ItemData {
                 if(isEquipment()&&!getType().equals("사증")) {
                     sorted.add("quality");
                 }
-                if(list.contains("season")) {
-                    sorted.add("season");
-                }
+                //if(list.contains("season")) sorted.add("season");
                 if(list.contains("requiredWeaponType")) {
                     sorted.add("requiredWeaponType");
                 }

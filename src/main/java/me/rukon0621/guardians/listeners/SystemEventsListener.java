@@ -58,6 +58,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 import static me.rukon0621.guardians.commands.MoneyCommand.moneyName;
 import static me.rukon0621.guardians.data.LevelData.EXP_BOOK_TYPE_NAME;
@@ -106,9 +107,36 @@ public class SystemEventsListener implements Listener {
                 rideManager.despawnRiding(player);
                 return;
             }
-            LogInOutListener.saveAllDataAndLockSaving(player);
-            new MenuWindow(player);
-            player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, Rand.randFloat(1, 1.5));
+
+
+            if(LogInOutListener.getLogoutEventBlocked().contains(player)) {
+                new MenuWindow(player);
+                player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, Rand.randFloat(1, 1.5));
+            }
+            else {
+                LogInOutListener.addLogoutBlock(player);
+                CountDownLatch latch = new CountDownLatch(LogInOutListener.dataCategories);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        LogInOutListener.saveAllDataToDB(player, latch);
+                        try {
+                            latch.await();
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                            throw new RuntimeException(ex);
+                        }
+                        LogInOutListener.getLogoutEventBlocked().remove(player);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                new MenuWindow(player);
+                                player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, Rand.randFloat(1, 1.5));
+                            }
+                        }.runTask(main.getPlugin());
+                    }
+                }.runTaskAsynchronously(main.getPlugin());
+            }
             return;
         }
         try {
@@ -242,10 +270,12 @@ public class SystemEventsListener implements Listener {
         if(item.getType().equals(Material.AIR)) return;
         if(!item.hasItemMeta()) return;
         ItemData itemData = new ItemData(item);
+        /*
         if(itemData.getSeason()!=RukonPayment.inst().getPassManager().getSeason()) {
             Msg.warn(e.getPlayer(), "이 아이템은 유효 시즌이 지난 아이템입니다.");
             return;
         }
+         */
         if(itemData.getType()==null||itemData.getType().equals("null")||itemData.getName()==null) return;
         if(TypeData.getType(itemData.getType())==null) return;
         plugin.getServer().getPluginManager().callEvent(new ItemClickEvent(e.getPlayer(), itemData));

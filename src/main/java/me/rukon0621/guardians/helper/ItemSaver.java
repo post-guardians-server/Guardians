@@ -162,6 +162,7 @@ public class ItemSaver implements CommandExecutor {
             if(original.isEquipment()&&!original.getType().equals("사증")) {
                 reloaded.setQuality(original.getQuality());
             }
+            reloaded.setSeason(-1);
 
             for(String attrName : original.getAttrs()) {
                 reloaded.setAttr(attrName, original.getAttrLevel(attrName));

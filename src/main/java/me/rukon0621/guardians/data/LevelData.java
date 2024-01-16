@@ -3,6 +3,7 @@ package me.rukon0621.guardians.data;
 import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.bar.BarManager;
 import me.rukon0621.guardians.dialogquest.DialogQuestManager;
+import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.main;
@@ -27,6 +28,7 @@ public class LevelData {
 
     public static final int maxLevel = 50;
     public static final int runeMaxLevel = 20;
+    private static final double[] healthLevelStack = new double[maxLevel + 1];
 
     //레벨 데이터 재생성
     public static void resetLevelData() {
@@ -52,6 +54,11 @@ public class LevelData {
             else if(i<200) exp = Math.round(exp * 1.02f);
             else exp = (Math.round(exp * 1.015f));
         }
+
+        healthLevelStack[0] = 0;
+        for(int i = 1; i <= maxLevel; i++) {
+            healthLevelStack[i] = healthLevelStack[i - 1] + (i * i / 10D);
+        }
     }
 
     //경험치 추가
@@ -72,10 +79,16 @@ public class LevelData {
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 0.8f);
             Msg.send(player, " ");
             Msg.send(player, "축하합니다! " + pdc.getLevel() + "레벨에 도달하셨습니다!", pfix);
+            Msg.send(player, "&e레벨업을 하여 최대 체력이 " + getLevelUpHealth(pdc.getLevel(), false) + "만큼 증가했습니다.");
             Msg.send(player, "&e레벨업을 하여 3만큼의 스킬 포인트를 획득하였습니다.");
             Msg.send(player, "&6레벨업을 하여 1만큼의 제작 스킬 포인트를 획득하였습니다.");
             Msg.send(player, " ");
+            EquipmentManager.reloadEquipment(player, false);
         }
+    }
+
+    public static int getLevelUpHealth(int newLevel, boolean isStacked) {
+        return (int) Math.round(healthLevelStack[newLevel] - (isStacked ? 0 : healthLevelStack[newLevel - 1]));
     }
 
     //레벨 업 (변수만 바꾸고 스텟포인트 추가등의 시스템을 다룸)

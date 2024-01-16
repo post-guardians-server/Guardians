@@ -39,7 +39,11 @@ public class WorldPeriodicEvent {
             @Override
             public void run() {
                 for(Player player : plugin.getServer().getOnlinePlayers()) {
-                    BarManager.reloadBar(player);
+                    try {
+                        BarManager.reloadBar(player);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 turn++;
                 if(turn % 10 == 0) {
