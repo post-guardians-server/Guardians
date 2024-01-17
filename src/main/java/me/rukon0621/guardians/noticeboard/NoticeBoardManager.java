@@ -199,7 +199,7 @@ public class NoticeBoardManager implements Listener {
         }
         else if(noticeBoard.getName().equals("루테티아")) {
             if(DialogQuestManager.completeCustomObject(player, "게시판에 전단지 붙이기")) {
-                Msg.send(player, "&a게시판에 전단지를 붙였다.", pfix);
+                Msg.send(player, "&f게시판에 전단지를 붙였다. 다시 &b좀도둑&f에게 돌아가자.", pfix);
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1.5f);
             }
         }

@@ -125,8 +125,8 @@ public class ChannelWindow extends Window implements PluginMessageListener {
             }
 
             if(serverName.contains("test")) {
-                if(new PlayerData(player).getLevel() < 28) {
-                    Msg.warn(player, "28레벨 이상만 테스트 서버를 진행할 수 있습니다.");
+                if(new PlayerData(player).getLevel() < 24) {
+                    Msg.warn(player, "24레벨 이상만 테스트 서버를 진행할 수 있습니다.");
                     return;
                 }
             }

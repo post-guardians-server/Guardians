@@ -345,7 +345,6 @@ public class EquipmentManager implements Listener {
         Stat.EVADE.set(player, Stat.EVADE.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.EVADE_POWER.getTotal(player))), 3.0D) / 300.0D);
         Stat.HEALTH.setBase(player, Stat.HEALTH.getBase(player) + LevelData.getLevelUpHealth(pdc.getLevel(), true));
 
-
         player.setMaxHealth(Math.max(10, Stat.HEALTH.getTotal(player)));
         player.setHealth(player.getMaxHealth() * previousHealth);
         player.setWalkSpeed((float) (Math.min(Stat.MOVE_SPEED.getTotal(player), 200)/500.0));
