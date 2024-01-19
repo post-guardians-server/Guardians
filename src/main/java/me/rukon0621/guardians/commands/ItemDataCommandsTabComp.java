@@ -38,6 +38,7 @@ public class ItemDataCommandsTabComp implements TabCompleter {
         argument1.add("스텟설정");
         argument1.add("요구레벨설정");
         argument1.add("지속시간");
+        argument1.add("사용시간");
         argument1.add("레벨");
         argument1.add("강화");
         argument1.add("등급");

@@ -124,6 +124,7 @@ me\rukon0621\guardians\GUI\item\enhance\EnhanceGUI.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$5.class
 me\rukon0621\guardians\commands\DailyEvent.class
 me\rukon0621\guardians\account\AccountManager$2.class
+me\rukon0621\guardians\spelluse\SpellUseManager.class
 me\rukon0621\guardians\equipment\EquipmentManager.class
 me\rukon0621\guardians\listeners\SystemEventsListener.class
 me\rukon0621\guardians\party\PartyRecruitCommand.class
@@ -134,8 +135,10 @@ me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$SkillTreeButton.class
 me\rukon0621\guardians\story\StoryManager$7.class
 me\rukon0621\guardians\story\Scene$Repeater.class
+me\rukon0621\guardians\spelluse\SpellUseManager$1.class
 me\rukon0621\guardians\listeners\TeseionListener$1$1.class
 me\rukon0621\guardians\party\PartyCreateWindow.class
+me\rukon0621\guardians\spelluse\SpellUseReloadCommand.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow$4.class
 me\rukon0621\guardians\GUI\item\ItemLevelUpWindow$1$1$1.class
 me\rukon0621\guardians\GUI\item\QualityRandomWindow.class
@@ -327,6 +330,7 @@ me\rukon0621\guardians\areawarp\AreaCommandTabComp.class
 me\rukon0621\guardians\party\PartyAcceptCommand.class
 me\rukon0621\guardians\skillsystem\SkillManager$2$1.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$2.class
+me\rukon0621\guardians\commands\MuteCommand$1.class
 me\rukon0621\guardians\listeners\LogInOutListener$7.class
 me\rukon0621\guardians\story\Cinematic$1.class
 me\rukon0621\guardians\commands\AfkCommand.class

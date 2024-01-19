@@ -19,6 +19,10 @@ permissions:
   cosmeticscore.user.cosmetics.seeingui.*:
     default: true
 commands:
+  reloadSpellUse:
+    permission: guardians.oper
+    aliases:
+      - 스펠사용리로드
   chat:
     usage: /test
     permission: guardians.user

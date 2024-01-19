@@ -327,6 +327,10 @@ public class DamagingListener implements Listener {
 
         e.setDamage(e.getDamage()-armor);
         if(victim!=null) {
+            if(LogInOutListener.getLoadingPlayers().contains(victim.getName())) {
+                e.setCancelled(true);
+                return;
+            }
             double minDam = victim.getMaxHealth() / 50;
             if(e.getDamage() < minDam) {
                 e.setDamage(minDam);

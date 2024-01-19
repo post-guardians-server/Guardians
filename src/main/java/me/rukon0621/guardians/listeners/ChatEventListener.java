@@ -198,7 +198,7 @@ public class ChatEventListener implements Listener, PluginMessageListener {
 
         else if (chatChannel==ChatChannel.CHANNEL) {
             if(getRemainMuteSecond(player) > -1) {
-                Msg.warn(player, String.format("채팅 금지 시간이 %s초 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
+                Msg.warn(player, String.format("채팅 금지 시간이 %s 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
                 return;
             }
 
@@ -212,7 +212,7 @@ public class ChatEventListener implements Listener, PluginMessageListener {
 
         else if (chatChannel==ChatChannel.ALL) {
             if(getRemainMuteSecond(player) > -1) {
-                Msg.warn(player, String.format("채팅 금지 시간이 %s초 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
+                Msg.warn(player, String.format("채팅 금지 시간이 %s 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
                 return;
             }
 
@@ -225,7 +225,7 @@ public class ChatEventListener implements Listener, PluginMessageListener {
         }
         else if (chatChannel==ChatChannel.GUILD) {
             if(getRemainMuteSecond(player) > -1) {
-                Msg.warn(player, String.format("채팅 금지 시간이 %s초 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
+                Msg.warn(player, String.format("채팅 금지 시간이 %s 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
                 return;
             }
             PlayerData pdc = new PlayerData(player);
@@ -333,12 +333,10 @@ public class ChatEventListener implements Listener, PluginMessageListener {
     }
 
     private String formatMessage(String playerName, @NotNull String title, String message, ChatChannel chatChannel) {
-        message = message.replaceAll("%", "%%");
         if(title.equals("null")) return Msg.color(String.format("%s &f<%s> %s",chatChannel.channelPrefix, playerName, message));
         return Msg.color(String.format("%s %s &f<%s> %s",chatChannel.channelPrefix, TitleWindow.getPureTitle(title), playerName, message));
     }
     private String formatMessage(String playerName, @NotNull String title, String message, ChatChannel chatChannel, String channelFrom) {
-        message = message.replaceAll("%", "%%");
         if(title.equals("null")) return Msg.color(String.format("%s &f<%s> %s",chatChannel.getChannelPrefix(channelFrom), playerName, message));
         return Msg.color(String.format("%s %s &f<%s> %s",chatChannel.getChannelPrefix(channelFrom), TitleWindow.getPureTitle(title), playerName, message));
     }

@@ -1,17 +1,24 @@
 package me.rukon0621.guardians.commands;
 
+import com.google.common.io.ByteArrayDataOutput;
 import me.rukon0621.callback.LogManager;
+import me.rukon0621.callback.speaker.Speaker;
+import me.rukon0621.callback.speaker.SpeakerListenEvent;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.ArgHelper;
 import me.rukon0621.guardians.helper.DateUtil;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.TabCompleteUtils;
 import me.rukon0621.guardians.listeners.ChatEventListener;
+import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.main;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,11 +28,12 @@ import java.util.List;
 
 import static me.rukon0621.guardians.main.pfix;
 
-public class MuteCommand extends AbstractCommand {
+public class MuteCommand extends AbstractCommand implements Listener {
     public MuteCommand() {
         super("mute", main.getPlugin());
         arguments.add("해제");
         arguments.add("추가");
+        Bukkit.getServer().getPluginManager().registerEvents(this, main.getPlugin());
     }
 
     @Override
@@ -46,22 +54,17 @@ public class MuteCommand extends AbstractCommand {
             usages(player);
             return true;
         }
-        Player target = Bukkit.getPlayer(args[1]);
-        if(target == null) {
-            Msg.warn(player, "타겟의 이름을 적어주세요.");
+        String target = args[1];
+        if(!LogInOutListener.getProxyPlayerNames().contains(target)) {
+            Msg.warn(player, "해당 플레이어는 서버에 존재하지 않습니다.");
             return true;
         }
-        PlayerData pdc = new PlayerData(target);
         if(args[0].equals("해제")) {
-            if(pdc.getMuteMillis() < System.currentTimeMillis()) {
-                Msg.warn(player, target.getName() + "님은 채팅금지를 받지 않은 유저입니다.");
-                return true;
-            }
-            String reason = String.format("%s의 뮤트를 해제함. 사유: ", target.getName());
+            String reason = String.format("%s의 뮤트를 해제함.", target);
             if(args.length > 2) {
-                reason += ArgHelper.sumArg(args, 2);
+                reason += "사유: " + ArgHelper.sumArg(args, 2);
             }
-            pdc.setMuteMillis(0);
+            new Speaker("muteCommand", target, "해제");
             Msg.send(player, "플레이어의 뮤트를 해제했습니다.", pfix);
             LogManager.log(player, "mute", reason);
         }
@@ -82,12 +85,17 @@ public class MuteCommand extends AbstractCommand {
                 return true;
             }
             long millis = (long) (value * 1000L * 3600L);
-            String reason = String.format("%s에게 %s 만큼의 뮤트를 지급함. 사유: ", target.getName(), DateUtil.formatDate(millis / 1000L));
+            String reason = String.format("%s에게 %s 만큼의 뮤트를 지급함. 사유: ", target, DateUtil.formatDate(millis / 1000L));
             if(args.length > 3) {
                 reason += ArgHelper.sumArg(args, 3);
             }
-            pdc.setMuteMillis(System.currentTimeMillis() + millis);
-            Msg.send(player, "플레이어의 채팅을 금지시켰습니다. 현재 " + target.getName() + "님의 채팅 금지 시간은 " + DateUtil.formatDate(ChatEventListener.getRemainMuteSecond(target)) + " 입니다", pfix);
+            new Speaker("muteCommand", target, "추가") {
+                @Override
+                public void construct(ByteArrayDataOutput bo) {
+                    bo.writeLong(millis);
+                }
+            };
+            Msg.send(player, "해당 플레이어의 채팅을 " + DateUtil.formatDate(millis / 1000L) + " 간 금지시켰습니다.", pfix);
             LogManager.log(player, "mute", reason);
         }
         return true;
@@ -98,8 +106,31 @@ public class MuteCommand extends AbstractCommand {
         if(args.length == 1) {
             return TabCompleteUtils.search(arguments, args[0]);
         }if(args.length == 2) {
-            return null;
+            return TabCompleteUtils.search(LogInOutListener.getProxyPlayerNames(), args[1]);
         }
         return new ArrayList<>();
     }
+
+    @EventHandler
+    public void onListenMuteEvent(SpeakerListenEvent e) {
+        if(!e.getMainAction().equals("muteCommand")) return;
+        Player player;
+        if((player = Bukkit.getPlayerExact(e.getIn().readUTF())) == null) return;
+        PlayerData pdc = new PlayerData(player);
+        String arg1 = e.getIn().readUTF();
+        if(arg1.equals("추가")) {
+            long millis = e.getIn().readLong();
+            pdc.setMuteMillis(Math.max(System.currentTimeMillis(), pdc.getMuteMillis()) + millis);
+            Msg.send(player, "관리자에 의해 " + DateUtil.formatDate(millis / 1000L) + " 간 채팅이 금지되었습니다.", pfix);
+            player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.5f);
+        }
+        else if(arg1.equals("해제")) {
+            if(pdc.getMuteMillis() < System.currentTimeMillis()) return;
+            Msg.send(player, "관리자에 의해 뮤트가 해제되었습니다.", pfix);
+            player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.5f);
+            pdc.setMuteMillis(0);
+        }
+
+    }
+
 }

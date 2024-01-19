@@ -284,7 +284,7 @@ public class QuestInProgress implements ConfigurationSerializable {
                 }
             }.runTaskLater(main.getPlugin(), quest.getEndEventDelay());
         }
-        else if(quest.getEndStory() != null) {
+        if(quest.getEndStory() != null) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -312,7 +312,7 @@ public class QuestInProgress implements ConfigurationSerializable {
         //Logging
         String uncoloredName = Msg.uncolor(Msg.color(quest.getName()));
         LogManager.log(player, "questClear", uncoloredName);
-        LogManager.stat(player, "questClear", uncoloredName, 1);
+        //LogManager.stat(player, "questClear", uncoloredName, 1);
         return true;
     }
 

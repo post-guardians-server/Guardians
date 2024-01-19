@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -293,6 +294,9 @@ public class ItemData {
             else if(lore.startsWith("지속 시간: ")) {
                 setDuration(Integer.parseInt(lore.split(": ")[1].replaceAll("분", "").trim()));
             }
+            else if(lore.startsWith("사용 시간: ")) {
+                setUsingTime(Double.parseDouble(lore.split(": ")[1].replaceAll("초", "").trim()));
+            }
             else if(lore.startsWith("품질: ")) {
                 setQuality(Double.parseDouble(removePercent(lore).split(": ")[1].trim()));
             }
@@ -435,47 +439,8 @@ public class ItemData {
             if(section!=0) item.addLore(" ");
             List<String> list = getSection(section);
             if(section==0) {
-                ArrayList<String> sorted = new ArrayList<>();
-                if(list.contains("level")) {
-                    sorted.add("level");
-                }
-                if(list.contains("exp")) {
-                    sorted.add("exp");
-                }
-                if(list.contains("enhanceLevel")) {
-                    sorted.add("enhanceLevel");
-                }
-                if(list.contains("type")) {
-                    sorted.add("type");
-                }
-                if(list.contains("grade")) {
-                    sorted.add("grade");
-                }
-                if(list.contains("processTime")) {
-                    sorted.add("processTime");
-                }
-                if(list.contains("duration")) {
-                    sorted.add("duration");
-                }
-                if(list.contains("value")) {
-                    sorted.add("value");
-                }
-                if(isEquipment()&&!getType().equals("사증")) {
-                    sorted.add("quality");
-                }
-                //if(list.contains("season")) sorted.add("season");
-                if(list.contains("requiredWeaponType")) {
-                    sorted.add("requiredWeaponType");
-                }
-                if(list.contains("craftLevel")) {
-                    sorted.add("craftLevel");
-                }
-                if(list.contains("reqLevel")) {
-                    sorted.add("reqLevel");
-                }
-                list = sorted;
+                list = getSortedSectionOne(list);
             }
-
             for(String key : list) {
                 if(section==0) { //enhanceLevel
                     switch (key) {
@@ -518,6 +483,9 @@ public class ItemData {
                             double q = getQuality();
                             if(q >= 100) item.addLore(String.format("&7품질: #e06666%.2f%%", getQuality()));
                             else item.addLore(String.format("&7품질: &f%.2f%%", getQuality()));
+                            break;
+                        case "usingTime":
+                            item.addLore(String.format("&7사용 시간: &f%.2f초", getUsingTime()));
                             break;
                         case "value":
                             double v = getValue();
@@ -579,6 +547,53 @@ public class ItemData {
         item.addFlag(ItemFlag.HIDE_ATTRIBUTES);
         return item;
     }
+
+    @NotNull
+    private ArrayList<String> getSortedSectionOne(List<String> list) {
+        ArrayList<String> sorted = new ArrayList<>();
+        if(list.contains("level")) {
+            sorted.add("level");
+        }
+        if(list.contains("exp")) {
+            sorted.add("exp");
+        }
+        if(list.contains("enhanceLevel")) {
+            sorted.add("enhanceLevel");
+        }
+        if(list.contains("type")) {
+            sorted.add("type");
+        }
+        if(list.contains("grade")) {
+            sorted.add("grade");
+        }
+        if(list.contains("processTime")) {
+            sorted.add("processTime");
+        }
+        if(list.contains("duration")) {
+            sorted.add("duration");
+        }
+        if(list.contains("usingTime")) {
+            sorted.add("usingTime");
+        }
+        if(list.contains("value")) {
+            sorted.add("value");
+        }
+        if(isEquipment()&&!getType().equals("사증")) {
+            sorted.add("quality");
+        }
+        //if(list.contains("season")) sorted.add("season");
+        if(list.contains("requiredWeaponType")) {
+            sorted.add("requiredWeaponType");
+        }
+        if(list.contains("craftLevel")) {
+            sorted.add("craftLevel");
+        }
+        if(list.contains("reqLevel")) {
+            sorted.add("reqLevel");
+        }
+        return sorted;
+    }
+
     public ItemStack getItemStack() {
         return getItem().getItem();
     }
@@ -939,6 +954,16 @@ public class ItemData {
     }
     public void setDuration(int value) {
         String keyName = "duration";
+        int section = 0;
+        if(!getSection(section).contains(keyName)) getSection(section).add(keyName);
+        dataMap.put(keyName, value);
+    }
+
+    public double getUsingTime() {
+        return DataClass.toInt(dataMap.getOrDefault("usingTime", 0));
+    }
+    public void setUsingTime(double value) {
+        String keyName = "usingTime";
         int section = 0;
         if(!getSection(section).contains(keyName)) getSection(section).add(keyName);
         dataMap.put(keyName, value);

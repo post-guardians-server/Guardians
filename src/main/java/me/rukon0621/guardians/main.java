@@ -49,6 +49,8 @@ import me.rukon0621.guardians.skillsystem.SkillManager;
 import me.rukon0621.guardians.skillsystem.skilltree.SkillTreeCommand;
 import me.rukon0621.guardians.skillsystem.skilltree.SkillTreeManager;
 import me.rukon0621.guardians.spawnerUtils.SpawnUtilCommand;
+import me.rukon0621.guardians.spelluse.SpellUseManager;
+import me.rukon0621.guardians.spelluse.SpellUseReloadCommand;
 import me.rukon0621.guardians.storage.StorageManager;
 import me.rukon0621.guardians.story.StoryCommands;
 import me.rukon0621.guardians.story.StoryManager;
@@ -77,6 +79,7 @@ public class main extends JavaPlugin {
     private BluePrintManager bluePrintManager;
     private SkillTreeManager skillTreeManager;
     private VariableManager variableManager;
+    private SpellUseManager spellUseManager;
     private AfkManager afkManager;
     public static String DB_NAME;
     public static String PLUGIN_FOLDER_NAME;
@@ -159,6 +162,7 @@ public class main extends JavaPlugin {
         new NoticeBoardManager();
         new AreaManger();
         new MythicListener();
+        spellUseManager = new SpellUseManager();
         bluePrintManager = new BluePrintManager();
         StoryManager.reloadStory(new CountDownLatch(1));
         DropManager.reloadAllDropData();
@@ -170,6 +174,7 @@ public class main extends JavaPlugin {
 
         //Commands
         new test();
+        new SpellUseReloadCommand();
         new DialogCommands();
         new DQDataCommands();
         new QuestCommands();
@@ -304,5 +309,9 @@ public class main extends JavaPlugin {
 
     public AfkManager getAfkManager() {
         return afkManager;
+    }
+
+    public SpellUseManager getSpellUseManager() {
+        return spellUseManager;
     }
 }

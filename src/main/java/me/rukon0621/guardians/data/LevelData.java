@@ -79,7 +79,7 @@ public class LevelData {
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 0.8f);
             Msg.send(player, " ");
             Msg.send(player, "축하합니다! " + pdc.getLevel() + "레벨에 도달하셨습니다!", pfix);
-            Msg.send(player, "&e레벨업을 하여 최대 체력이 " + getLevelUpHealth(pdc.getLevel(), false) + "만큼 증가했습니다.");
+            //Msg.send(player, "&e레벨업을 하여 최대 체력이 " + getLevelUpHealth(pdc.getLevel(), false) + "만큼 증가했습니다.");
             Msg.send(player, "&e레벨업을 하여 3만큼의 스킬 포인트를 획득하였습니다.");
             Msg.send(player, "&6레벨업을 하여 1만큼의 제작 스킬 포인트를 획득하였습니다.");
             Msg.send(player, " ");

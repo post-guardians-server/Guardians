@@ -53,7 +53,7 @@ public class WhisperCommand extends AbstractCommand {
         }
 
         if(getRemainMuteSecond(player) > -1) {
-            Msg.warn(player, String.format("채팅 금지 시간이 %s초 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
+            Msg.warn(player, String.format("채팅 금지 시간이 %s 남아있습니다. 이 동안은 전체, 채널 채팅을 이용하실 수 없습니다.", DateUtil.formatDate(getRemainMuteSecond(player))));
             return true;
         }
         ByteArrayDataOutput out = ByteStreams.newDataOutput();

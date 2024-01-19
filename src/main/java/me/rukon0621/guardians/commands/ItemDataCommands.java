@@ -285,6 +285,31 @@ public class ItemDataCommands implements CommandExecutor {
             player.getInventory().setItemInMainHand(idata.getItemStack());
             Msg.send(player, "성공적으로 설정하였습니다.", pfix);
         }
+        else if(args[0].equals("사용시간")) {
+            if(args.length<2) {
+                usage(player, args[0], true);
+                return true;
+            }
+            if(player.getInventory().getItemInMainHand().getType()== Material.AIR) {
+                Msg.send(player, "&c손에 아이템을 들어주세요.", pfix);
+                return true;
+            }
+            double durationSec;
+            try {
+                durationSec = Double.parseDouble(args[1]);
+            } catch (NumberFormatException e) {
+                Msg.send(player, "&c아이템의 시간을 제대로 입력해주세요.", pfix);
+                return true;
+            }
+            if(durationSec<0) {
+                Msg.send(player, "&c시간을 가능한 값으로 설정해주세요.", pfix);
+                return true;
+            }
+            ItemData idata = new ItemData(player.getInventory().getItemInMainHand());
+            idata.setUsingTime(durationSec);
+            player.getInventory().setItemInMainHand(idata.getItemStack());
+            Msg.send(player, "성공적으로 설정하였습니다.", pfix);
+        }
         else if(args[0].equals("요구레벨설정")) {
             if(args.length<2) {
                 usage(player, "요구레벨설정", true);
