@@ -225,6 +225,8 @@ public class main extends JavaPlugin {
         new TitleControlCommand();
         new AfkCommand();
         new AfkShopCommand();
+        new MegaphoneCommand();
+        new PartyCommand();
 
         //Events
         new SystemEventsListener();

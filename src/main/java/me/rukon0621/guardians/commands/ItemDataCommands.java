@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import static me.rukon0621.guardians.main.pfix;
 
 public class ItemDataCommands implements CommandExecutor {
-    public static String[] arguments = {"기본값", "퀘스트아이템", "거래불가","영혼추출불가", "스텟설정","요구레벨설정","중요한물건","가공불가","요구무기타입","무기설정","방어구설정","행운력설정","장신구설정","지속시간","레벨", "강화", "등급","유효시즌","세이버", "속성설정", "속성목록","가공횟수","타입목록", "리로드"};
+    public static String[] arguments = {"기본값", "퀘스트아이템", "거래불가","영혼추출불가", "스텟설정","요구레벨설정", "제작레벨설정","중요한물건","가공불가","요구무기타입","무기설정","방어구설정","행운력설정","장신구설정","지속시간","레벨", "강화", "등급","유효시즌","세이버", "속성설정", "속성목록","가공횟수","타입목록", "리로드"};
 
     public ItemDataCommands() {
         main.getPlugin().getCommand("itemdata").setExecutor(this);
@@ -124,7 +124,35 @@ public class ItemDataCommands implements CommandExecutor {
                 Msg.send(player, "&c레벨을 가능한 값으로 설정해주세요.", pfix);
                 return true;
             }
+            double per = idata.getExpPercentage();
             idata.setLevel(level);
+            idata.setExp(idata.getMaxExp() * per / 100D);
+            player.getInventory().setItemInMainHand(idata.getItemStack());
+            Msg.send(player, "성공적으로 레벨을 설정하였습니다.", pfix);
+        }
+        else if(args[0].equals("제작레벨설정")) {
+            if(args.length<2) {
+                usage(player, args[0], true);
+                return true;
+            }
+            if(player.getInventory().getItemInMainHand().getType()== Material.AIR) {
+                Msg.send(player, "&c손에 아이템을 들어주세요.", pfix);
+                return true;
+            }
+            ItemData idata = new ItemData(player.getInventory().getItemInMainHand());
+            int level;
+            try {
+                level = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                Msg.send(player, "&c아이템의 레벨을 제대로 입력해주세요.", pfix);
+                return true;
+            }
+
+            if(!idata.getType().equals("세이버") && level<0) {
+                Msg.send(player, "&c레벨을 가능한 값으로 설정해주세요.", pfix);
+                return true;
+            }
+            idata.setCraftLevel(level);
             player.getInventory().setItemInMainHand(idata.getItemStack());
             Msg.send(player, "성공적으로 레벨을 설정하였습니다.", pfix);
         }
@@ -645,6 +673,9 @@ public class ItemDataCommands implements CommandExecutor {
         else if(arg.equals("레벨")) {
             Msg.send(player, "&6/아이템데이터 레벨 <레벨>");
             Msg.send(player, "&7   레벨에 0을 입력하면 실제 값은 ?로 표시됩니다.");
+        }
+        else if(arg.equals("제작레벨설정")) {
+            Msg.send(player, "&6/아이템데이터 제작레벨설정 <레벨>");
         }
         else if(arg.equals("등급")) {
             Msg.send(player, "&6/아이템데이터 등급 <등급>");

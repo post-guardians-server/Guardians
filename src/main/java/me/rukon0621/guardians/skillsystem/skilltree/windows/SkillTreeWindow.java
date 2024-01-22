@@ -246,8 +246,15 @@ public class SkillTreeWindow extends ScrollableWindow {
                 }
                 item.addLore(" ");
 
-                if(pdc.getSkillPoint() >= tree.getPoint()) item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &a" + tree.getPoint() + "&6만큼의 스킬 포인트가 필요합니다.");
-                else item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &c" + tree.getPoint() + "&6만큼의 스킬 포인트가 필요합니다.");
+
+                if(tree.getTreeIndex() == 7) {
+                    if(pdc.getCraftSkillPoint() >= tree.getPoint()) item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &a" + tree.getPoint() + "&6만큼의 스킬 포인트가 필요합니다.");
+                    else item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &c" + tree.getPoint() + "&6만큼의 스킬 포인트가 필요합니다.");
+                }
+                else {
+                    if(pdc.getSkillPoint() >= tree.getPoint()) item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &a" + tree.getPoint() + "&6만큼의 스킬 포인트가 필요합니다.");
+                    else item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &c" + tree.getPoint() + "&6만큼의 스킬 포인트가 필요합니다.");
+                }
 
                 if(pdc.getLevel() >= tree.getLevel()) item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &a" + tree.getLevel() + "&6레벨을 달성해야 합니다.");
                 else item.addLore("&6\uE011\uE00C\uE00C이 스킬을 습득하려면 &c" + tree.getLevel() + "&6레벨을 달성해야 합니다.");

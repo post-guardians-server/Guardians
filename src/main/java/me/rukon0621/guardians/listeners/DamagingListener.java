@@ -13,6 +13,7 @@ import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.bar.BarManager;
 import me.rukon0621.guardians.data.*;
 import me.rukon0621.guardians.dialogquest.DialogQuestManager;
+import me.rukon0621.guardians.dropItem.Drop;
 import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.events.GuardiansDamageEvent;
@@ -199,8 +200,9 @@ public class DamagingListener implements Listener {
                     }
                 }
 
-                PlayerData pdc = new PlayerData(target);
-                if(pdc.getGuildID() != null && pdc.getGuildID().equals(new PlayerData(caster).getGuildID())) {
+                PlayerData pdc = new PlayerData(caster);
+                PlayerData tdc = new PlayerData(target);
+                if(pdc.getGuildID() != null && tdc.getGuildID() != null && pdc.getGuildID().equals(tdc.getGuildID())) {
                     if(!RukonGuild.inst().getGuildManager().getGuildsUsingFF().contains(pdc.getGuildID())) {
                         e.setCancelled(true);
                         return;
@@ -467,12 +469,23 @@ public class DamagingListener implements Listener {
                     double contribution = mobData.getContributionProportion(player);
                     DialogQuestManager.onKillMob(player, name, contribution);
                     playersOnCombat.put(uuid, System.currentTimeMillis() + (1000L * dropCombatSecond)/5);
-                    DropManager.giveDrop(player, name, level, contribution/100);
+                    DropManager.giveDrop(player, name, level, contribution / 100);
                     player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, Rand.randFloat(1.3, 1.7));
                     //Msg.send(player,  "&6"+name+"&f : &e몬스터를 성공적으로 처치하였습니다.", pfix);
                     //Msg.send(player, "&7     - 처치 참여 인원 : " + attackersSize + "명");
                     //Msg.send(player, String.format("&7     - 처치 기여도 : %.2f%%", contribution));
-                    Msg.send(player, String.format("&6%s &f: &e몬스터를 처치했습니다. &7(토벌 인원: &f%d명 &8| &7기여도: &f%.2f%%&7)", name, attackersSize, contribution), pfix);
+
+                    if(contribution == 100) Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%.0f%%&7 &8| &7장비 경험치: &f%.2f)", name, contribution, LevelData.getDropExp(level)), pfix);
+                    else Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%d명 중 %.1f%%&7 &8| &7장비 경험치: &f%.2f)", name, attackersSize, contribution, LevelData.getDropExp(level)), pfix);
+                    List<String> levelUP = EquipmentManager.addExp(player, LevelData.getDropExp(level) * contribution / 100);
+                    if(!levelUP.isEmpty()) {
+                        StringBuilder sb = new StringBuilder();
+                        for(String s : levelUP) sb.append(", ").append(s);
+                        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1.2f);
+                        Msg.send(player, " ");
+                        Msg.send(player, "&e" + sb.toString().replaceFirst(", ", "") +"&f의 레벨이 올랐습니다! 레벨에 따라 능력치와 품질이 변동됩니다.", pfix);
+                        EquipmentManager.reloadEquipment(player, false);
+                    }
                 }
             }
         }.runTaskLater(plugin, 3);

@@ -194,14 +194,15 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                     ItemData itemData = new ItemData(inv.getSlot(EQUIPMENT_SLOT).clone());
 
                     //레벨업 진행
-                    boolean success = Rand.chanceOf(calculateSuccessChance(ItemLevelUpWindow.this, itemData.getLevel()));
+                    //boolean success = Rand.chanceOf(calculateSuccessChance(ItemLevelUpWindow.this, itemData.getLevel()));
+                    boolean success = true;
 
                     if(!itemData.hasKey("craftLevel")) {
                         itemData.setCraftLevel(itemData.getCraftLevel());
                     }
 
                     int level = itemData.getLevel();
-                    double remainExp = itemData.addExp(getExpInFirst(), totemMap.containsKey(TOTEM.PROTECT_QUALITY_TOTEM));
+                    long remainExp = itemData.addExp(getExpInFirst(), totemMap.containsKey(TOTEM.PROTECT_QUALITY_TOTEM), new PlayerData(player).getLevel());
                     int levelAfter = itemData.getLevel();
 
                     if(totemMap.containsKey(TOTEM.PROTECT_QUALITY_TOTEM) && (level + 1) != levelAfter) {
@@ -225,8 +226,8 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                     else {
                         getItemButton(BOOK_SLOTS[0]).removeButton();
                         if(remainExp > 0) {
-                            Msg.warn(player, "장비가 최고 레벨을 달성하여 남은 경험치를 다시 지급 받았습니다. " + String.format("&7(반환된 경험치: %d)", (int) remainExp));
-                            MailBoxManager.giveOrMail(player, LevelData.getEquipmentExpBook((int) remainExp));
+                            Msg.warn(player, "장비가 최고 레벨을 달성하여 남은 경험치를 다시 지급 받았습니다. " + String.format("&7(반환된 경험치: %d)", remainExp));
+                            MailBoxManager.giveOrMail(player, LevelData.getEquipmentExpBook(remainExp));
                         }
                         //업그레이드 성공 GUI 반영 (setOriginalItem 에 reloadGUI 포함)
                         if(level==levelAfter) {
@@ -279,7 +280,7 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                     icon.addLore("&f현재 선택된 장비: "+ itemData.getName());
                     icon.addLore(" ");
                     icon.addLore("&7레벨: "+itemData.getLevel());
-                    icon.addLore(String.format("&7경험치: %d / %d (%.2f%%)", itemData.getExp(), itemData.getMaxExp(), itemData.getExpPercentage()));
+                    icon.addLore(String.format("&7경험치: %.2f / %.2f (%.2f%%)", itemData.getExp(), itemData.getMaxExp(), itemData.getExpPercentage()));
                 }
                 else {
                     ItemData itemData = new ItemData(selectedEquipment.clone());
@@ -310,22 +311,26 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                         icon.addLore("&f현재 선택된 장비: "+ itemData.getName());
                         icon.addLore(" ");
                         icon.addLore("&7레벨: "+itemData.getLevel());
-                        icon.addLore(String.format("&7경험치: %d / %d (%.2f%%)", itemData.getExp(), itemData.getMaxExp(), itemData.getExpPercentage()));
+                        icon.addLore(String.format("&7경험치: %.2f / %.2f (%.2f%%)", itemData.getExp(), itemData.getMaxExp(), itemData.getExpPercentage()));
 
                         //경험치 추가 후 추후 결과를 계산
-                        itemData.addExp(exp, true);
+                        long remain = itemData.addExp(exp, true, new PlayerData(player).getLevel());
 
                         icon.addLore(" ");
                         icon.addLore("&7 ======= ↓ &f강화 결과 &7↓ ======= ");
                         icon.addLore(" ");
                         icon.addLore("&7레벨: "+itemData.getLevel());
-                        icon.addLore(String.format("&7경험치: %d / %d (%.2f%%)", itemData.getExp(), itemData.getMaxExp(), itemData.getExpPercentage()));
-                        icon.addLore(" ");
-                        icon.addLore(String.format("&b\uE011\uE00C\uE00C경험치 부여 성공 확률: %.2f%%", calculateSuccessChance(ItemLevelUpWindow.this, itemData.getLevel())));
+                        icon.addLore(String.format("&7경험치: %.2f / %.2f (%.2f%%)", itemData.getExp(), itemData.getMaxExp(), itemData.getExpPercentage()));
+                        //icon.addLore(" ");
+                        //icon.addLore(String.format("&b\uE011\uE00C\uE00C경험치 부여 성공 확률: %.2f%%", calculateSuccessChance(ItemLevelUpWindow.this, itemData.getLevel())));
                         if(itemData.getLevel() > new PlayerData(player).getLevel()) {
                             window_status = STATUS.LEVEL_OVER;
                             icon.addLore(" ");
                             icon.addLore("&4\uE014\uE00C\uE00C장비의 레벨이 플레이어의 레벨보다 높아질 수 없습니다.");
+                        }
+                        else if(remain > 0) {
+                            icon.addLore(" ");
+                            icon.addLore("&e\uE011\uE00C\uE00C장비가 현재 가능한 최대 레벨에 도달합니다. 남은 경험치는 반환됩니다.");
                         }
                     }
                 }

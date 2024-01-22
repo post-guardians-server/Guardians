@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static me.rukon0621.guardians.main.pfix;
 
@@ -133,7 +130,7 @@ public class DropManager {
         ArrayList<Drop> drops = new ArrayList<>();
         ArrayList<DropAttribute> dropAttrs = new ArrayList<>();
         dropAttrs.add(new DropAttribute("질김", 1, 0, 50));
-        drops.add(new Drop("슬라임의 점액", 5, 10, 2, dropAttrs, 50, 0));
+        drops.add(new Drop("슬라임의 점액", 5, 10, 2, dropAttrs, 50, 0, 0, 99999));
         config = getDropDataConfig(name);
         config.getConfig().set(name, drops);
         config.saveConfig();

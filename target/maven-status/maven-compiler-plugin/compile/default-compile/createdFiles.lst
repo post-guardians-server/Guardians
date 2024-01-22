@@ -145,6 +145,7 @@ me\rukon0621\guardians\GUI\item\QualityRandomWindow.class
 me\rukon0621\guardians\GUI\item\enhance\EnhanceGUI$FAIL_STATUS$1.class
 me\rukon0621\guardians\craft\craft\WaitingItem.class
 me\rukon0621\guardians\GUI\item\ItemLevelDownWindow$Result.class
+me\rukon0621\guardians\commands\MegaphoneCommand.class
 me\rukon0621\guardians\GUI\item\SuccessionGUI$3.class
 me\rukon0621\guardians\party\PartyWindow$PartyMemberButton.class
 me\rukon0621\guardians\GUI\crafting\CraftAcceleratingWindow$WaitingItemButton.class
@@ -274,6 +275,7 @@ me\rukon0621\guardians\party\PartyWindow.class
 me\rukon0621\guardians\GUI\item\ItemLevelDownWindow.class
 me\rukon0621\guardians\story\StoryManager$3.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$1.class
+me\rukon0621\guardians\commands\PartyCommand.class
 me\rukon0621\guardians\addspells\triggers\GuardiansDamageListener.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$2.class
 me\rukon0621\guardians\listeners\SystemEventsListener$3.class
@@ -282,6 +284,7 @@ me\rukon0621\guardians\GUI\item\ItemLevelUpWindow$QueuedItemButton.class
 me\rukon0621\guardians\craft\craft\ResultData.class
 me\rukon0621\guardians\listeners\ProxyListener.class
 me\rukon0621\guardians\listeners\ItemUseListener$4.class
+me\rukon0621\guardians\listeners\TeseionListener$2.class
 me\rukon0621\guardians\data\PlayerData.class
 me\rukon0621\guardians\listeners\ResourcePackListener.class
 me\rukon0621\guardians\story\StoryManager$19.class

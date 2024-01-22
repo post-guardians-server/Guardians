@@ -185,6 +185,11 @@ public class Quest {
             it.addLore(String.format("&f현재 피로도: %d &7/ &f%d &c(매일 0으로 초기화됨)", pdc.getFatigue(), pdc.getMaxFatigue()));
 
         }
+        if(completeNpc.equalsIgnoreCase("click")) {
+            it.addLore(" ");
+            it.addLore("&f※ 이 퀘스트는 &b퀘스트 창에서 클릭&f하여 완료해야합니다.");
+        }
+
         it.addLore("&e※클릭하여 퀘스트를 수락합니다.");
         return it.getItem();
     }
@@ -406,25 +411,28 @@ public class Quest {
         }
         item.addLore(" ");
         item.addLore("&7『 &f퀘스트 정보 &7』");
+        final boolean isInstanlyClearable = completeNpc.replaceAll(" ", "").equals("즉시완료") || completeNpc.replaceAll(" ", "").equalsIgnoreCase("click");
         switch (sort) {
             case 1 -> {
-                if (completeNpc.equals("즉시완료")) item.addLore("&f아래 나오는 몬스터를 토벌했음.");
+                if (isInstanlyClearable) item.addLore("&f아래 나오는 몬스터를 토벌했음.");
                 item.addLore(completeNpc + "&f의 부탁으로 다음 몬스터들을 토벌했음.");
                 for (String name : mobData.keySet()) {
                     item.addLore(" &7- " + name + " x" + mobData.get(name));
                 }
             }
             case 2 -> {
-                item.addLore(completeNpc + "&f에게 다음 아이템을 가져다줌.");
+                if (isInstanlyClearable) item.addLore("&f다음 아이템을 가져다줌.");
+                else item.addLore(completeNpc + "&f에게 다음 아이템을 가져다줌.");
                 for (ItemData itemData : convertedItemData) {
                     item.addLore(" &7- " + itemData.getName() + " &7x" + itemData.getAmount());
                 }
             }
             case 3 -> {
-                item.addLore(completeNpc + "&f에게서 퀘스트를 완료함.");
+                if (isInstanlyClearable) item.addLore("&f퀘스트를 완료함.");
+                else item.addLore(completeNpc + "&f에게서 퀘스트를 완료함.");
             }
             case 4 -> {
-                if (completeNpc.replaceAll(" ", "").equals("즉시완료")) item.addLore("&f아래 나오는 목표를 완료했음.");
+                if (isInstanlyClearable) item.addLore("&f아래 나오는 목표를 완료했음.");
                 else item.addLore(completeNpc + "&f에게서 다음과 같은 부탁을 받음");
                 for (String obj : customObjects) {
                     item.addLore(" &7- " + obj);
@@ -435,7 +443,7 @@ public class Quest {
             item.addLore(" ");
             item.addLore("&f연계 퀘스트: " + chainQuest);
         }
-        if(logLores.size()>0) {
+        if(!logLores.isEmpty()) {
             item.addLore(" ");
             item.addLore("&7『 &f퀘스트 일지 &7』");
             for(String str : logLores) {

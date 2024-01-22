@@ -179,6 +179,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\sto
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\data\MobData.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\Opcmd.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\WhisperCommand.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\MegaphoneCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\noticeboard\NoticeBoard.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\GUI\TitleWindow.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\ItemDataCommandsTabComp.java
@@ -191,6 +192,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\com
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dropItem\Drop.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\TpChannelCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\noticeboard\NoticeBoardCommand.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\PartyCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\skillsystem\skilltree\elements\SkillTree.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\GUI\item\enhance\LegacyEnhanceGUI.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\DataBase.java

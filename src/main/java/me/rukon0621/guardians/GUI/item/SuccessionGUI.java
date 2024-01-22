@@ -24,7 +24,7 @@ import java.util.List;
 import static java.awt.SystemColor.window;
 
 public class SuccessionGUI extends ItemSelectableWindow {
-    private static final int ALLOWED_LEVEL_DIF = 6;
+    private static final int ALLOWED_LEVEL_DIF = 11;
 
     private enum FailStatus {
         NOT_FILLED("&c아이템이 모두 채워지지 않았습니다.") {
@@ -46,7 +46,7 @@ public class SuccessionGUI extends ItemSelectableWindow {
                 return !typeB.isMaterialOf(category.getName());
             }
         },
-        LEVEL_OVER("&c요구 레벨이 6 이상 차이나면 계승할 수 없습니다.") {
+        LEVEL_OVER("&c요구 레벨이 " + ALLOWED_LEVEL_DIF + " 이상 차이나면 계승할 수 없습니다.") {
             @Override
             boolean isUnpassed(SuccessionGUI window) {
                 ItemData dataA = new ItemData(window.itemA);

@@ -8,8 +8,11 @@ import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
+import me.rukon0621.guardians.story.StoryManager;
+import me.rukon0621.rinstance.RukonInstance;
 import me.rukon0621.teseion.Teseion;
 import me.rukon0621.teseion.event.TeseionClearEvent;
+import me.rukon0621.teseion.event.TeseionFailEvent;
 import net.playavalon.avnparty.party.Party;
 import net.playavalon.avnparty.player.AvalonPlayer;
 import org.bukkit.entity.Player;
@@ -126,4 +129,20 @@ public class TeseionListener implements Listener {
 
 
     }
+
+    @EventHandler
+    public void onTeseionFail(TeseionFailEvent e) {
+        if(e.getTeseion().getName().equals("windroad")) {
+            Player player = e.getInstance().getParty().getLeader().getPlayer();
+            if(StoryManager.isRead(player, "벤터스_고블린실패")) return;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    StoryManager.readStory(player, "벤터스_고블린실패");
+                }
+            }.runTaskLater(main.getPlugin(), 40);
+        }
+
+    }
+
 }

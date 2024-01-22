@@ -57,7 +57,7 @@ public class PlayerData {
     private static final Map<Player, HashMap<String, Pair>> attributeAbility = new HashMap<>();
     private static final Map<Player, Map<String, Object>> playerDataMap = new HashMap<>();
     public static final int MAX_BACKPACK_SLOT = 300;
-    private static final int MAX_FATIGUE = 15;
+    private static final int MAX_FATIGUE = 5;
 
     public static Map<String, Object> getPlayerDataMap(Player player) {
         return playerDataMap.get(player);
@@ -188,17 +188,19 @@ public class PlayerData {
                     statement.close();
 
 
-                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET completedSampling = ?, progressingSampling = ?, cntWeaponSkin = ?, weaponSkins = ?, mute = ?, offHand = ?, guild = ? WHERE uuid = '%s'", player.getUniqueId()));
+                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET completedSampling = ?, progressingSampling = ?, cntWeaponSkin = ?, weaponSkins = ?, mute = ?, offHand = ? WHERE uuid = '%s'", player.getUniqueId()));
                     statement.setBytes(1, Serializer.serialize(pdc.getCompletedSamplings()));
                     statement.setBytes(2, Serializer.serialize(pdc.getProgressingSamplings()));
                     statement.setInt(3, pdc.getWeaponSkinCmd());
                     statement.setBytes(4, Serializer.serializeBukkitObject(pdc.getWeaponSkins()));
                     statement.setLong(5, pdc.getMuteMillis());
                     statement.setBytes(6, Serializer.serializeBukkitObject(offHandItem));
+                    /*
                     if(pdc.getGuildID() == null) {
                         statement.setString(7, null);
                     }
                     else statement.setString(7, pdc.getGuildID().toString());
+                     */
 
                     statement.executeUpdate();
                     statement.close();

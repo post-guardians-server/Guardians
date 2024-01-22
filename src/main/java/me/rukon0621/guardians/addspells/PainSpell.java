@@ -97,6 +97,7 @@ public class PainSpell extends TargetedPowerSpell implements TargetedEntitySpell
             else localDamage *= power2;
             localDamage *= -1;
 
+            /*
             try {
                 double kbr = knockBackResistance;
                 AttributeInstance attr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
@@ -105,6 +106,7 @@ public class PainSpell extends TargetedPowerSpell implements TargetedEntitySpell
                 v.setY(0);
                 target.setVelocity(target.getVelocity().subtract(v));
             } catch (NullPointerException ignored) {}
+             */
 
 
             if (this.tryAvoidingAntiCheatPlugins) {

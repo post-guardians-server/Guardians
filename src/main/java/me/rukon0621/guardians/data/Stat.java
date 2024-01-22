@@ -217,7 +217,7 @@ public enum Stat {
             value *= (1 + stat.getEnvironment(player));
         } catch (IllegalArgumentException ignored) {
         }
-        if(!statColor.toString().endsWith("PER")) value += getEnvironment(player);
+        if(!statColor.endsWith("PER")) value += getEnvironment(player);
         value += getBuff(player) + getAdd(player) + getCollection(player);
         if(maxValue == -1) return value;
         return Math.min(value, maxValue);

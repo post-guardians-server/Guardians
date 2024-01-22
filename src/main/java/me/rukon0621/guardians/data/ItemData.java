@@ -90,11 +90,20 @@ public class ItemData {
     /**
      * 아이템 레벨업시 각 레벨당 필요한 경험치의 양
      * @param level 필요 경험치 양을 구할 레벨
-     * @return 필요 경험치 반환, level이 최고 레벨보다 높다면 최고 레벨의 경험치 필요량을 반환
+     * @return 1000 배율된 레벨당 필요경험치
      */
     public static long getMaxExpAtLevel(int level) {
-        if(level>maxLevel) return levelData.get(maxLevel);
-        return levelData.getOrDefault(level, levelData.get(1));
+        if(level>maxLevel) return levelData.get(maxLevel) * 1000L;
+        return levelData.getOrDefault(level, levelData.get(1)) * 1000L;
+    }
+    /**
+     * 아이템 레벨업시 각 레벨당 필요한 경험치의 양
+     * @param level 필요 경험치 양을 구할 레벨
+     * @return 1000 배율된 레벨당 필요경험치
+     */
+    private static long getLongedMaxExpAtLevel(int level) {
+        if(level>maxLevel) return levelData.get(maxLevel) * 1000L;
+        return levelData.getOrDefault(level, levelData.get(1)) * 1000L;
     }
 
 
@@ -123,8 +132,25 @@ public class ItemData {
         }
         //레벨당 경험치 설정
         levelData = new HashMap<>();
-        for(int i = 1 ; i < maxLevel ; i++) {
-            levelData.put(i, (long) (LevelData.expAtLevel.get(i) * 0.85));
+        levelData.put(1, 1L);
+        levelData.put(2, 2L);
+        levelData.put(3, 3L);
+        levelData.put(4, 4L);
+        levelData.put(5, 4L);
+        levelData.put(6, 5L);
+        levelData.put(7, 5L);
+        levelData.put(8, 6L);
+        levelData.put(9, 6L);
+        levelData.put(10, 7L);
+        levelData.put(11, 7L);
+        levelData.put(12, 8L);
+        levelData.put(13, 8L);
+        levelData.put(14, 9L);
+        levelData.put(15, 10L);
+        levelData.put(16, 12L);
+        levelData.put(17, 14L);
+        for(int i = 18; i < LevelData.maxLevel; i++) {
+            levelData.put(i, 10000L);
         }
         //최소, 최고레벨 필요 경험치
         levelData.put(0, 1L);
@@ -274,7 +300,7 @@ public class ItemData {
             }
             else if(lore.startsWith("경험치: ")) {
                 double proportion = Double.parseDouble(lore.split(": ")[1].replaceAll("%", "").trim());
-                setExp((long) Math.round(getMaxExpAtLevel(getLevel()) / 100D * proportion));
+                setExpLonged(Math.round(getLongedMaxExpAtLevel(getLevel()) / 100D * proportion));
             }
             else if(lore.startsWith("타입: ")) {
                 String value = lore.split(": ")[1].trim();
@@ -734,25 +760,29 @@ public class ItemData {
         return (valueAtOne * (1 + scale * ((newLevel - 1) + newEnhanceLevel.getMultiply()))) * getQualityMultiplier(newQuality);
     }
 
+
+    public long addExp(double exp, boolean qualityProtecting, int levelLimit) {
+        return addExpByLong((long) (exp * 1000), qualityProtecting, levelLimit) / 1000L;
+    }
     /**
      * 아이템의 레벨을 올림
      * 최고 레벨일 경우 남은 경험치를 반환
-     * @param exp 추가할 경험치의 양
+     * @param expLonged 1000배율 경험치
      * @param qualityProtecting 이 옵션이 활성화되면 레벨업해도 품질이 감소하지 않음
      * @return 최고 레벨을 달성하고 남은 경험치양을 반환
      */
-    public long addExp(long exp, boolean qualityProtecting) {
-        if(getLevel()==maxLevel) {
-            long remain = getExp();
-            setExp(0);
+    private long addExpByLong(long expLonged, boolean qualityProtecting, int levelLimit) {
+        if(getLevel() >= Math.min(levelLimit, maxLevel)) {
+            long remain = getExpLonged();
+            setExpLonged(0);
             return remain;
         }
-        setExp(getExp() + exp);
-        if(getExp() >= getMaxExp()) {
-            setExp(getExp() - getMaxExp());
+        setExpLonged(getExpLonged() + expLonged);
+        if(getExpLonged() >= getLongedMaxExp()) {
+            setExpLonged(getExpLonged() - getLongedMaxExp());
             setLevel(getLevel() + 1);
             if(!qualityProtecting) setQuality(getQuality() - Rand.randDouble(0, 2));
-            return addExp(0, qualityProtecting);
+            return addExpByLong(0, qualityProtecting, levelLimit);
         }
         return 0L;
     }
@@ -842,10 +872,16 @@ public class ItemData {
      * 현재 레벨에서의 최대 경험치 (필요 경험치)
      * @return 현재 레벨에서의 최대 경험치 (필요 경험치)
      */
-    public long getMaxExp() {
-        return levelData.get(getLevel());
+    public double getMaxExp() {
+        return (double) getLongedMaxExp() / 1000L;
     }
-
+    /**
+     * 현재 레벨에서의 최대 경험치 (필요 경험치)
+     * @return 현재 레벨에서의 최대 경험치 (필요 경험치)
+     */
+    private long getLongedMaxExp() {
+        return getLongedMaxExpAtLevel(getLevel());
+    }
 
     public double getValue() {
         return DataClass.toInt(dataMap.get("value"));
@@ -861,7 +897,13 @@ public class ItemData {
     /**
      * @return 현재 경험치의 양을 나타냄
      */
-    public long getExp() {
+    public double getExp() {
+        return (double) getExpLonged() / 1000L;
+    }
+    /**
+     * @return 현재 경험치의 양을 나타냄
+     */
+    private long getExpLonged() {
         return ((Number) dataMap.getOrDefault("exp", 0)).longValue();
     }
     /**
@@ -869,14 +911,16 @@ public class ItemData {
      */
     public double getExpPercentage() {
         if(getLevel()==maxLevel) return 0;
-        return (double) getExp() / getMaxExpAtLevel(getLevel()) * 100D;
+        return (double) getExpLonged() / getLongedMaxExpAtLevel(getLevel()) * 100D;
     }
-    public void setExp(long value) {
+    public void setExp(double value) {
+        setExpLonged((long) (value * 1000L));
+    }
+    private void setExpLonged(long longedValue) {
         String keyName = "exp";
         int section = 0;
         if(!getSection(section).contains(keyName)) getSection(section).add(keyName);
-        dataMap.put(keyName, value);
-
+        dataMap.put(keyName, longedValue);
     }
 
     /**

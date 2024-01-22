@@ -77,8 +77,15 @@ public class QuestInProgress implements ConfigurationSerializable {
             }
         }
         if(!(quest.getCompleteNpc().equals("즉시 완료")||quest.getCompleteNpc().equals("즉시완료"))) {
-            it.addLore(" ");
-            it.addLore("#f8d97d\uE011\uE200\uE200퀘스트를 완료하려면 &f"+quest.getCompleteNpc()+"#f8d97d에게 찾아가주세요.");
+            if(quest.getCompleteNpc().equalsIgnoreCase("click")) {
+                it.addLore(" ");
+                it.addLore("#f8d97d\uE011\uE200\uE200&e좌클릭#f8d97d하여 퀘스트를 완료하십시오.");
+            }
+            else {
+                it.addLore(" ");
+                it.addLore("#f8d97d\uE011\uE200\uE200퀘스트를 완료하려면 &f"+quest.getCompleteNpc()+"#f8d97d에게 찾아가주세요.");
+            }
+
         }
         if(quest.isNavigatable()) {
             it.addLore(" ");

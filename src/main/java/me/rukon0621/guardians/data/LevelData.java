@@ -21,6 +21,7 @@ import static me.rukon0621.guardians.main.pfix;
 
 public class LevelData {
     public static Map<Integer, Long> expAtLevel;
+    public static Map<Integer, Double> dropExp = new HashMap<>();
     //Level, exp - Level레벨에서 다음 레벨 까지의 필요 경험치의 양
 
     public static final String EXP_BOOK_TYPE_NAME = "경험치 책";
@@ -59,6 +60,15 @@ public class LevelData {
         for(int i = 1; i <= maxLevel; i++) {
             healthLevelStack[i] = healthLevelStack[i - 1] + (i * i / 10D);
         }
+
+        dropExp.put(0, 0D);
+        for(int i = 1; i <= maxLevel; i++) {
+            dropExp.put(i, 0.1 * i);
+        }
+    }
+
+    public static double getDropExp(int level) {
+        return dropExp.getOrDefault(level, 0D);
     }
 
     //경험치 추가
@@ -79,7 +89,7 @@ public class LevelData {
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 0.8f);
             Msg.send(player, " ");
             Msg.send(player, "축하합니다! " + pdc.getLevel() + "레벨에 도달하셨습니다!", pfix);
-            //Msg.send(player, "&e레벨업을 하여 최대 체력이 " + getLevelUpHealth(pdc.getLevel(), false) + "만큼 증가했습니다.");
+            if(getLevelUpHealth(pdc.getLevel(), false) > 0) Msg.send(player, "&e레벨업을 하여 최대 체력이 " + getLevelUpHealth(pdc.getLevel(), false) + "만큼 증가했습니다.");
             Msg.send(player, "&e레벨업을 하여 3만큼의 스킬 포인트를 획득하였습니다.");
             Msg.send(player, "&6레벨업을 하여 1만큼의 제작 스킬 포인트를 획득하였습니다.");
             Msg.send(player, " ");
@@ -98,10 +108,7 @@ public class LevelData {
         if(pdc.getLevel()== maxLevel) return;
         pdc.setLevel(pdc.getLevel()+1);
 
-        if(pdc.getLevel()==3) {
-            StoryManager.readStory(player, "스킬트리찍기");
-        }
-        else if(pdc.getLevel()==5) {
+        if(pdc.getLevel()==5) {
             DialogQuestManager.completeCustomObject(player, "레벨 5 달성하기");
             StoryManager.readStory(player, "레벨5");
         }
@@ -169,7 +176,7 @@ public class LevelData {
      * @param amount 경험치 책의 경험치 양
      * @return 해당 양의 경험치 책 아이템 객체를 반환
      */
-    public static ItemStack getEquipmentExpBook(int amount) {
+    public static ItemStack getEquipmentExpBook(long amount) {
         ItemData itemData = new ItemData(new ItemStack(Material.ENCHANTED_BOOK));
         itemData.setName(String.format("&e강화의 서 &7[ &b%d &7]", amount));
         itemData.setLevel(0);

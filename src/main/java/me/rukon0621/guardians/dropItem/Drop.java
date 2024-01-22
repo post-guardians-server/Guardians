@@ -2,10 +2,7 @@ package me.rukon0621.guardians.dropItem;
 
 import me.rukon0621.boxes.RukonBoxes;
 import me.rukon0621.guardians.areawarp.AreaManger;
-import me.rukon0621.guardians.data.ItemData;
-import me.rukon0621.guardians.data.LevelData;
-import me.rukon0621.guardians.data.PlayerData;
-import me.rukon0621.guardians.data.Stat;
+import me.rukon0621.guardians.data.*;
 import me.rukon0621.guardians.helper.ItemSaver;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.Rand;
@@ -36,6 +33,7 @@ public class Drop implements ConfigurationSerializable {
     //60레벨 몹을 잡았는데 minusRange가 3이면 57~60사이의 레벨로 정해짐
     private final int minMinusRange;
     private final int maxMinusRange;
+    private final int craftLevelDiff;
 
     //해당 아이템이 몇개까지 나오는가 (확률 반복)
     private final int loopNumber;
@@ -43,6 +41,7 @@ public class Drop implements ConfigurationSerializable {
     //아이템의 등장 확률
     private final double chance;
     private final int levelAbove;
+    private final int levelBelow;
 
     public static void setBurning(double multiply) {
         dropBurning = multiply;
@@ -54,7 +53,7 @@ public class Drop implements ConfigurationSerializable {
     //추가적으로 등장할 수 있는 속성 정보
     private final ArrayList<DropAttribute> dropAttrs;
 
-    public Drop(String itemSaver, int minMinusRange, int maxMinusRange, int loopNumber, ArrayList<DropAttribute> dropAttrs, double chance, int levelAbove) {
+    public Drop(String itemSaver, int minMinusRange, int maxMinusRange, int loopNumber, ArrayList<DropAttribute> dropAttrs, double chance, int levelAbove, int craftLevelDiff, int levelBelow) {
         this.itemSaver = itemSaver;
         this.minMinusRange = minMinusRange;
         this.maxMinusRange = maxMinusRange;
@@ -62,6 +61,8 @@ public class Drop implements ConfigurationSerializable {
         this.dropAttrs = dropAttrs;
         this.chance = chance;
         this.levelAbove = levelAbove;
+        this.craftLevelDiff = craftLevelDiff;
+        this.levelBelow = levelBelow;
     }
 
     /**
@@ -189,7 +190,7 @@ public class Drop implements ConfigurationSerializable {
             }
         }
         else {
-            if(level<levelAbove) {
+            if(level < levelAbove || level > levelBelow) {
                 return new ArrayList<>();
             }
             try {
@@ -197,12 +198,14 @@ public class Drop implements ConfigurationSerializable {
                     double ch;
                     if(ignorePartyAndLuck) ch = chance * contribution;
                     else ch = chance * contribution * (1 + Stat.LUCK.getTotal(player) / 100) * dropBurning;
-
                     if(chance>100) ch = 100;
                     if(!Rand.chanceOf(ch)) continue;
                     ItemData idata = new ItemData(new ItemStack(ItemSaver.getItem(itemSaver).getItem()));
-
                     idata.setLevel(Math.max(1, level - Rand.randInt(minMinusRange, maxMinusRange)));
+                    if(TypeData.getType(idata.getType()).isMaterialOf("장비")) {
+                        idata.setCraftLevel(Math.max(1, idata.getLevel() - Rand.randInt(0, craftLevelDiff)));
+                        idata.setQuality(Rand.randDouble(35, 50));
+                    }
                     if(dropAttrs!=null) {
                         for(DropAttribute attr : dropAttrs) {
                             if(attr.getLevelLimit()>level) continue;
@@ -238,7 +241,9 @@ public class Drop implements ConfigurationSerializable {
         if(loopNumber>0) data.put("loopNumber", loopNumber);
         if(chance!=100.0) data.put("chance", chance);
         if(levelAbove!=0) data.put("levelAbove", levelAbove);
-        if(dropAttrs!=null&&dropAttrs.size()>0) data.put("dropAttrs", dropAttrs);
+        if(levelAbove!=99999) data.put("levelBelow", levelBelow);
+        if(dropAttrs!=null&&!dropAttrs.isEmpty()) data.put("dropAttrs", dropAttrs);
+        if(craftLevelDiff > 0) data.put("craftLevelDiff", craftLevelDiff);
         return data;
     }
 
@@ -248,7 +253,9 @@ public class Drop implements ConfigurationSerializable {
         int loopNumber = (int) data.getOrDefault("loopNumber", 1);
         Number chance = (Number) data.getOrDefault("chance", 100.0);
         int levelAbove = (int) data.getOrDefault("levelAbove", 0);
-        return new Drop((String) data.get("itemSaver"), minusRange, maxMinusRange, loopNumber, (ArrayList<DropAttribute>) data.getOrDefault("dropAttrs", new ArrayList<>()), chance.doubleValue(), levelAbove);
+        int levelBelow = (int) data.getOrDefault("levelBelow", 99999);
+        int craftLevelDiff = (int) data.getOrDefault("craftLevelDiff", 0);
+        return new Drop((String) data.get("itemSaver"), minusRange, maxMinusRange, loopNumber, (ArrayList<DropAttribute>) data.getOrDefault("dropAttrs", new ArrayList<>()), chance.doubleValue(), levelAbove, craftLevelDiff, levelBelow);
     }
 
     public String getItemSaver() {

@@ -1254,6 +1254,24 @@ public class DialogQuestManager implements Listener {
 
             return;
         }
+        else if (quest.getCompleteNpc().equalsIgnoreCase("click") && e.getClick().equals(ClickType.LEFT)) {
+            QuestInProgress qip = null;
+            for (QuestInProgress lip : getQuestsInProgress(player)) {
+                if(!lip.getName().equals(quest.getName())) continue;
+                qip = lip;
+            }
+            if(qip == null) return;
+            if (quest.getSort() == 2) {
+                completingQuest.put(player, qip);
+                quest.openQuestCompletingMenu(player);
+            }
+            else {
+                if(!qip.completeQuest(player, null)) {
+                    Msg.warn(player, "퀘스트를 클리어하기 위한 조건을 달성하지 못했습니다.");
+                }
+            }
+            return;
+        }
 
         if(quest.canGiveUp()) {
             if(e.getClick()==ClickType.SHIFT_RIGHT) {

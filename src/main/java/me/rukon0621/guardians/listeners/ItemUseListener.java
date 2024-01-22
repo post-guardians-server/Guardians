@@ -248,7 +248,7 @@ public class ItemUseListener implements Listener {
                         range = new Couple<>(0D, 5D);
                     }
                     else {
-                        range = new Couple<>(-4D, 5D);
+                        range = new Couple<>(-1D, 2D);
                     }
                     new QualityUpgradeWindow(player, itemData.getItemStack(), range);
                     player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, 0.8f);

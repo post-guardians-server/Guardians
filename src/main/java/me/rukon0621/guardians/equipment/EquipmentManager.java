@@ -57,6 +57,7 @@ public class EquipmentManager implements Listener {
     private static HashMap<Player, HashMap<String, ItemStack>> equipmentData;
     private static HashMap<Player, HashMap<String, ItemData>> equipmentItemData;
     private static final Map<Player, HashMap<String, Number>> eqStatusData = new HashMap<>();
+    private static final String[] expTarget = new String[]{"무기", "투구", "갑옷", "바지", "부츠", "목걸이", "벨트", "반지"};
     private static HashMap<String, Integer> equipmentSlotData;
     private static HashMap<String, String> equipmentTranslateData;
     private static HashMap<Player, Integer> playerInformationPage;
@@ -107,6 +108,20 @@ public class EquipmentManager implements Listener {
         equipmentSlotData.put("룬2", 50);
         equipmentSlotData.put("룬3", 51);
         equipmentSlotData.put("사증", 23);
+    }
+
+    public static List<String> addExp(Player player, double exp) {
+        List<String> levelupList = new ArrayList<>();
+        int levelLimit = new PlayerData(player).getLevel();
+        for(String koreanKeyName : expTarget) {
+            if(getItem(player, koreanKeyName).getType().equals(Material.AIR)) continue;
+            ItemData itemData = new ItemData(getItem(player, koreanKeyName));
+            int lv = itemData.getLevel();
+            itemData.addExp(exp, false, levelLimit);
+            if(lv != itemData.getLevel()) levelupList.add(koreanKeyName);
+            setItem(player, koreanKeyName, itemData.getItemStack());
+        }
+        return levelupList;
     }
 
     public static void openEquipmentGUI(Player player) {
@@ -343,7 +358,7 @@ public class EquipmentManager implements Listener {
         Stat.IGNORE_ARMOR.set(player, Stat.IGNORE_ARMOR.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.IGNORE_ARMOR_POWER.getTotal(player))), 3.0D) / 200.0D);
         Stat.COOL_DEC.set(player, Stat.COOL_DEC.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.COOL_DEC_POWER.getTotal(player))), 3.0D) / 300.0D);
         Stat.EVADE.set(player, Stat.EVADE.get(player) + Math.pow(Math.sqrt(Math.sqrt(Stat.EVADE_POWER.getTotal(player))), 3.0D) / 300.0D);
-        //Stat.HEALTH.setBase(player, Stat.HEALTH.getBase(player) + LevelData.getLevelUpHealth(pdc.getLevel(), true));
+        Stat.HEALTH.setBase(player, Stat.HEALTH.getBase(player) + LevelData.getLevelUpHealth(pdc.getLevel(), true));
 
         player.setMaxHealth(Math.max(10, Stat.HEALTH.getTotal(player)));
         player.setHealth(player.getMaxHealth() * previousHealth);
@@ -700,16 +715,22 @@ public class EquipmentManager implements Listener {
         return equipmentData.getOrDefault(player, new HashMap<>());
     }
     public static ItemStack getItem(Player player, String koreanKeyName) {
+        return equipmentData.get(player).getOrDefault(koreanKeyName, new ItemStack(Material.AIR));
+        /*
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "item."+equipmentTranslateData.get(koreanKeyName));
         if(!pdc.has(key, PersistentDataType.BYTE_ARRAY)) return new ItemStack(Material.AIR);
         return (ItemStack) Serializer.deserializeBukkitObject(pdc.get(key, PersistentDataType.BYTE_ARRAY));
+         */
     }
 
     public static void setItem(Player player, String koreanKeyName, ItemStack item) {
+        equipmentData.get(player).put(koreanKeyName, item);
+        /*
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "item."+equipmentTranslateData.get(koreanKeyName));
         pdc.set(key, PersistentDataType.BYTE_ARRAY, Serializer.serializeBukkitObject(ItemSaver.reloadItem(item)));
+         */
     }
     public static ItemStack getWeapon(Player player) {
         return getItem(player, "무기");
@@ -760,6 +781,12 @@ public class EquipmentManager implements Listener {
         return getItem(player, "반지");
     }
     private static ArrayList<ItemStack> getRunes(Player player) {
+        ArrayList<ItemStack> items = new ArrayList<>();
+        for(int i = 1; i <= 3; i++) {
+            items.add(getItem(player, "룬" + i));
+        }
+        return items;
+        /*
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "item.rune");
         if(!pdc.has(key, PersistentDataType.BYTE_ARRAY)) {
@@ -769,9 +796,15 @@ public class EquipmentManager implements Listener {
             items.add(new ItemStack(Material.AIR));
             return items;
         }
-        return (ArrayList<ItemStack>) Serializer.deserializeBukkitObject(pdc.get(key, PersistentDataType.BYTE_ARRAY));
+         */
     }
-    public static void setRunes(Player player, ArrayList<ItemStack> orginalItems) {
+    public static void setRunes(Player player, ArrayList<ItemStack> items) {
+        int i = 1;
+        for(ItemStack it : items) {
+            setItem(player, "룬" + i, ItemSaver.reloadItem(it));
+            i++;
+        }
+        /*
         PersistentDataContainer pdc = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "item.rune");
         ArrayList<ItemStack> items = new ArrayList<>();
@@ -779,6 +812,7 @@ public class EquipmentManager implements Listener {
             items.add(ItemSaver.reloadItem(it));
         }
         pdc.set(key, PersistentDataType.BYTE_ARRAY, Serializer.serializeBukkitObject(items));
+         */
     }
     private static ItemStack getRiding(Player player) {
         return getItem(player, "라이딩");
@@ -794,6 +828,9 @@ public class EquipmentManager implements Listener {
     }
 
     public static void loadEquipmentsFromDataBase(Player player, CountDownLatch latch, String uuid) {
+        if(!equipmentData.containsKey(player)) {
+            equipmentData.put(player, new HashMap<>());
+        }
         try {
             DataBase dataBase = new DataBase();
             ResultSet resultSet = dataBase.executeQuery(String.format("SELECT * FROM equipmentData WHERE uuid = '%s'", uuid));

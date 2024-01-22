@@ -23,6 +23,16 @@ commands:
     permission: guardians.oper
     aliases:
       - 스펠사용리로드
+  megaphone:
+    usage: /test
+    permission: guardians.user
+    aliases:
+      - 확성기
+  partyMenu:
+    usage: /partyMenu
+    permission: guardians.user
+    aliases:
+      - 파티
   chat:
     usage: /test
     permission: guardians.user
@@ -182,7 +192,7 @@ commands:
   party:
     usage: /party
     permission: guardians.user
-    aliases: [invite, 파티초대, 파티, p, recruit]
+    aliases: [invite, 파티초대, p, recruit]
   accept:
     usage: /accept
     permission: guardians.user
