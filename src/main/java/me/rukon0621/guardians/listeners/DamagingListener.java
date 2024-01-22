@@ -474,7 +474,8 @@ public class DamagingListener implements Listener {
                     //Msg.send(player,  "&6"+name+"&f : &e몬스터를 성공적으로 처치하였습니다.", pfix);
                     //Msg.send(player, "&7     - 처치 참여 인원 : " + attackersSize + "명");
                     //Msg.send(player, String.format("&7     - 처치 기여도 : %.2f%%", contribution));
-
+                    Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%d명 중 %.1f%%&7)", name, attackersSize, contribution), pfix);
+                    /*
                     if(contribution == 100) Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%.0f%%&7 &8| &7장비 경험치: &f%.2f)", name, contribution, LevelData.getDropExp(level)), pfix);
                     else Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%d명 중 %.1f%%&7 &8| &7장비 경험치: &f%.2f)", name, attackersSize, contribution, LevelData.getDropExp(level)), pfix);
                     List<String> levelUP = EquipmentManager.addExp(player, LevelData.getDropExp(level) * contribution / 100);
@@ -486,6 +487,7 @@ public class DamagingListener implements Listener {
                         Msg.send(player, "&e" + sb.toString().replaceFirst(", ", "") +"&f의 레벨이 올랐습니다! 레벨에 따라 능력치와 품질이 변동됩니다.", pfix);
                         EquipmentManager.reloadEquipment(player, false);
                     }
+                     */
                 }
             }
         }.runTaskLater(plugin, 3);
