@@ -36,6 +36,7 @@ public class ItemDataCommandsTabComp implements TabCompleter {
         argument1.add("행운력설정");
         argument1.add("장신구설정");
         argument1.add("스텟설정");
+        argument1.add("아다만트석");
         argument1.add("요구레벨설정");
         argument1.add("제작레벨설정");
         argument1.add("지속시간");
@@ -77,7 +78,7 @@ public class ItemDataCommandsTabComp implements TabCompleter {
             else if (args[0].equals("스텟설정")) {
                 return TabCompleteUtils.searchAtList(stats, args[1].toUpperCase());
             }
-            else if (args[0].equals("등급")) {
+            else if (args[0].equals("등급") || args[0].equals("아다만트석")) {
                 return TabCompleteUtils.searchAtList(itemGrades, args[1].toUpperCase());
             }
             else if (args[0].equals("요구무기타입")) {
@@ -87,10 +88,10 @@ public class ItemDataCommandsTabComp implements TabCompleter {
                 return ItemSaver.searchItemSaverNames(args[1]);
             }
         }
-        if(args[0].equals("속성설정")) {
-            if(args.length==3) return TabCompleteUtils.searchAtSet(ItemData.getAttrList(), args[2]);
+        if(args.length==3) {
+            if(args[0].equals("아다만트석")) return TabCompleteUtils.searchAtList(stats, args[2].toUpperCase());
+            else if(args[0].equals("속성설정")) return TabCompleteUtils.searchAtSet(ItemData.getAttrList(), args[2]);
         }
-
         return result;
     }
 }

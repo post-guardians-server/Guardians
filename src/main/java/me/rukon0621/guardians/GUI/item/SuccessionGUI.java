@@ -1,11 +1,9 @@
 package me.rukon0621.guardians.GUI.item;
 
-import me.rukon0621.guardians.data.EnhanceLevel;
-import me.rukon0621.guardians.data.ItemData;
-import me.rukon0621.guardians.data.LevelData;
-import me.rukon0621.guardians.data.TypeData;
+import me.rukon0621.guardians.data.*;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
+import me.rukon0621.guardians.helper.Rand;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.gui.buttons.Button;
 import me.rukon0621.gui.windows.ItemSelectableWindow;
@@ -125,6 +123,11 @@ public class SuccessionGUI extends ItemSelectableWindow {
                 //bookItem.setAmount(bookItem.getAmount() - 1);
                 dataB.setQuality(Math.max(dataA.getQuality() * (100 - decreasingQuality) / 100, 40));
                 dataB.setEnhanceLevel(EnhanceLevel.values()[Math.max(0, dataA.getEnhanceLevel().ordinal() - decreasingEnhance)]);
+                List<StoneData> stoneData = dataA.getAllStoneData();
+                if(!stoneData.isEmpty()) {
+                    stoneData.forEach(data -> dataB.addStoneData(data));
+                    dataB.removeStoneData(Rand.randInt(0, dataB.getAllStoneData().size() - 1));
+                }
                 dataB.setLevel(dataA.getLevel() - decreasingLevel);
                 dataB.setExp((long) (dataA.getExpPercentage() / 100 * ItemData.getMaxExpAtLevel(dataB.getLevel())));
                 dataB.setCraftLevel(Math.max(dataA.getCraftLevel(), dataB.getCraftLevel()));
@@ -144,12 +147,12 @@ public class SuccessionGUI extends ItemSelectableWindow {
             public ItemStack getIcon() {
                 ItemClass it = new ItemClass(new ItemStack(Material.SCUTE), "&c【 계승 진행하기 】");
                 it.setCustomModelData(7);
-                it.addLore("&e\uE011\uE00C\uE00C계승이란?");
-                it.addLore("&f계승을 진행하면 &4원래의 무기는 소멸&f되고");
-                it.addLore("&f계승을 받은 장비는 품질이 현재의 90%가 되며 강화 수치가 " + decreasingEnhance + " 감소되어 스펙이 귀속됩니다.");
-                it.addLore("&f단 품질은 40이하로 내려가지 않으며 장비 레벨은 원래 장비에서 " + decreasingLevel + "만큼 감소합니다.");
-                it.addLore("&7(기존 아이템의 품질이 40보다 낮았다면 품질이 40으로 복구됩니다.)");
-                it.addLore("&f두 장비의 요구레벨이 " + ALLOWED_LEVEL_DIF + " 초과로 차이나면 한 번에 계승할 수 없습니다.");
+                it.addLore("&e\uE011\uE00C\uE00C계승을 하면?");
+                it.addLore("&f- 강화 수치: " + decreasingEnhance + "강 감소");
+                it.addLore("&f- 아이템 레벨 " + decreasingLevel + " 감소");
+                it.addLore("&f- 품질 x0.9배 (40% 이하로 내려가지 않음)");
+                it.addLore("&f- 아다만트석 무작위 1개 소멸");
+                it.addLore("&f두 장비의 요구레벨이 &c" + ALLOWED_LEVEL_DIF + " 초과&f로 차이나면 한 번에 계승할 수 없습니다.");
                 it.addLore(" ");
                 if(failStatus != null) it.addLore("&c" + failStatus.msg);
                 else it.addLore("&f\uE011\uE00C\uE00C&e쉬프트 좌클릭&f하여 계승을 진행합니다.");

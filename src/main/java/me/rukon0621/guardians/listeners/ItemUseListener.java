@@ -4,6 +4,7 @@ import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.GUI.crafting.CraftAcceleratingWindow;
 import me.rukon0621.guardians.GUI.item.QualityUpgradeWindow;
 import me.rukon0621.guardians.GUI.item.SuccessionGUI;
+import me.rukon0621.guardians.GUI.item.enhance.StoneUseWindow;
 import me.rukon0621.guardians.areawarp.Area;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.data.ItemData;
@@ -98,6 +99,9 @@ public class ItemUseListener implements Listener {
         }
         else {
             switch (type) {
+                case "아다만트석" -> {
+                    new StoneUseWindow(player, player.getInventory().getItemInMainHand());
+                }
                 case "가디언 패스" -> {
                     PaymentData pdc = new PaymentData(player);
                     if(pdc.getPremiumPassReward() >= 0) {

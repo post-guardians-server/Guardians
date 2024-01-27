@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import static me.rukon0621.guardians.main.pfix;
 
 public class ItemDataCommands implements CommandExecutor {
-    public static String[] arguments = {"기본값", "퀘스트아이템", "거래불가","영혼추출불가", "스텟설정","요구레벨설정", "제작레벨설정","중요한물건","가공불가","요구무기타입","무기설정","방어구설정","행운력설정","장신구설정","지속시간","레벨", "강화", "등급","유효시즌","세이버", "속성설정", "속성목록","가공횟수","타입목록", "리로드"};
+    public static String[] arguments = {"기본값", "퀘스트아이템", "거래불가","영혼추출불가", "스텟설정","요구레벨설정", "아다만트석", "제작레벨설정","중요한물건","가공불가","요구무기타입","무기설정","방어구설정","행운력설정","장신구설정","지속시간","레벨", "강화", "등급","유효시즌","세이버", "속성설정", "속성목록","가공횟수","타입목록", "리로드"};
 
     public ItemDataCommands() {
         main.getPlugin().getCommand("itemdata").setExecutor(this);
@@ -653,6 +653,35 @@ public class ItemDataCommands implements CommandExecutor {
                 Msg.send(player, "올바른 스텟 이름을 입력해주세요.");
             }
         }
+        else if (args[0].equals("아다만트석")) {
+            if(args.length < 4) {
+                usage(player, args[0], true);
+                return true;
+            }
+            if(player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
+                Msg.warn(player, "손에 아이템을 들어주세요.");
+                return true;
+            }
+
+            try {
+                double value = Double.parseDouble(args[3]);
+                Stat stat = Stat.valueOf(args[2]);
+                ItemClass item = new ItemClass(player.getInventory().getItemInMainHand());
+                if(item.getLore().isEmpty()) {
+                    item.addLore("&7아다만트의 힘이 깃든 아다만트석이다.");
+                    item.addLore("&f우클릭&7하여 무기를 선택하고 힘을 부여할 수 있다.");
+                }
+                ItemGrade grade = ItemGrade.valueOf(args[1]);
+                ItemData itemData = new ItemData(item.getItem());
+                itemData.addStoneData(new StoneData(grade, stat, value));
+                player.getInventory().setItemInMainHand(itemData.getItemStack());
+                Msg.send(player, "설정되었습니다.");
+            } catch (NumberFormatException e) {
+                Msg.warn(player, "제대로된 수치를 써주세요.");
+            } catch (IllegalArgumentException e) {
+                Msg.warn(player, "제대로된 등급을 써주세요.");
+            }
+        }
         else {
             usages(player);
         }
@@ -676,6 +705,9 @@ public class ItemDataCommands implements CommandExecutor {
         }
         else if(arg.equals("제작레벨설정")) {
             Msg.send(player, "&6/아이템데이터 제작레벨설정 <레벨>");
+        }
+        else if(arg.equals("아다만트석")) {
+            Msg.send(player, "&6/아이템데이터 아다만트석 <등급> <스텟> <수치>");
         }
         else if(arg.equals("등급")) {
             Msg.send(player, "&6/아이템데이터 등급 <등급>");

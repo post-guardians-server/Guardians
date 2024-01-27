@@ -8,6 +8,7 @@ import me.rukon0621.dungeonwave.fieldwave.FieldWave;
 import me.rukon0621.guardians.GUI.ChannelWindow;
 import me.rukon0621.guardians.GUI.item.*;
 import me.rukon0621.guardians.GUI.item.enhance.EnhanceGUI;
+import me.rukon0621.guardians.GUI.item.enhance.StoneRemoveWindow;
 import me.rukon0621.guardians.account.AccountManager;
 import me.rukon0621.guardians.afk.AfkConfirmWindow;
 import me.rukon0621.guardians.areawarp.AreaManger;
@@ -1053,6 +1054,9 @@ public class StoryManager {
             }
             else if(actionKey.equalsIgnoreCase("batchRank")) {
                 RukonPVP.inst().getPvpManager().batch(player);
+            }
+            else if(actionKey.equalsIgnoreCase("stoneRemove")) {
+                new StoneRemoveWindow(player);
             }
 
             //!javaAction:CASTSHOP=name=<moneyType>

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -581,7 +582,7 @@ public class ItemData {
                 }
                 else if (section==25) {
                     if (key.equals("stones")) {
-                        getStoneData().forEach(d -> item.addLore(d.toLore()));
+                        getAllStoneData().forEach(d -> item.addLore(d.toLore()));
                     }
                 }
                 else if (section==30) {
@@ -839,7 +840,7 @@ public class ItemData {
             data.putIfAbsent(attr, 0);
             data.put(attr, data.get(attr).intValue() + getAttrLevel(attr));
         }
-        getStoneData().forEach(d -> d.applyToPlayer(player));
+        getAllStoneData().forEach(d -> d.applyToPlayer(player));
         return data;
     }
 
@@ -1366,10 +1367,10 @@ public class ItemData {
 
     public void addStoneData(StoneData stoneData) {
         if(!sectionMap.containsKey(25)) setStoneData(new ArrayList<>());
-        getStoneData().add(stoneData);
+        getAllStoneData().add(stoneData);
     }
     public void removeStoneData(int indexBasedOne) {
-        List<StoneData> list = getStoneData();
+        List<StoneData> list = getAllStoneData();
         list.remove(indexBasedOne - 1);
         if(list.isEmpty()) {
             removeSection(25);
@@ -1384,7 +1385,11 @@ public class ItemData {
         dataMap.put("stones", list);
     }
 
-    private List<StoneData> getStoneData() {
+    @Nullable
+    public StoneData getStoneData(int oneBasedIndex) {
+        return getAllStoneData().size() < oneBasedIndex ? null : getAllStoneData().get(oneBasedIndex - 1);
+    }
+    public List<StoneData> getAllStoneData() {
         int section = 25;
         if(!sectionMap.containsKey(section)) return new ArrayList<>();
         return (List<StoneData>) dataMap.get("stones");

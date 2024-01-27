@@ -55,7 +55,7 @@ public class EquipmentManager implements Listener {
     private static HashMap<Player, Integer> playerInformationPage;
     private static final HashMap<UUID, Double> cachedTotalPower = new HashMap<>();
     private static final int[] informationIconSlots = new int[]{18,19,20,27,28,29};
-    private static final int informationMaxPage = 4; //내 정보의 페이지 수
+    private static final int informationMaxPage = 5; //내 정보의 페이지 수
     public static final double maxEvade = 25;
 
     public static HashMap<UUID, Double> getCachedTotalPower() {
@@ -498,6 +498,16 @@ public class EquipmentManager implements Listener {
                 }
             }
         }
+        else if (page==5) {
+            it.addLore("&e『 샘플링으로 얻은 스텟 』");
+            for(Stat stat : Stat.values()) {
+                if(!stat.isShowStat()) continue;
+                double value = stat.getCollection(player);
+                if(value == 0) continue;
+                if(stat.isUsingPercentage()) it.addLore(String.format("&7%s &f+%.2f%%", stat.getKorName(), value * 100));
+                else it.addLore(String.format("&7%s &f+%.2f", stat.getKorName(), value));
+            }
+        }
         it.addLore(" ");
         it.addLore("&e\uE011 클릭하여 페이지 넘기기");
         return it.getItem();
@@ -549,8 +559,15 @@ public class EquipmentManager implements Listener {
         for(int slot : informationIconSlots) {
             if(e.getRawSlot()==slot) {
                 int page = playerInformationPage.get(player);
-                page++;
-                if(page > informationMaxPage) page = 1;
+                if(e.getClick().equals(ClickType.LEFT)) {
+                    page++;
+                    if(page > informationMaxPage) page = 1;
+                }
+                else if(e.getClick().equals(ClickType.RIGHT)) {
+                    page--;
+                    if(page <= 0) page = informationMaxPage;
+                }
+                else return;
                 playerInformationPage.put(player, page);
                 reloadInformationIcon(player, e.getInventory());
                 player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);

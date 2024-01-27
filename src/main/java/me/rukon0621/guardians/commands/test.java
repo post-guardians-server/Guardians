@@ -2,6 +2,7 @@ package me.rukon0621.guardians.commands;
 
 import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.variables.Variable;
+import me.rukon0621.guardians.GUI.item.enhance.StoneRemoveWindow;
 import me.rukon0621.guardians.helper.DataBase;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.Serializer;
@@ -39,6 +40,7 @@ public class test extends AbstractCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(!(sender instanceof Player player)) return false;
+        new StoneRemoveWindow(player);
         return true;
     }
 
