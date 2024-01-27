@@ -79,7 +79,7 @@ public class QuestInProgress implements ConfigurationSerializable {
         if(!(quest.getCompleteNpc().equals("즉시 완료")||quest.getCompleteNpc().equals("즉시완료"))) {
             if(quest.getCompleteNpc().equalsIgnoreCase("click")) {
                 it.addLore(" ");
-                it.addLore("#f8d97d\uE011\uE200\uE200&e좌클릭#f8d97d하여 퀘스트를 완료하십시오.");
+                it.addLore("#f8d97d\uE011\uE200\uE200&b좌클릭#f8d97d하여 퀘스트를 완료하십시오.");
             }
             else {
                 it.addLore(" ");
@@ -106,7 +106,7 @@ public class QuestInProgress implements ConfigurationSerializable {
         ArrayList<ItemStack> items = new ArrayList<>();
         reloadQuest();
         ArrayList<ItemStack> beRemoved = new ArrayList<>();
-        if(entity!=null) {
+        if(!quest.getCompleteNpc().equals("click") && entity!=null) {
             if(!quest.getCompleteNpc().equals(Msg.recolor(entity.getName()))) return false;
         }
 
@@ -233,8 +233,15 @@ public class QuestInProgress implements ConfigurationSerializable {
         if(quest.isRepeatable()) {
             Map<String, Long> cooltime = DialogQuestManager.getQuestCooltime(player);
             PaymentData pay = new PaymentData(player);
-            if(pay.getRemainOfBertBlessing() > 0)  cooltime.put(name, new Date().getTime() + quest.getRepeatTimer()*800);
-            else cooltime.put(name, System.currentTimeMillis() + quest.getRepeatTimer()*1000);
+
+            if(quest.isDailyReset()) {
+                cooltime.put(name, System.currentTimeMillis() + 86400000L);
+            }
+            else {
+                if(pay.getRemainOfBertBlessing() > 0)  cooltime.put(name, new Date().getTime() + quest.getRepeatTimer()*800);
+                else cooltime.put(name, System.currentTimeMillis() + quest.getRepeatTimer()*1000);
+            }
+
             DialogQuestManager.setQuestCooltime(player, cooltime);
         }
 

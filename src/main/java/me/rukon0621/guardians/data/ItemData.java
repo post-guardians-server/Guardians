@@ -4,7 +4,6 @@ import me.rukon0621.guardians.GUI.item.ItemDisassembleWindow;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import me.rukon0621.pay.RukonPayment;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * ItemData 클래스는 아이템 로어에 존재하는 모든 정보를 담는 클래스다.
+ * ItemData 클래스는 아이템 로어에 존재하는 모든 정보를 담는 객체다.
  *
  * 표기만 다를 뿐 레벨 1과 0은 같다. (0은 ?로 표기된다.)
  *
@@ -90,11 +89,11 @@ public class ItemData {
     /**
      * 아이템 레벨업시 각 레벨당 필요한 경험치의 양
      * @param level 필요 경험치 양을 구할 레벨
-     * @return 1000 배율된 레벨당 필요경험치
+     * @return 레벨당 필요경험치
      */
     public static long getMaxExpAtLevel(int level) {
-        if(level>maxLevel) return levelData.get(maxLevel) * 1000L;
-        return levelData.getOrDefault(level, levelData.get(1)) * 1000L;
+        if(level>maxLevel) return levelData.get(maxLevel);
+        return levelData.getOrDefault(level, levelData.get(1));
     }
     /**
      * 아이템 레벨업시 각 레벨당 필요한 경험치의 양
@@ -105,7 +104,6 @@ public class ItemData {
         if(level>maxLevel) return levelData.get(maxLevel) * 1000L;
         return levelData.getOrDefault(level, levelData.get(1)) * 1000L;
     }
-
 
     public static void reloadItemData() {
         armorType = new HashSet<>();
@@ -137,20 +135,32 @@ public class ItemData {
         levelData.put(3, 3L);
         levelData.put(4, 4L);
         levelData.put(5, 4L);
-        levelData.put(6, 5L);
+        levelData.put(6, 4L);
         levelData.put(7, 5L);
-        levelData.put(8, 6L);
-        levelData.put(9, 6L);
-        levelData.put(10, 7L);
-        levelData.put(11, 7L);
-        levelData.put(12, 8L);
-        levelData.put(13, 8L);
-        levelData.put(14, 9L);
-        levelData.put(15, 10L);
-        levelData.put(16, 12L);
-        levelData.put(17, 14L);
-        for(int i = 18; i < LevelData.maxLevel; i++) {
-            levelData.put(i, 10000L);
+        levelData.put(8, 5L);
+        levelData.put(9, 5L);
+        levelData.put(10, 6L);
+        levelData.put(11, 6L);
+        levelData.put(12, 7L);
+        levelData.put(13, 7L);
+        levelData.put(14, 8L);
+        levelData.put(15, 9L);
+        levelData.put(16, 10L);
+        levelData.put(17, 12L);
+        levelData.put(18, 16L);
+        levelData.put(19, 22L);
+        levelData.put(20, 30L);
+        levelData.put(21, 43L);
+        levelData.put(22, 60L);
+        levelData.put(23, 80L);
+        levelData.put(24, 120L);
+        levelData.put(25, 180L);
+        levelData.put(26, 260L);
+        levelData.put(27, 380L);
+        levelData.put(28, 510L);
+        levelData.put(29, 680L);
+        for(int i = 30; i < LevelData.maxLevel; i++) {
+            levelData.put(i, 999999L);
         }
         //최소, 최고레벨 필요 경험치
         levelData.put(0, 1L);
@@ -212,7 +222,6 @@ public class ItemData {
     private static double getQualityMultiplier(double quality) {
         return (1 - QUALITY_MULTIPLIER) + (quality / 100 * QUALITY_MULTIPLIER);
     }
-
 
     /**
      *
@@ -438,6 +447,22 @@ public class ItemData {
                 int level = Integer.parseInt(datas[1].trim());
                 addAttr(attrName, level);
             }
+            /*
+            \uE01A - 일반 보석
+            \uE01B - 언커먼 보석
+            \uE01C - 유니크 보석
+            \uE01D - 에픽 보석
+            \uE01E - 레전드 보석
+            \uE01F - 에이션트 보석
+             */
+            else if (lore.startsWith("\uE01A")
+                    || lore.startsWith("\uE01B")
+                    || lore.startsWith("\uE01C")
+                    || lore.startsWith("\uE01D")
+                    || lore.startsWith("\uE01E")
+                    || lore.startsWith("\uE01F")) {
+                addStoneData(new StoneData(lore));
+            }
 
             else {
                 extraLore.add(coloredLore);
@@ -553,6 +578,11 @@ public class ItemData {
                     if(badAttrList.contains(key)) item.addLore(String.format("&f\uE001&7%s Lv.%d", key, getAttrLevel(key)));
                     else if (goodAttrList.contains(key)) item.addLore(String.format("&f\uE002#88eeff%s Lv.%d", key, getAttrLevel(key)));
                     else if (rareAttrList.contains(key)) item.addLore(String.format("&f\uE003#ffaaaa%s Lv.%d", key, getAttrLevel(key)));
+                }
+                else if (section==25) {
+                    if (key.equals("stones")) {
+                        getStoneData().forEach(d -> item.addLore(d.toLore()));
+                    }
                 }
                 else if (section==30) {
                     switch (key) {
@@ -781,7 +811,10 @@ public class ItemData {
         if(getExpLonged() >= getLongedMaxExp()) {
             setExpLonged(getExpLonged() - getLongedMaxExp());
             setLevel(getLevel() + 1);
-            if(!qualityProtecting) setQuality(getQuality() - Rand.randDouble(0, 2));
+            if(!qualityProtecting) {
+                if(getLevel() < 20) setQuality(getQuality() - Rand.randDouble(0, getQuality() / 80));
+                else setQuality(getQuality() - Rand.randDouble(0, getQuality() / 60));
+            }
             return addExpByLong(0, qualityProtecting, levelLimit);
         }
         return 0L;
@@ -793,21 +826,20 @@ public class ItemData {
      * @param data 각종 스텟을 담고 있는 맵
      * @return 새로운 정보가 갱신된 맵
      */
-    public HashMap<String, Number> mappingEquipmentStatus(HashMap<String, Number> data) {
+    public HashMap<String, Number> applyEquipmentStatToPlayer(Player player, HashMap<String, Number> data) {
         for(String key : getSection(5)) {
             Stat stat = Stat.getStatByCodeName(key);
             if(stat == null) continue;
             if(stat.isUsingPercentage()) data.put(key, data.getOrDefault(key, 0).doubleValue() + (getStat(stat) + getAddedStat(stat)) / 100);
             else data.put(key, data.getOrDefault(key, 0).doubleValue() + getStat(stat) + getAddedStat(stat));
         }
-
-
         //전체 속성만 영향을 미침
         //방어 관통도 영향을 미침
         for(String attr : getAttrs()) {
             data.putIfAbsent(attr, 0);
             data.put(attr, data.get(attr).intValue() + getAttrLevel(attr));
         }
+        getStoneData().forEach(d -> d.applyToPlayer(player));
         return data;
     }
 
@@ -1330,6 +1362,32 @@ public class ItemData {
         int section = 20;
         if(!sectionMap.containsKey(section)) return new ArrayList<>();
         return getSection(section);
+    }
+
+    public void addStoneData(StoneData stoneData) {
+        if(!sectionMap.containsKey(25)) setStoneData(new ArrayList<>());
+        getStoneData().add(stoneData);
+    }
+    public void removeStoneData(int indexBasedOne) {
+        List<StoneData> list = getStoneData();
+        list.remove(indexBasedOne - 1);
+        if(list.isEmpty()) {
+            removeSection(25);
+        }
+    }
+
+    private void setStoneData(List<StoneData> list) {
+        int section = 25;
+        if(!dataMap.containsKey("stones")) {
+            if(!getSection(section).contains("stones")) getSection(section).add("stones");
+        }
+        dataMap.put("stones", list);
+    }
+
+    private List<StoneData> getStoneData() {
+        int section = 25;
+        if(!sectionMap.containsKey(section)) return new ArrayList<>();
+        return (List<StoneData>) dataMap.get("stones");
     }
 
     //Section 30

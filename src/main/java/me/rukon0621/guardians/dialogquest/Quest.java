@@ -53,6 +53,7 @@ public class Quest {
     private final Location navigatingTarget;
     private final double leastContribution;
     private final int endEventDelay;
+    private final boolean dailyReset;
 
     public Quest(String name, Configure config) {
         this.name = name;
@@ -90,6 +91,7 @@ public class Quest {
         this.iconItem = (ItemStack) config.getConfig().get(name+".icon", new ItemStack(Material.BOOK));
         this.lores = (ArrayList<String>) config.getConfig().getList(name+ ".lore" , new ArrayList<>());
 
+        dailyReset = config.getConfig().getBoolean(name + ".dailyReset", false);
 
         this.endEventDelay = config.getConfig().getInt(name+".endEventDelay", 60);
         try {
@@ -167,6 +169,10 @@ public class Quest {
         }
     }
 
+    public boolean isDailyReset() {
+        return dailyReset;
+    }
+
     public ItemStack getIcon(Player player) {
         ItemClass it = new ItemClass(new ItemStack(Material.ENCHANTED_BOOK));
         PaymentData pyd = new PaymentData(player);
@@ -178,8 +184,13 @@ public class Quest {
         }
         it.addLore(" ");
         if(isRepeatable) {
-            if(pyd.getRemainOfBertBlessing() > 0) it.addLore("&b※퀘스트 쿨타임: " + DateUtil.formatDate((long) (repeatTimer*0.8)) + " &7(신의 가호 시간 감소 적용중)");
-            else it.addLore("&e※퀘스트 쿨타임: " + DateUtil.formatDate(repeatTimer));
+            if(isDailyReset()) {
+                it.addLore("&e※퀘스트 쿨타임: 매일 자정에 초기화");
+            }
+            else {
+                if(pyd.getRemainOfBertBlessing() > 0) it.addLore("&b※퀘스트 쿨타임: " + DateUtil.formatDate((long) (repeatTimer*0.8)) + " &7(신의 가호 시간 감소 적용중)");
+                else it.addLore("&e※퀘스트 쿨타임: " + DateUtil.formatDate(repeatTimer));
+            }
             it.addLore(" ");
             it.addLore("&e※클리어시 피로도 1 증가");
             it.addLore(String.format("&f현재 피로도: %d &7/ &f%d &c(매일 0으로 초기화됨)", pdc.getFatigue(), pdc.getMaxFatigue()));
@@ -331,6 +342,12 @@ public class Quest {
         if(DialogQuestManager.getCompletedQuests(player).contains(name)) {
             if(isRepeatable) {
                 if(DialogQuestManager.getQuestCooltime(player).containsKey(name)) {
+
+                    if(dailyReset) {
+                        Msg.warn(player, "이 퀘스트는 자정이 지나면 다시 받을 수 있습니다.", pfix);
+                        return;
+                    }
+
                     long time = DialogQuestManager.getQuestCooltime(player).get(name) - new Date().getTime();
                     if(time > 0) {
                         Msg.send(player, "&e이 퀘스트를 다시 받으려면 "+ DateUtil.formatDate(time/1000)+"를 기다려야합니다.", pfix);

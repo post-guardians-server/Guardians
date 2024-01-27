@@ -1,5 +1,8 @@
 package me.rukon0621.guardians.events;
 
+import me.rukon0621.dungeonwave.RukonWave;
+import me.rukon0621.dungeonwave.fieldwave.FieldWave;
+import me.rukon0621.dungeonwave.fieldwave.FieldWaveManager;
 import me.rukon0621.guardians.GUI.TitleWindow;
 import me.rukon0621.guardians.bar.BarManager;
 import me.rukon0621.guardians.data.PlayerData;
@@ -13,16 +16,21 @@ import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.offlineMessage.OfflineMessageManager;
 import me.rukon0621.pay.PaymentData;
+import me.rukon0621.teseion.Main;
+import me.rukon0621.teseion.Teseion;
+import me.rukon0621.teseion.TeseionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import static me.rukon0621.guardians.main.pfix;
@@ -108,6 +116,18 @@ public class WorldPeriodicEvent {
         PlayerData pdc = new PlayerData(player);
         PaymentData pyd = new PaymentData(player);
         pyd.setChangeLimit(0);
+
+        LocalDate cntDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
+
+
+        //출첵 초기화
+        if(cntDate.getMonth() != pdc.getLastLogin().getMonth() || cntDate.getYear() != pdc.getLastLogin().getYear()) {
+            pdc.setVoteDays(0);
+            Msg.send(player, "1달이 지나 추천 출석 체크가 초기화되었습니다!", pfix);
+        }
+
+
+        pdc.setLastLogin(cntDate);
         if(pyd.getRemainOfJackBlessing() > 0) {
             if(pdc.getUnlearnChance() < 6) pdc.setUnlearnChance(6);
         }
@@ -127,8 +147,21 @@ public class WorldPeriodicEvent {
             } catch (Exception ignored) {
             }
         }
+
         ArrayList<QuestInProgress> qips = DialogQuestManager.getQuestsInProgress(player);
-        //qips.removeIf(qip -> DialogQuestManager.getQuestData().get(qip.getName()).isGuardianQuest());
+        Map<String, Long> questCooltimeMap = DialogQuestManager.getQuestCooltime(player);
+        for(String name : DialogQuestManager.getDailyResetQuests()) {
+            questCooltimeMap.remove(name);
+        }
+        FieldWaveManager fwManager = RukonWave.inst().getFieldWaveManager();
+        for(FieldWave wave : fwManager.getDailyResetFw()) {
+            fwManager.resetCooldown(player, wave.getName());
+        }
+        TeseionManager tsManager = Main.getPlugin().getTeseionManager();
+        for(Teseion teseion : tsManager.getDailyResetTeseion()) {
+            teseion.setPlayerCool(player, System.currentTimeMillis());
+        }
+
 
         Iterator<QuestInProgress> itr = qips.iterator();
         while (itr.hasNext()) {

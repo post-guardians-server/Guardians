@@ -195,6 +195,11 @@ public enum Stat {
         new PlayerData(player).getData().put("base" + codeName, value);
     }
 
+    //내재 수치 (플레이어 몸 자체의 스텟 값)
+    public void addBase(Player player, double value) {
+        setBase(player, getBase(player) + value);
+    }
+
     //추가 스텟 (스킬 등으로 얻은 임시 버프)
     public void setAdd(Player player, double value) {
         new PlayerData(player).getData().put("add" + codeName, value);

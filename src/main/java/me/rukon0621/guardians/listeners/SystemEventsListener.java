@@ -1,5 +1,7 @@
 package me.rukon0621.guardians.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
+import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import com.nisovin.magicspells.events.ConditionsLoadingEvent;
 import com.nisovin.magicspells.events.PassiveListenersLoadingEvent;
 import com.nisovin.magicspells.events.SpellEffectsLoadingEvent;
@@ -34,6 +36,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,6 +55,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -372,6 +376,7 @@ public class SystemEventsListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
+        //player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 99999999, 120, false, false, false));
         if(RukonInstance.inst().getInstanceManager().isPlayerInInstance(player)) return;
         RegionManager.getPlayerRegion(player).clear();
         PlayerData pdc = new PlayerData(player);
@@ -409,6 +414,14 @@ public class SystemEventsListener implements Listener {
         Location loc = e.getLocation();
         if(loc.getBlock().getType().equals(Material.AIR)) return;
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onSpectateStart(PlayerStartSpectatingEntityEvent e) {
+        if(e.getPlayer().isOp()) return;
+        if(e.getNewSpectatorTarget().getType().equals(EntityType.PLAYER)) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler

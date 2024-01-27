@@ -36,6 +36,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -174,7 +175,6 @@ public class LogInOutListener implements Listener, PluginMessageListener {
                 }
             }
         }.runTaskLater(main.getPlugin(), 40);
-
         Player player = e.getPlayer();
         player.teleportAsync(LocationSaver.getLocation("tutoblack"));
         if(!isServerFullyEnabled) {
@@ -189,6 +189,7 @@ public class LogInOutListener implements Listener, PluginMessageListener {
         }
 
         player.getInventory().clear();
+        //player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 99999999, 120, false, false, false));
         player.setNoDamageTicks(0);
         loadingPlayers.add(player.getName());
         player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, 1, 0.8f);

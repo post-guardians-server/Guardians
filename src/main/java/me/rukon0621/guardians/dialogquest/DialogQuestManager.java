@@ -63,6 +63,9 @@ public class DialogQuestManager implements Listener {
     private static final String answerGuiName = "&f\uF000\uF012";
     private static final List<String> dialogFileNames = new ArrayList<>();
     private static final List<String> questFileNames = new ArrayList<>();
+
+    private static final Set<String> dailyResetQuests = new HashSet<>();
+
     public static final String questItemGuiName = "&f\uF000\uF01B";
     private static boolean isReloading = false;
 
@@ -286,12 +289,15 @@ public class DialogQuestManager implements Listener {
             @Override
             public void run() {
                 questData.clear();
+                dailyResetQuests.clear();
                 Configure config = getQuestPathConfig();
                 if(config.getFile().length()==0L) {
                     Bukkit.getLogger().severe(config.getFile().getName() + " - 파일이 비어있습니다. 작댁 바보 멍청이");
                 }
                 for(String name : config.getConfig().getKeys(false)) {
-                    questData.put(name, new Quest(name, getQuestConfig(name)));
+                    Quest quest = new Quest(name, getQuestConfig(name));
+                    if(quest.isDailyReset()) dailyResetQuests.add(quest.getName());
+                    questData.put(name, quest);
                 }
                 questFileNames.clear();
                 for(String path : DialogQuestManager.getQuestPathConfig().getConfig().getKeys(false)) {
@@ -301,6 +307,10 @@ public class DialogQuestManager implements Listener {
                 latch.countDown();
             }
         }.runTaskAsynchronously(plugin);
+    }
+
+    public static Set<String> getDailyResetQuests() {
+        return dailyResetQuests;
     }
 
     public static void reloadQIP(Player player) {
@@ -1263,6 +1273,7 @@ public class DialogQuestManager implements Listener {
             if(qip == null) return;
             if (quest.getSort() == 2) {
                 completingQuest.put(player, qip);
+                player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1.5f);
                 quest.openQuestCompletingMenu(player);
             }
             else {
@@ -1513,7 +1524,7 @@ public class DialogQuestManager implements Listener {
         for (QuestInProgress qip : getQuestsInProgress(player)) {
             Quest quest = getQuestData().get(qip.getName());
             if (quest.getSort() == 2) {
-                if(!Msg.color(quest.getCompleteNpc()).equals(entity.getName())) continue;
+                if(!Msg.color(quest.getCompleteNpc()).equals(entity.getName()) || quest.getCompleteNpc().equalsIgnoreCase("click")) continue;
                 player.playSound(player, Sound.ITEM_ARMOR_EQUIP_GOLD, 1, (float) Rand.randDouble(0.8, 1.3));
                 interactingEntity.put(player, e.getRightClicked());
                 completingQuest.put(player, qip);

@@ -1,7 +1,6 @@
 package me.rukon0621.guardians;
 
 import com.nisovin.magicspells.MagicSpells;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.rukon0621.guardians.account.AccountCommand;
 import me.rukon0621.guardians.account.AccountManager;
 import me.rukon0621.guardians.afk.AfkManager;
@@ -55,6 +54,10 @@ import me.rukon0621.guardians.storage.StorageManager;
 import me.rukon0621.guardians.story.StoryCommands;
 import me.rukon0621.guardians.story.StoryManager;
 import me.rukon0621.guardians.story.variable.VariableManager;
+import me.rukon0621.guardians.vote.VoteListener;
+import me.rukon0621.guardians.vote.VoteManager;
+import me.rukon0621.guardians.vote.VoteRewardSetCommand;
+import me.rukon0621.guardians.vote.VoteWindowCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -80,6 +83,7 @@ public class main extends JavaPlugin {
     private SkillTreeManager skillTreeManager;
     private VariableManager variableManager;
     private SpellUseManager spellUseManager;
+    private VoteManager voteManager;
     private AfkManager afkManager;
     public static String DB_NAME;
     public static String PLUGIN_FOLDER_NAME;
@@ -171,6 +175,7 @@ public class main extends JavaPlugin {
         mobTypeManager = new MobTypeManager();
         skillTreeManager = new SkillTreeManager();
         skillTreeManager.reload();
+        voteManager = new VoteManager();
 
         //Commands
         new test();
@@ -227,6 +232,8 @@ public class main extends JavaPlugin {
         new AfkShopCommand();
         new MegaphoneCommand();
         new PartyCommand();
+        new VoteWindowCommand();
+        new VoteRewardSetCommand();
 
         //Events
         new SystemEventsListener();
@@ -315,5 +322,9 @@ public class main extends JavaPlugin {
 
     public SpellUseManager getSpellUseManager() {
         return spellUseManager;
+    }
+
+    public VoteManager getVoteManager() {
+        return voteManager;
     }
 }

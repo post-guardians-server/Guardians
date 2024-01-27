@@ -425,8 +425,6 @@ public class DamagingListener implements Listener {
 
     @EventHandler
     public void onKill(EntityDeathEvent e) {
-
-
         //특수효과: 슬레이어
         Player killer = e.getEntity().getKiller();
         int slayerLevel = EquipmentManager.getEquipmentAttrLevel(killer, "슬레이어");
@@ -570,22 +568,36 @@ public class DamagingListener implements Listener {
         else {
             BuffData buffData = RukonBuff.inst().getBuffManager().getPlayerBuffData(player);
             ItemData buff = new ItemData(new ItemStack(Material.SCUTE));
-            int add = buffData.getRemainSecondOfBuff(Stat.LUCK);
-            if(add==-1) {
-                buff.setDuration(min);
-            }
-            else {
-                buff.setDuration(add / 60 + min);
-            }
 
             Msg.send(player, " ");
             if(AreaManger.getArea(pdc.getArea()).pvpEnabled()) {
+                int add = buffData.getRemainSecondOfBuff(Stat.ATTACK_DAMAGE_PER);
+                if(buffData.getValueOfBuff(Stat.ATTACK_DAMAGE_PER) != DEATH_PENALTY_ATTACK) {
+                    add = -1;
+                }
+
+                if(add==-1) {
+                    buff.setDuration(min);
+                }
+                else {
+                    buff.setDuration(add / 60 + min);
+                }
                 buff.setStat(Stat.ATTACK_DAMAGE_PER, DEATH_PENALTY_ATTACK);
                 buff.setStat(Stat.ARMOR_PER, DEATH_PENALTY_ARMOR);
                 buff.setStat(Stat.MOVE_SPEED, DEATH_PENALTY_MOVEMENT);
-                Msg.send(player, String.format("&c데스 패널티로 인해 %d분간 쇠약 상태에 걸렸습니다. &4(PVP 지역에서 사망하여 공격력, 방어력, 이속, 행운력이 크게 감소합니다.)", min), pfix);
+                Msg.send(player, String.format("&c데스 패널티로 인해 %d분간 쇠약 상태에 걸렸습니다. &4(PVP 지역에서 사망하여 공격력, 방어력, 이속이 크게 감소합니다.)", min), pfix);
             }
             else {
+                int add = buffData.getRemainSecondOfBuff(Stat.LUCK);
+                if(buffData.getValueOfBuff(Stat.LUCK) != DEATH_PENALTY_LUCK) {
+                    add = -1;
+                }
+                if(add==-1) {
+                    buff.setDuration(min);
+                }
+                else {
+                    buff.setDuration(add / 60 + min);
+                }
                 Msg.send(player, String.format("&6데스 패널티로 인해 %d분간 행운력 저하 상태에 걸렸습니다. 행운력이 " + -DEATH_PENALTY_LUCK + "만큼 감소합니다.", min), pfix);
             }
             Msg.send(player, " ");

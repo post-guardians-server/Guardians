@@ -187,6 +187,9 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                 else if (window_status.equals(STATUS.LOW_QUALITY)) {
                     Msg.warn(player, "장비의 품질이 5% 이하면 강화할 수 없습니다.");
                 }
+                else if (window_status.equals(STATUS.MAX_LEVEL)) {
+                    Msg.warn(player, "현재 달성 가능한 최대레벨에 도달한 장비입니다. 장비의 레벨은 플레이어의 레벨보다 높아질 수 없습니다.");
+                }
                 else {
 
                     Map<TOTEM, Integer> totemMap = TOTEM.getTotemSlotMap(ItemLevelUpWindow.this);
@@ -293,9 +296,10 @@ public class ItemLevelUpWindow extends SingleEquipmentSelectWindow {
                         window_status = STATUS.LOW_TOTEM_LEVEL;
                         return icon.getItem();
                     }
-                    if(itemData.getLevel() >= maxLevel) {
+                    PlayerData pdc = new PlayerData(player);
+                    if(itemData.getLevel() >= pdc.getLevel()) {
                         window_status = STATUS.MAX_LEVEL;
-                        icon.addLore("&c선택된 장비는 이미 최고 레벨을 달성했습니다.");
+                        icon.addLore("&c선택된 장비는 현재 달성 가능한 최대 레벨을 달성했습니다.");
                     }
                     else if (itemData.getQuality() <= 5) {
                         icon.addLore("&c장비의 품질이 5% 이하면 강화할 수 없습니다.");

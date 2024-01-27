@@ -123,6 +123,9 @@ public class LevelData {
                 }
             }.runTaskLater(main.getPlugin(), 60);
         }
+        else if(pdc.getLevel()==18) {
+            StoryManager.readStory(player, "18레벨달성");
+        }
         else if(pdc.getLevel()==26) {
             new BukkitRunnable() {
                 @Override

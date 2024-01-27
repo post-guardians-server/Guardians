@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionEffectType;
 public class PotionManager {
     public static void effectGive(LivingEntity target, PotionEffectType type, double duration, int amplifier) {
         PotionEffect potion = new PotionEffect(type, (int) (duration*20), amplifier, false, false, false);
-        target.addPotionEffect(potion, false);
+        target.addPotionEffect(potion);
     }
 
     public static void effectRemove(LivingEntity target, PotionEffectType type) {

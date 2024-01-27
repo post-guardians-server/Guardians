@@ -95,6 +95,8 @@ public class PainSpell extends TargetedPowerSpell implements TargetedEntitySpell
             double localDamage = Math.abs(event.getDamage());
             if(powerAffectDamage) localDamage *= power + power2 - 1;
             else localDamage *= power2;
+
+            //if(localDamage < 0)
             localDamage *= -1;
 
             /*

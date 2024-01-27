@@ -44,6 +44,7 @@ me\rukon0621\guardians\addspells\effect\MessageEffect.class
 me\rukon0621\guardians\afk\AfkManager$1.class
 me\rukon0621\guardians\story\StoryManager$4.class
 me\rukon0621\guardians\skillsystem\skilltree\elements\SkillTree.class
+me\rukon0621\guardians\vote\VoteListener.class
 me\rukon0621\guardians\story\StoryManager$15.class
 me\rukon0621\guardians\GUI\TrashcanGUI$1.class
 me\rukon0621\guardians\data\PlayerData$4$2.class
@@ -61,6 +62,7 @@ me\rukon0621\guardians\addspells\BleedSpell$BleedTimer.class
 me\rukon0621\guardians\GUI\item\SuccessionGUI$FailStatus$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$4.class
 me\rukon0621\guardians\story\Cinematic.class
+me\rukon0621\guardians\vote\VoteWindow$2.class
 me\rukon0621\guardians\skillsystem\SkillManager.class
 me\rukon0621\guardians\addspells\KnockdownSpell.class
 me\rukon0621\guardians\events\GuardiansDamageEvent.class
@@ -79,6 +81,7 @@ me\rukon0621\guardians\GUI\TitleWindow$TitleButton$1.class
 me\rukon0621\guardians\main$1.class
 me\rukon0621\guardians\listeners\TeseionListener.class
 me\rukon0621\guardians\areawarp\AreaCommand.class
+me\rukon0621\guardians\vote\VoteWindowCommand.class
 me\rukon0621\guardians\listeners\TeseionListener$1.class
 me\rukon0621\guardians\party\PartyWindow$2.class
 me\rukon0621\guardians\story\StoryManager$20.class
@@ -90,7 +93,6 @@ me\rukon0621\guardians\barcast\BroadcastBar.class
 me\rukon0621\guardians\story\StoryManager$4$1.class
 me\rukon0621\guardians\GUI\item\ItemLevelUpWindow$TOTEM.class
 me\rukon0621\guardians\listeners\ItemUseListener.class
-me\rukon0621\guardians\listeners\VoteListener.class
 me\rukon0621\guardians\mythicAddon\machanics\ExecuteSpellMechanic.class
 me\rukon0621\guardians\dropItem\window\DropShowWindow$1$1$1.class
 me\rukon0621\guardians\skillsystem\SkillManager$3.class
@@ -145,6 +147,7 @@ me\rukon0621\guardians\GUI\item\QualityRandomWindow.class
 me\rukon0621\guardians\GUI\item\enhance\EnhanceGUI$FAIL_STATUS$1.class
 me\rukon0621\guardians\craft\craft\WaitingItem.class
 me\rukon0621\guardians\GUI\item\ItemLevelDownWindow$Result.class
+me\rukon0621\guardians\vote\VoteManager.class
 me\rukon0621\guardians\commands\MegaphoneCommand.class
 me\rukon0621\guardians\GUI\item\SuccessionGUI$3.class
 me\rukon0621\guardians\party\PartyWindow$PartyMemberButton.class
@@ -189,6 +192,7 @@ me\rukon0621\guardians\addspells\TargetedPowerSpell.class
 me\rukon0621\guardians\commands\CloseAndKickCommand$1.class
 me\rukon0621\guardians\skillsystem\SkillManager$1$1.class
 me\rukon0621\guardians\story\Cinematic$Repeater.class
+me\rukon0621\guardians\vote\VoteWindow$1.class
 me\rukon0621\guardians\addspells\triggers\GiveGuardiansDamageListener.class
 me\rukon0621\guardians\helper\Timer.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$readString$1.class
@@ -313,6 +317,7 @@ me\rukon0621\guardians\fastboard\FastReflection.class
 me\rukon0621\guardians\story\StoryManager.class
 me\rukon0621\guardians\GUI\ChannelWindow$1.class
 me\rukon0621\guardians\afk\AfkConfirmWindow.class
+me\rukon0621\guardians\vote\VoteRewardSetCommand.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$4.class
 me\rukon0621\guardians\account\AccountCommandTabComp$1.class
 me\rukon0621\guardians\story\Scene.class
@@ -323,6 +328,7 @@ me\rukon0621\guardians\party\PartyJoinCommand.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$7.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$QuestType.class
+me\rukon0621\guardians\vote\VoteWindow.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$1.class
 me\rukon0621\guardians\GUI\item\ItemLevelUpWindow.class
 me\rukon0621\guardians\afk\AfkManager.class

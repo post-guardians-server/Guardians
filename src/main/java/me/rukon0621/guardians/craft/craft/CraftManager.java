@@ -533,7 +533,7 @@ public class CraftManager implements Listener {
         }
 
         //(제작 결과물 레벨) - (플레이어 레벨 / 2) * 10%
-        if(!resultData.isRune()) percent += (resultData.getLevel() - (pdc.getLevel() * 0.7)) * 10;
+        if(!resultData.isRune()) percent += Math.max((resultData.getLevel() - pdc.getLevel()), -3) * 10;
         else resultData.setLevel(1);
         long cost = (long) (recipe.getCost() * percent / 100);
         if(cost < recipe.getCost() / 2) cost = recipe.getCost() / 2;

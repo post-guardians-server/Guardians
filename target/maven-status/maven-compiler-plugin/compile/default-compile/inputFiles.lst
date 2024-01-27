@@ -86,6 +86,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\equ
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\PlayerDataCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dropItem\DropCommandTabComp.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\skillsystem\SkillManager.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\vote\VoteWindow.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\party\PartyRecruitCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\blueprint\BlueprintCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\addspells\CoolModifySpell.java
@@ -106,6 +107,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\com
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\barcast\BarBroadcastCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\CloseAndKickCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\ReflectionUtil.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\vote\VoteRewardSetCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\story\variable\VariableManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\ExpCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\skillsystem\SkillEquipSlot.java
@@ -146,6 +148,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\lis
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\Configure.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\story\Scene.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\data\PlayerData.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\vote\VoteManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\listeners\SystemEventsListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\shop\ShopCommandsTabComp.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\LevelCommand.java
@@ -205,8 +208,8 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\cra
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\spawnerUtils\SpawnUtilCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\BlockDetector.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\MoneyGetCommand.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\vote\VoteWindowCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\fastboard\FastReflection.java
-C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\listeners\VoteListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\afk\AfkManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dialogquest\Quest.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dropItem\DropManager.java
@@ -218,6 +221,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\com
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\AfkCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\GUI\WeaponSkinWindow.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\mythicAddon\machanics\DamMechanic.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\vote\VoteListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\GetLocCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\listeners\ResourcePackListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dialogquest\DialogCommands.java

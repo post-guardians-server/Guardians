@@ -55,6 +55,16 @@ commands:
     permission: guardians.user
     aliases:
       - 잠수
+  voteCheck:
+    usage: /voteCheck
+    permission: guardians.user
+    aliases:
+      - 출석체크
+  setVoteReward:
+    usage: /setVoteReward
+    permission: guardians.oper
+    aliases:
+      - 출석보상설정
   afkShop:
     usage: /test
     permission: guardians.user

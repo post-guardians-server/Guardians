@@ -58,6 +58,10 @@ public class ItemClass {
         meta.setDisplayNameComponent(components);
     }
 
+    public String getName() {
+        return meta.getDisplayName();
+    }
+
     //아이템의 커스텀 모델 데이터를 설정
     public void setCustomModelData(int id) {
         meta.setCustomModelData(id);

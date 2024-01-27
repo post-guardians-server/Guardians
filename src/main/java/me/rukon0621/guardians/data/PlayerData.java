@@ -45,6 +45,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -57,7 +58,7 @@ public class PlayerData {
     private static final Map<Player, HashMap<String, Pair>> attributeAbility = new HashMap<>();
     private static final Map<Player, Map<String, Object>> playerDataMap = new HashMap<>();
     public static final int MAX_BACKPACK_SLOT = 300;
-    private static final int MAX_FATIGUE = 5;
+    private static final int MAX_FATIGUE = 10;
 
     public static Map<String, Object> getPlayerDataMap(Player player) {
         return playerDataMap.get(player);
@@ -108,6 +109,7 @@ public class PlayerData {
         db.execute("ALTER TABLE playerData ADD mute bigint;");
         db.execute("ALTER TABLE playerData ADD offHand blob;");
         db.execute("ALTER TABLE playerData ADD guild text;");
+        db.execute("ALTER TABLE playerData ADD voteDays int;");
         db.close();
     }
 
@@ -188,13 +190,14 @@ public class PlayerData {
                     statement.close();
 
 
-                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET completedSampling = ?, progressingSampling = ?, cntWeaponSkin = ?, weaponSkins = ?, mute = ?, offHand = ? WHERE uuid = '%s'", player.getUniqueId()));
+                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET completedSampling = ?, progressingSampling = ?, cntWeaponSkin = ?, weaponSkins = ?, mute = ?, offHand = ?, voteDays = ? WHERE uuid = '%s'", player.getUniqueId()));
                     statement.setBytes(1, Serializer.serialize(pdc.getCompletedSamplings()));
                     statement.setBytes(2, Serializer.serialize(pdc.getProgressingSamplings()));
                     statement.setInt(3, pdc.getWeaponSkinCmd());
                     statement.setBytes(4, Serializer.serializeBukkitObject(pdc.getWeaponSkins()));
                     statement.setLong(5, pdc.getMuteMillis());
                     statement.setBytes(6, Serializer.serializeBukkitObject(offHandItem));
+                    statement.setInt(7, pdc.getVoteDays());
                     /*
                     if(pdc.getGuildID() == null) {
                         statement.setString(7, null);
@@ -279,14 +282,14 @@ public class PlayerData {
             for(int i : invData.keySet()) {
                 player.getInventory().setItem(i, ItemSaver.reloadItem(invData.get(i)));
             }
-            if(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate().compareTo(resultSet.getDate(15).toLocalDate())>=1) {
+
+            pdc.setLastLogin(resultSet.getDate(15).toLocalDate());
+            if(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate().compareTo(pdc.getLastLogin())>=1) {
                 dailyEvent = true;
             }
-
-
+            pdc.setLastLogin(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate());
             ArrayList<WaitingItem> list = (ArrayList<WaitingItem>) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(16)), new ArrayList<>());
             pdc.setWaitingItems(list);
-
             String playingStory = resultSet.getString(17);
             if(playingStory!=null) {
                 LogInOutListener.getPreviousStories().put(player, playingStory);
@@ -321,6 +324,7 @@ public class PlayerData {
             } catch (NullPointerException e) {
                 pdc.setGuildID(null);
             }
+            pdc.setVoteDays(resultSet.getInt(44));
             resultSet.close();
             db.close();
             if(dailyEvent) {
@@ -445,6 +449,15 @@ public class PlayerData {
         data = playerDataMap.get(player);
     }
 
+    public LocalDate getLastLogin() {
+        return (LocalDate) data.getOrDefault("lastLogin", ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate());
+    }
+
+    public void setLastLogin(LocalDate date) {
+        data.put("lastLogin", date);
+    }
+
+
     public boolean isDataNull() {
         return data == null;
     }
@@ -551,23 +564,23 @@ public class PlayerData {
                 armorMUL = 0, healthMUL = 0, regen = 0, evade = 0;
         if(pdc.getArea().equals("루테티아")) moveSpeed = 200;
 
-        Stat.MOVE_SPEED.setBase(player, moveSpeed);
-        Stat.HEALTH.setBase(player, health);
-        Stat.ARMOR.setBase(player, armor);
-        Stat.ATTACK_DAMAGE.setBase(player, damage);
-        Stat.CRT_CHANCE.setBase(player, criticalChance);
-        Stat.CRT_DAMAGE.setBase(player, criticalDamage);
-        Stat.STUN_CHANCE.setBase(player, stunningChance);
-        Stat.STUN_DUR.setBase(player, stunningDuration);
-        Stat.ABSOLUTE_ARMOR.setBase(player, armorProportion);
-        Stat.COOL_DEC.setBase(player, coolDecrease);
-        Stat.REGEN.setBase(player, regen);
-        Stat.EVADE.setBase(player, evade);
+        Stat.MOVE_SPEED.addBase(player, moveSpeed);
+        Stat.HEALTH.addBase(player, health);
+        Stat.ARMOR.addBase(player, armor);
+        Stat.ATTACK_DAMAGE.addBase(player, damage);
+        Stat.CRT_CHANCE.addBase(player, criticalChance);
+        Stat.CRT_DAMAGE.addBase(player, criticalDamage);
+        Stat.STUN_CHANCE.addBase(player, stunningChance);
+        Stat.STUN_DUR.addBase(player, stunningDuration);
+        Stat.ABSOLUTE_ARMOR.addBase(player, armorProportion);
+        Stat.COOL_DEC.addBase(player, coolDecrease);
+        Stat.REGEN.addBase(player, regen);
+        Stat.EVADE.addBase(player, evade);
 
         //배율
-        Stat.ATTACK_DAMAGE_PER.setBase(player, Stat.ATTACK_DAMAGE_PER.getBase(player) + finalDamageMultiply);
-        Stat.ARMOR_PER.setBase(player, Stat.ARMOR_PER.getBase(player) + armorMUL);
-        Stat.HEALTH_PER.setBase(player, Stat.HEALTH_PER.getBase(player) + healthMUL);
+        Stat.ATTACK_DAMAGE_PER.addBase(player, Stat.ATTACK_DAMAGE_PER.getBase(player) + finalDamageMultiply);
+        Stat.ARMOR_PER.addBase(player, Stat.ARMOR_PER.getBase(player) + armorMUL);
+        Stat.HEALTH_PER.addBase(player, Stat.HEALTH_PER.getBase(player) + healthMUL);
 
         SkillTreeManager manager = main.getPlugin().getSkillTreeManager();
         Set<String> beRemoved = new HashSet<>();
@@ -616,6 +629,13 @@ public class PlayerData {
     }
     public String getArea() {
         return (String) data.get("area");
+    }
+
+    public void setVoteDays(int value) {
+        data.put("voteDays", value);
+    }
+    public int getVoteDays() {
+        return ((Number) data.get("voteDays")).intValue();
     }
 
     public void setGuildID(UUID value) {

@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.equipment;
 
-import com.craftmend.thirdparty.iolettuce.core.resource.EpollProvider;
 import me.rukon0621.buff.BuffData;
 import me.rukon0621.buff.RukonBuff;
 import me.rukon0621.guardians.GUI.MenuWindow;
@@ -14,20 +13,15 @@ import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.GUI.WeaponSkinWindow;
-import me.rukon0621.guardians.skillsystem.SkillManager;
-import me.rukon0621.guild.RukonGuild;
 import me.rukon0621.guild.element.Guild;
 import me.rukon0621.guild.element.GuildPlayer;
 import me.rukon0621.pay.PaymentData;
 import me.rukon0621.pay.RukonPayment;
-import me.rukon0621.pay.shop.MONEY;
 import me.rukon0621.pay.trade.TradeData;
 import me.rukon0621.sampling.RukonSampling;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -39,8 +33,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
@@ -148,7 +140,6 @@ public class EquipmentManager implements Listener {
             stat.setCollection(player, 0);
             stat.setEnvironment(player, 0);
         }
-
         PlayerData pdc = new PlayerData(player);
         HashMap<String, ItemStack> map = new HashMap<>();
         HashMap<String, ItemData> itemDataMap = new HashMap<>();
@@ -160,7 +151,7 @@ public class EquipmentManager implements Listener {
         map.put(key, weapon);
         if(!weapon.getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "투구";
@@ -168,7 +159,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getHelmet(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "갑옷";
@@ -176,7 +167,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getChest(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "바지";
@@ -184,7 +175,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getLeggings(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "부츠";
@@ -192,7 +183,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getBoots(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "목걸이";
@@ -200,7 +191,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getNecklace(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "벨트";
@@ -208,7 +199,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getBelt(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "반지";
@@ -216,7 +207,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getRing(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "라이딩";
@@ -224,7 +215,7 @@ public class EquipmentManager implements Listener {
         map.put(key, getRiding(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         key = "사증";
@@ -232,12 +223,12 @@ public class EquipmentManager implements Listener {
         map.put(key, getPendant(player));
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         if(!map.get(key).getType().equals(Material.AIR)) {
             itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).mappingEquipmentStatus(equipmentStatus);
+            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
         }
 
         //라이딩 장착 장비창 만들어야함
@@ -264,7 +255,7 @@ public class EquipmentManager implements Listener {
             else {
                 ItemData itemData = new ItemData(items.get(i));
                 itemDataMap.put(keyName, itemData);
-                equipmentStatus = itemData.mappingEquipmentStatus(equipmentStatus);
+                equipmentStatus = itemData.applyEquipmentStatToPlayer(player, equipmentStatus);
                 player.getInventory().setItem(1+i, items.get(i));
             }
         }
@@ -682,6 +673,7 @@ public class EquipmentManager implements Listener {
 
     public static void resetAllEquipment(Player player) {
         ItemStack air = new ItemStack(Material.AIR);
+        equipmentData.put(player, new HashMap<>());
         setWeapon(player, air);
         setHelmet(player, air);
         setChest(player, air);

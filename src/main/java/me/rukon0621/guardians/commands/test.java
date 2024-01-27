@@ -8,6 +8,8 @@ import me.rukon0621.guardians.helper.Serializer;
 import me.rukon0621.guardians.helper.SoloMode;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.storage.Storage;
+import me.rukon0621.guardians.vote.VoteListener;
+import me.rukon0621.guardians.vote.VoteRewardSetCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -37,21 +39,6 @@ public class test extends AbstractCommand {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(!(sender instanceof Player player)) return false;
-        DataBase db = new DataBase();
-        ResultSet set = db.executeQuery(String.format("SELECT * FROM chestData", player.getUniqueId()));
-        try {
-            while(set.next()) {
-                Map<Integer, String> map = (Map<Integer, String>) Serializer.deserializeBukkitObject(set.getBytes(1));
-                for(int slot : map.keySet()) {
-                    Storage str = (Storage) Serializer.deserializeBukkitObject(set.getBytes(2 + slot));
-                    str.getInventory();
-                }
-            }
-            set.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        db.close();
         return true;
     }
 

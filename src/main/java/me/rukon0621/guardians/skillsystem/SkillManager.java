@@ -6,6 +6,7 @@ import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.helper.*;
+import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.main;
 import me.rukon0621.ridings.RukonRiding;
 import me.rukon0621.rinstance.RukonInstance;
@@ -391,6 +392,7 @@ public class SkillManager implements Listener {
     @EventHandler
     public void onCastClick(PlayerInteractEvent e) {
         Player player = e.getPlayer();
+        if(LogInOutListener.getLoadingPlayers().contains(player.getName())) return;
         Map<String ,String> skills = playerSkillData.get(player);
         if(player.getInventory().getHeldItemSlot()!=0) return;
         if(RukonRiding.inst().getRideManager().isPlayerRiding(player)) {
@@ -426,6 +428,7 @@ public class SkillManager implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamageToCast(EntityDamageByEntityEvent e) {
         if(!(e.getDamager() instanceof Player player)) return;
+        if(LogInOutListener.getLoadingPlayers().contains(player.getName())) return;
         if(player.getInventory().getHeldItemSlot()!=0) return;
         if(e.getDamage() <= 0) return;
         if(RukonRiding.inst().getRideManager().isPlayerRiding(player)) {
@@ -460,6 +463,7 @@ public class SkillManager implements Listener {
     @EventHandler
     public void onCastByDrop(PlayerDropItemEvent e) {
         Player player = e.getPlayer();
+        if(LogInOutListener.getLoadingPlayers().contains(player.getName())) return;
         if(player.getInventory().getHeldItemSlot()!=0) return;
         if(RukonRiding.inst().getRideManager().isPlayerRiding(player)) {
             return;
