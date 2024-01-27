@@ -59,7 +59,7 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
             @Override
             public void addLore(ItemClass item, StoneUseWindow window) {
                 ItemData equipmentData = new ItemData(window.selectedEquipment);
-                item.addLore("&c아다만트석은 최대 " + equipmentData.getGrade().getStoneMaxSlots() + "개까지 부여할 수 있습니다.");
+                item.addLore("&f이 장비에는 최대 " + equipmentData.getGrade().getStoneMaxSlots() + "개까지 부여할 수 있습니다.");
             }
 
             @Override
