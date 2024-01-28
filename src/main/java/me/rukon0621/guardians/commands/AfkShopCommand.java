@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.commands;
 
-import me.rukon0621.guardians.afk.AfkConfirmWindow;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.listeners.DamagingListener;
 import me.rukon0621.guardians.main;

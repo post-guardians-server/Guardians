@@ -1,10 +1,8 @@
 package me.rukon0621.guardians.story;
 
 import me.rukon0621.guardians.data.PlayerData;
-import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.region.RegionManager;
-import me.rukon0621.guardians.story.StoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

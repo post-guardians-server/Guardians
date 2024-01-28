@@ -9,8 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import javax.print.DocFlavor;
-
 public class DailyEvent implements CommandExecutor {
     public static String[] arguments = {"test"};
 

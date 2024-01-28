@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.commands;
 
-import me.rukon0621.guardians.data.LevelData;
 import me.rukon0621.guardians.helper.Msg;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;

@@ -9,7 +9,6 @@ import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.helper.InvClass;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
-import me.rukon0621.guardians.helper.Opcmd;
 import me.rukon0621.guardians.listeners.DamagingListener;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
@@ -20,7 +19,6 @@ import me.rukon0621.guardians.skillsystem.SkillManager;
 import me.rukon0621.pay.blessing.BlessingWindow;
 import me.rukon0621.pay.pass.PassWindow;
 import me.rukon0621.rinstance.RukonInstance;
-//import me.rukon0621.rukonmarket.RukonMarket;
 import me.rukon0621.rukonmarket.RukonMarket;
 import me.rukon0621.sampling.windows.SamplingPacksWindow;
 import org.bukkit.Material;
@@ -37,7 +35,6 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -74,9 +71,7 @@ public class MenuWindow implements Listener {
             Msg.warn(player, String.format("전투 중에는 메뉴를 사용할 수 없습니다! 전투 종료까지 &e%.1f초 &c남았습니다!", DamagingListener.getRemainCombatTime(player)));
             return;
         }
-        if(RukonBuff.inst().getBuffManager().getPlayerBuffData(player).reloadCache()) {
-            EquipmentManager.reloadEquipment(player, false);
-        }
+        RukonBuff.inst().getBuffManager().reloadBuffStats(player);
         openPage();
         main.getPlugin().getServer().getPluginManager().registerEvents(this, main.getPlugin());
     }
@@ -110,7 +105,7 @@ public class MenuWindow implements Listener {
             lores.add("&7레벨, 디나르, 루나르, 세부 능력치 및 장비를 확인합니다.");
             lores.add("&7내정보 창에서 좌측 &6? 아이콘&7을 클릭하여");
             lores.add("&7더 많은 정보를 조회할 수 있습니다.");
-            if(!RukonBuff.inst().getBuffManager().getPlayerBuffData(player).getBuffData().isEmpty()) {
+            if(!RukonBuff.inst().getBuffManager().getBuffs(player).isEmpty()) {
                 lores.add(" ");
                 lores.add("&e\uE011\uE00C\uE00C현재 적용중인 버프가 있습니다.");
             }

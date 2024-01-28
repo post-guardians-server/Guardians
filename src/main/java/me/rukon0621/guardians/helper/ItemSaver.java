@@ -11,7 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,7 +162,9 @@ public class ItemSaver implements CommandExecutor {
                 reloaded.setQuality(original.getQuality());
             }
             reloaded.setSeason(-1);
-
+            if(!original.getAllStoneData().isEmpty()) {
+                reloaded.setAllStoneData(original.getAllStoneData());
+            }
             for(String attrName : original.getAttrs()) {
                 reloaded.setAttr(attrName, original.getAttrLevel(attrName));
             }

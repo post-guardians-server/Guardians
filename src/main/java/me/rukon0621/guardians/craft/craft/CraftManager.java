@@ -22,7 +22,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
@@ -533,7 +532,7 @@ public class CraftManager implements Listener {
         }
 
         //(제작 결과물 레벨) - (플레이어 레벨 / 2) * 10%
-        if(!resultData.isRune()) percent += Math.max((resultData.getLevel() - pdc.getLevel()), -3) * 10;
+        if(!resultData.isRune()) percent += Math.max((resultData.getLevel() - pdc.getLevel()), -10) * 10;
         else resultData.setLevel(1);
         long cost = (long) (recipe.getCost() * percent / 100);
         if(cost < recipe.getCost() / 2) cost = recipe.getCost() / 2;

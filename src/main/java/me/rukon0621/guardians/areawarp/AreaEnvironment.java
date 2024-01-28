@@ -4,14 +4,11 @@ import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.helper.ItemClass;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AreaEnvironment implements ConfigurationSerializable {

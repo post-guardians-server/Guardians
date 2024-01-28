@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.GUI.crafting;
 
-import me.rukon0621.guardians.craft.craft.CraftManager;
 import me.rukon0621.guardians.craft.craft.WaitingItem;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.DateUtil;

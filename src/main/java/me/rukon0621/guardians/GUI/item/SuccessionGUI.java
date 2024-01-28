@@ -1,6 +1,9 @@
 package me.rukon0621.guardians.GUI.item;
 
-import me.rukon0621.guardians.data.*;
+import me.rukon0621.guardians.data.EnhanceLevel;
+import me.rukon0621.guardians.data.ItemData;
+import me.rukon0621.guardians.data.StoneData;
+import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.Rand;
@@ -18,8 +21,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.awt.SystemColor.window;
 
 public class SuccessionGUI extends ItemSelectableWindow {
     private static final int ALLOWED_LEVEL_DIF = 11;

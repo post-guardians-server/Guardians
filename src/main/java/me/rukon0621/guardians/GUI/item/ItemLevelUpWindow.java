@@ -7,7 +7,6 @@ import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
-import me.rukon0621.guardians.helper.Rand;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
 import me.rukon0621.gui.buttons.Button;

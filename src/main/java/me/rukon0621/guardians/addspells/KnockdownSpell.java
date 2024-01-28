@@ -6,7 +6,6 @@ package me.rukon0621.guardians.addspells;//
 import com.nisovin.magicspells.spells.TargetedEntitySpell;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.util.TargetInfo;
-import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.PotionManager;

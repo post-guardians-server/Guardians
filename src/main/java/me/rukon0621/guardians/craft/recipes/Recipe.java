@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.craft.recipes;
 
-import com.craftmend.thirdparty.iolettuce.core.ScriptOutputType;
 import me.rukon0621.guardians.blueprint.BluePrintManager;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;

@@ -1,8 +1,7 @@
 package me.rukon0621.guardians.data;
 
-import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
-import me.rukon0621.buff.BuffData;
 import me.rukon0621.buff.RukonBuff;
+import me.rukon0621.buff.data.Buff;
 import me.rukon0621.dungeonwave.WaveData;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.craft.craft.WaitingItem;
@@ -21,7 +20,6 @@ import me.rukon0621.guardians.skillsystem.skilltree.SkillTreeManager;
 import me.rukon0621.guardians.skillsystem.skilltree.elements.SkillTree;
 import me.rukon0621.guardians.storage.StorageManager;
 import me.rukon0621.guardians.story.StoryManager;
-import me.rukon0621.guild.RukonGuild;
 import me.rukon0621.guild.element.Guild;
 import me.rukon0621.pay.PaymentData;
 import me.rukon0621.ridings.Riding;
@@ -171,7 +169,8 @@ public class PlayerData {
                     statement.setString(4, pdc.getTitle());
                     statement.setBytes(5, Serializer.serialize(pdc.getTitles()));
                     statement.setInt(6, pdc.getRank());
-                    statement.setBytes(7, Serializer.serializeBukkitObject(RukonBuff.inst().getBuffManager().getPlayerBuffData(player)));
+                    statement.setBytes(7, Serializer.serializeBukkitObject(RukonBuff.inst().getBuffManager().getBuffs(player)));
+
                     statement.setInt(8, pdc.getPvpPoint());
                     statement.setInt(9, pdc.getDeathCount());
                     statement.setInt(10, pdc.getSpiritOfHero());
@@ -303,7 +302,15 @@ public class PlayerData {
             pdc.setTitle(resultSet.getString(23));
             pdc.setTitles((List<String>) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(24)), new ArrayList<>()));
             pdc.setRank(resultSet.getInt(25));
-            RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player, (BuffData) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(26)), new BuffData(new HashMap<>())));
+
+            //RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player, (BuffData) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(26)), new BuffData(new HashMap<>())));
+            try {
+                RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player.getUniqueId(),
+                        (List<Buff>) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(26)) , new ArrayList<>()));
+            } catch (Exception e) {
+                RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player.getUniqueId(), new ArrayList<>());
+            }
+
             pdc.setPvpPoint(resultSet.getInt(27));
             pdc.setDeathCount(resultSet.getInt(28));
             pdc.setSpiritOfHero(resultSet.getInt(29));
@@ -535,7 +542,8 @@ public class PlayerData {
                         setRank(0);
                         setBlueprintsData(new HashSet<>());
                         setEnvironmentResistance(new HashMap<>());
-                        RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player, new BuffData(new HashMap<>()));
+                        //RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player, new BuffData(new HashMap<>()));
+                        RukonBuff.inst().getBuffManager().getPlayerBuffDataMap().put(player.getUniqueId(), new ArrayList<>());
                         EquipmentManager.resetAllEquipment(player);
                         PlayerData.setPlayerStun(player, false);
                         PotionManager.effectRemove(player, PotionEffectType.SLOW);

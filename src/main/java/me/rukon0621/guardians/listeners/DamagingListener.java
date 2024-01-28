@@ -5,20 +5,22 @@ import com.nisovin.magicspells.events.SpellTargetEvent;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import me.rukon0621.buff.BuffData;
+import me.rukon0621.buff.BuffManager;
 import me.rukon0621.buff.RukonBuff;
+import me.rukon0621.buff.data.Buff;
 import me.rukon0621.dungeonwave.RukonWave;
 import me.rukon0621.dungeonwave.wave.WaveManager;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.bar.BarManager;
-import me.rukon0621.guardians.data.*;
+import me.rukon0621.guardians.data.ItemData;
+import me.rukon0621.guardians.data.MobData;
+import me.rukon0621.guardians.data.PlayerData;
+import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.dialogquest.DialogQuestManager;
-import me.rukon0621.guardians.dropItem.Drop;
 import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.events.GuardiansDamageEvent;
 import me.rukon0621.guardians.helper.*;
-import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.mobType.MobTypeManager;
 import me.rukon0621.guardians.region.Region;
@@ -44,7 +46,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -406,11 +407,10 @@ public class DamagingListener implements Listener {
         mobData.addContribution(attacker, Math.min(e.getDamage(), le.getHealth()));
     }
 
-    /**
+    /*
      *
      * @param player player
      * @return 해당 플레이어가 버프를 먹을 수 있는지 반환, (데스패널티에 의해 버프를 못받을 수 있음)
-     */
     public static boolean checkCanGetBuff(Player player) {
         BuffData buffData = RukonBuff.inst().getBuffManager().getPlayerBuffData(player);
         if(buffData.getValueOfBuff(Stat.ATTACK_DAMAGE_PER)==DEATH_PENALTY_ATTACK) {
@@ -422,6 +422,7 @@ public class DamagingListener implements Listener {
         }
         return true;
     }
+    */
 
     @EventHandler
     public void onKill(EntityDeathEvent e) {
@@ -545,7 +546,6 @@ public class DamagingListener implements Listener {
             Msg.send(player, " ");
             return;
         }
-
         if(pdc.getDeathCount() < 3) {
             pdc.setDeathCount(pdc.getDeathCount() + 1);
             if(pdc.getDeathCount()==3) {
@@ -558,58 +558,30 @@ public class DamagingListener implements Listener {
             }
             return;
         }
-
-        int min = (int) Math.min((float) pdc.getLevel() / 3, 10);
         if(ItemData.removeItem(player, new ItemData(ItemSaver.getItem("데스패널티 보호 물약")), true)) {
             Msg.send(player, " ");
             Msg.send(player, "&a데스패널티 보호 물약에 의해 데스 패널티를 받지 않았습니다.", pfix);
             Msg.send(player, " ");
         }
         else {
-            BuffData buffData = RukonBuff.inst().getBuffManager().getPlayerBuffData(player);
-            ItemData buff = new ItemData(new ItemStack(Material.SCUTE));
-
-            Msg.send(player, " ");
+            int min = (int) Math.min((float) pdc.getLevel() / 3, 10);
+            BuffManager manager = RukonBuff.inst().getBuffManager();
+            Map<Stat, Double> statMap = new HashMap<>();
+            String penaltyName;
             if(AreaManger.getArea(pdc.getArea()).pvpEnabled()) {
-                int add = buffData.getRemainSecondOfBuff(Stat.ATTACK_DAMAGE_PER);
-                if(buffData.getValueOfBuff(Stat.ATTACK_DAMAGE_PER) != DEATH_PENALTY_ATTACK) {
-                    add = -1;
-                }
-
-                if(add==-1) {
-                    buff.setDuration(min);
-                }
-                else {
-                    buff.setDuration(add / 60 + min);
-                }
-                buff.setStat(Stat.ATTACK_DAMAGE_PER, DEATH_PENALTY_ATTACK);
-                buff.setStat(Stat.ARMOR_PER, DEATH_PENALTY_ARMOR);
-                buff.setStat(Stat.MOVE_SPEED, DEATH_PENALTY_MOVEMENT);
+                penaltyName = "PVP 데스패널티";
+                statMap.put(Stat.ATTACK_DAMAGE_PER, DEATH_PENALTY_ATTACK / 100);
+                statMap.put(Stat.ARMOR_PER, DEATH_PENALTY_ARMOR / 100);
+                statMap.put(Stat.MOVE_SPEED, DEATH_PENALTY_MOVEMENT);
+                statMap.put(Stat.LUCK, DEATH_PENALTY_LUCK);
                 Msg.send(player, String.format("&c데스 패널티로 인해 %d분간 쇠약 상태에 걸렸습니다. &4(PVP 지역에서 사망하여 공격력, 방어력, 이속이 크게 감소합니다.)", min), pfix);
             }
             else {
-                int add = buffData.getRemainSecondOfBuff(Stat.LUCK);
-                if(buffData.getValueOfBuff(Stat.LUCK) != DEATH_PENALTY_LUCK) {
-                    add = -1;
-                }
-                if(add==-1) {
-                    buff.setDuration(min);
-                }
-                else {
-                    buff.setDuration(add / 60 + min);
-                }
+                penaltyName = "데스패널티";
+                statMap.put(Stat.LUCK, DEATH_PENALTY_LUCK);
                 Msg.send(player, String.format("&6데스 패널티로 인해 %d분간 행운력 저하 상태에 걸렸습니다. 행운력이 " + -DEATH_PENALTY_LUCK + "만큼 감소합니다.", min), pfix);
             }
-            Msg.send(player, " ");
-            buff.setStat(Stat.LUCK, DEATH_PENALTY_LUCK);
-
-            try {
-                RukonBuff.inst().getBuffManager().getPlayerBuffData(player).addBuffData(buff);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            EquipmentManager.reloadEquipment(player, false);
+            manager.addBuff(player, new Buff(penaltyName, System.currentTimeMillis() + (60000L * min), statMap), true);
         }
     }
 }

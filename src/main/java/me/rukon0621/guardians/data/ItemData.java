@@ -1376,7 +1376,7 @@ public class ItemData {
     }
 
     public void addStoneData(StoneData stoneData) {
-        if(!sectionMap.containsKey(25)) setStoneData(new ArrayList<>());
+        if(!sectionMap.containsKey(25)) setAllStoneData(new ArrayList<>());
         getAllStoneData().add(stoneData);
     }
     public void removeStoneData(int indexBasedOne) {
@@ -1387,7 +1387,7 @@ public class ItemData {
         }
     }
 
-    private void setStoneData(List<StoneData> list) {
+    public void setAllStoneData(List<StoneData> list) {
         int section = 25;
         if(!dataMap.containsKey("stones")) {
             if(!getSection(section).contains("stones")) getSection(section).add("stones");

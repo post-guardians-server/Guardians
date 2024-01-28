@@ -1,15 +1,12 @@
 package me.rukon0621.guardians.story;
 
 import me.rukon0621.callback.LogManager;
-import me.rukon0621.callback.ProxyCallBack;
-import me.rukon0621.callback.RukonCallback;
 import me.rukon0621.dungeonwave.RukonWave;
 import me.rukon0621.dungeonwave.fieldwave.FieldWave;
 import me.rukon0621.guardians.GUI.ChannelWindow;
 import me.rukon0621.guardians.GUI.item.*;
 import me.rukon0621.guardians.GUI.item.enhance.EnhanceGUI;
 import me.rukon0621.guardians.GUI.item.enhance.StoneRemoveWindow;
-import me.rukon0621.guardians.account.AccountManager;
 import me.rukon0621.guardians.afk.AfkConfirmWindow;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.craft.craft.CraftManager;
@@ -19,7 +16,6 @@ import me.rukon0621.guardians.dialogquest.DialogQuestManager;
 import me.rukon0621.guardians.dialogquest.QuestInProgress;
 import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.equipmentLevelup.RuneLevelUpWindow;
-import me.rukon0621.guardians.events.WorldPeriodicEvent;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.listeners.OpenAudioListener;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
@@ -30,7 +26,6 @@ import me.rukon0621.guardians.shop.ShopManager;
 import me.rukon0621.guardians.storage.StorageManager;
 import me.rukon0621.guardians.story.variable.VariableManager;
 import me.rukon0621.gui.RukonGUI;
-import me.rukon0621.pay.runartrade.ExchangeWindow;
 import me.rukon0621.pay.shop.MONEY;
 import me.rukon0621.pay.shop.ShopWindow;
 import me.rukon0621.ridings.RideManager;
@@ -38,7 +33,6 @@ import me.rukon0621.ridings.RidingMenu;
 import me.rukon0621.ridings.RukonRiding;
 import me.rukon0621.rinstance.RukonInstance;
 import me.rukon0621.rpvp.RukonPVP;
-import me.rukon0621.guardians.story.Scene;
 import me.rukon0621.teseion.Main;
 import me.rukon0621.teseion.TeseionInstance;
 import me.rukon0621.teseion.event.ReceiveSignalEvent;
@@ -46,12 +40,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.playavalon.avnparty.AvNParty;
 import net.playavalon.avnparty.party.Party;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.logging.log4j.internal.LogManagerStatus;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -59,7 +50,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
-import static io.lumine.mythic.bukkit.utils.text.Text.DefaultFontInfo.e;
 import static me.rukon0621.guardians.main.pfix;
 
 public class StoryManager {

@@ -1,12 +1,10 @@
 package me.rukon0621.guardians.dropItem.window;
 
-import com.google.common.annotations.GwtIncompatible;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.helper.InvClass;
 import me.rukon0621.guardians.helper.Msg;
-import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
 import me.rukon0621.gui.buttons.Icon;
 import me.rukon0621.gui.windows.Window;
@@ -16,7 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DropShowWindow extends Window {

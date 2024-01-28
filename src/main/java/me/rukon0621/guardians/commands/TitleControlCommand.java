@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.commands;
 
-import com.google.common.escape.Escaper;
 import me.rukon0621.guardians.GUI.TitleWindow;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.ArgHelper;
@@ -11,17 +10,12 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
-import static me.rukon0621.guardians.main.pfix;
 
 public class TitleControlCommand extends AbstractCommand {
     public TitleControlCommand() {

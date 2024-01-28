@@ -10,7 +10,6 @@ import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.PotionManager;
 import me.rukon0621.guardians.main;
 import me.rukon0621.rpvp.RukonPVP;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -18,14 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
 import static me.rukon0621.guardians.main.pfix;
-import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
 
 public class SpellUseManager implements Listener {
 

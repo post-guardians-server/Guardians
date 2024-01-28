@@ -1,13 +1,9 @@
 package me.rukon0621.guardians.GUI;
 
-import com.craftmend.storm.api.builders.QueryBuilder;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import lombok.extern.java.Log;
 import me.rukon0621.guardians.data.PlayerData;
-import me.rukon0621.guardians.helper.Configure;
-import me.rukon0621.guardians.helper.FileUtil;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.listeners.LogInOutListener;
@@ -26,8 +22,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CountDownLatch;
 
-import static me.rukon0621.guardians.listeners.LogInOutListener.*;
-import static me.rukon0621.guardians.main.*;
+import static me.rukon0621.guardians.listeners.LogInOutListener.dataCategories;
+import static me.rukon0621.guardians.main.getPlugin;
+import static me.rukon0621.guardians.main.mainChannel;
 
 public class ChannelWindow extends Window implements PluginMessageListener {
     private final int maxPerChannel;

@@ -1,14 +1,10 @@
 package me.rukon0621.guardians.vote;
 
-import com.craftmend.thirdparty.iolettuce.core.output.MapOutput;
 import me.rukon0621.guardians.helper.Configure;
 import me.rukon0621.guardians.helper.FileUtil;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class VoteManager {

@@ -4,15 +4,12 @@ import com.nisovin.magicspells.spells.BuffSpell;
 import com.nisovin.magicspells.util.MagicConfig;
 import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.equipment.EquipmentManager;
-import org.apache.maven.model.plugin.LifecycleBindingsInjector;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class PowerSpell extends BuffSpell {
     private Stat stat;

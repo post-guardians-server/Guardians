@@ -12,7 +12,6 @@ import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.Rand;
 import me.rukon0621.gui.buttons.Button;
 import me.rukon0621.gui.buttons.Icon;
-import org.apache.logging.log4j.internal.LogManagerStatus;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static me.rukon0621.guardians.main.pfix;

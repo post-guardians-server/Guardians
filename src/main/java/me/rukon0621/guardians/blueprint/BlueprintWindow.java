@@ -1,7 +1,6 @@
 package me.rukon0621.guardians.blueprint;
 
 import me.rukon0621.guardians.GUI.MenuWindow;
-import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.main;
@@ -16,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class BlueprintWindow extends ScrollableWindow {
     private static final BluePrintManager manager = main.getPlugin().getBluePrintManager();

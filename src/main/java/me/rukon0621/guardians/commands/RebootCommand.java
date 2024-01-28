@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import static me.rukon0621.guardians.main.getPlugin;
-import static me.rukon0621.guardians.main.pfix;
 
 public class RebootCommand implements CommandExecutor {
     public static String[] arguments = {"basic"};

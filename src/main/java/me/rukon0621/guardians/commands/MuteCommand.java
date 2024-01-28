@@ -9,7 +9,6 @@ import me.rukon0621.guardians.helper.ArgHelper;
 import me.rukon0621.guardians.helper.DateUtil;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.TabCompleteUtils;
-import me.rukon0621.guardians.listeners.ChatEventListener;
 import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.main;
 import org.bukkit.Bukkit;
@@ -19,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -95,7 +93,7 @@ public class MuteCommand extends AbstractCommand implements Listener {
                     bo.writeLong(millis);
                 }
             };
-            Msg.send(player, "해당 플레이어의 채팅을 " + DateUtil.formatDate(millis / 1000L) + " 간 금지시켰습니다.", pfix);
+            Msg.send(player, "해당 플레이어의 채팅을 " + DateUtil.formatDate(millis / 1000L) + " 간 금지시켰습니다. 뮤트 이후 3일 이내로 디스코드의 티켓을 통해 이의를 제기할 수 있습니다.", pfix);
             LogManager.log(player, "mute", reason);
         }
         return true;

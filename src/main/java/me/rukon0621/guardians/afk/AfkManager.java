@@ -1,34 +1,23 @@
 package me.rukon0621.guardians.afk;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.*;
-
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
-import me.rukon0621.callback.LogManager;
 import me.rukon0621.callback.ProxyCallBack;
-import me.rukon0621.guardians.data.PlayerData;
-import me.rukon0621.guardians.helper.*;
+import me.rukon0621.guardians.helper.Couple;
+import me.rukon0621.guardians.helper.Msg;
+import me.rukon0621.guardians.helper.Rand;
 import me.rukon0621.guardians.main;
-import me.rukon0621.guardians.offlineMessage.OfflineMessageManager;
-import me.rukon0621.guardians.region.RegionManager;
 import me.rukon0621.rpvp.PvpManager;
 import me.rukon0621.rpvp.RukonPVP;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.*;
+
 import static me.rukon0621.guardians.main.getPlugin;
-import static me.rukon0621.guardians.main.pfix;
 
 public class AfkManager implements Listener {
 

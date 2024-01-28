@@ -3,7 +3,6 @@ package me.rukon0621.guardians.listeners;
 import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.GUI.crafting.CraftAcceleratingWindow;
 import me.rukon0621.guardians.GUI.item.QualityUpgradeWindow;
-import me.rukon0621.guardians.GUI.item.SuccessionGUI;
 import me.rukon0621.guardians.GUI.item.enhance.StoneUseWindow;
 import me.rukon0621.guardians.areawarp.Area;
 import me.rukon0621.guardians.areawarp.AreaManger;

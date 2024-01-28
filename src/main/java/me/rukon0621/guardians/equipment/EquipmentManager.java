@@ -1,8 +1,9 @@
 package me.rukon0621.guardians.equipment;
 
-import me.rukon0621.buff.BuffData;
+import me.rukon0621.buff.BuffManager;
 import me.rukon0621.buff.RukonBuff;
 import me.rukon0621.guardians.GUI.MenuWindow;
+import me.rukon0621.guardians.GUI.WeaponSkinWindow;
 import me.rukon0621.guardians.areawarp.AreaEnvironment;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.bar.BarManager;
@@ -12,7 +13,6 @@ import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
-import me.rukon0621.guardians.GUI.WeaponSkinWindow;
 import me.rukon0621.guild.element.Guild;
 import me.rukon0621.guild.element.GuildPlayer;
 import me.rukon0621.pay.PaymentData;
@@ -340,7 +340,7 @@ public class EquipmentManager implements Listener {
 
 
         //버프
-        RukonBuff.inst().getBuffManager().reloadPlayerBuff(player);
+        RukonBuff.inst().getBuffManager().reloadBuffStats(player);
 
         //샘플링
         RukonSampling.inst().getSamplingManager().reloadPlayerStat(player);
@@ -482,20 +482,19 @@ public class EquipmentManager implements Listener {
         }
         else if (page==4) {
             it.addLore("&e『 적용중인 버프 정보 』");
-            BuffData buffData = RukonBuff.inst().getBuffManager().getPlayerBuffData(player);
-            if(buffData.getBuffData().isEmpty()) {
+            BuffManager manager = RukonBuff.inst().getBuffManager();
+            if(manager.getBuffs(player).isEmpty()) {
                 it.addLore("&7현재 적용중인 버프가 없습니다.");
                 it.addLore("&7버프 아이템을 이용해 버프를 받아보세요!");
             }
             else {
-                for(String key : buffData.getBuffData().keySet()) {
-                    Stat stat = Stat.getStatByCodeName(key);
-                    if(stat==null) continue;
-                    Couple<Long, Double> buffDetail = buffData.getBuffData().get(key);
-                    long time = (buffDetail.getFirst() - System.currentTimeMillis())/1000;
-                    if(stat.isUsingPercentage())  it.addLore(String.format("%s%s %.2f%% &8| 남은 시간: %s", stat.getStatColor(), stat.getKorName(), buffDetail.getSecond() * 100, DateUtil.formatDate(time)));
-                    else it.addLore(String.format("%s%s %.2f &8| 남은 시간: %s", stat.getStatColor(), stat.getKorName(), buffDetail.getSecond(), DateUtil.formatDate(time)));
-                }
+                manager.getBuffs(player).forEach(buff -> {
+                    it.addLore("&f" + buff.getBuffName() + " &8| " + DateUtil.formatDate(buff.getRemainSec()));
+                    buff.getStatMap().forEach((stat, value) -> {
+                        if(stat.isUsingPercentage()) it.addLore(String.format("&7- %s %.2f%%", stat.getKorName(), value * 100));
+                        else it.addLore(String.format("&7- %s %.2f", stat.getKorName(), value));
+                    });
+                });
             }
         }
         else if (page==5) {

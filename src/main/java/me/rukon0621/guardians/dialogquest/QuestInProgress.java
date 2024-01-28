@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.dialogquest;
 
-import lombok.extern.java.Log;
 import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;

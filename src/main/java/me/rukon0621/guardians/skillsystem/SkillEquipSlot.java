@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.skillsystem;
 
-import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.helper.Msg;
 import org.bukkit.Material;

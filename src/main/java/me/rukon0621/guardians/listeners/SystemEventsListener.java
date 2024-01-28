@@ -1,7 +1,6 @@
 package me.rukon0621.guardians.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
-import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import com.nisovin.magicspells.events.ConditionsLoadingEvent;
 import com.nisovin.magicspells.events.PassiveListenersLoadingEvent;
 import com.nisovin.magicspells.events.SpellEffectsLoadingEvent;
@@ -22,13 +21,11 @@ import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.events.ItemClickEvent;
 import me.rukon0621.guardians.helper.Msg;
-import me.rukon0621.guardians.helper.PotionManager;
 import me.rukon0621.guardians.helper.Rand;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.region.Region;
 import me.rukon0621.guardians.region.RegionManager;
 import me.rukon0621.guardians.story.StoryManager;
-import me.rukon0621.pay.RukonPayment;
 import me.rukon0621.ridings.RideManager;
 import me.rukon0621.ridings.RukonRiding;
 import me.rukon0621.rinstance.RukonInstance;
@@ -49,14 +46,11 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;

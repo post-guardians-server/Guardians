@@ -1,8 +1,6 @@
 package me.rukon0621.guardians.blueprint;
 
-import com.nisovin.magicspells.shaded.org.apache.commons.analysis.function.Log;
 import me.rukon0621.callback.LogManager;
-import me.rukon0621.callback.ProxySender;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.ItemGrade;
 import me.rukon0621.guardians.data.PlayerData;

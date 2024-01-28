@@ -16,17 +16,15 @@ import com.nisovin.magicspells.util.BlockUtils;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.util.RegexUtil;
 import com.nisovin.magicspells.util.TargetInfo;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Pattern;
-
 import me.rukon0621.guardians.main;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 
 public final class TargetedMultiSpell extends TargetedSpell implements TargetedEntitySpell, TargetedLocationSpell {
     private static final Pattern DELAY_PATTERN = Pattern.compile("DELAY [0-9]+");

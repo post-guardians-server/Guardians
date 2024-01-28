@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.commands;
 
-import me.rukon0621.guardians.helper.ArgHelper;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.main;
 import org.bukkit.command.Command;
@@ -8,8 +7,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import static me.rukon0621.guardians.main.getPlugin;
 
 public class CloseAndKickCommand implements CommandExecutor {
     public static String[] arguments = {"basic"};

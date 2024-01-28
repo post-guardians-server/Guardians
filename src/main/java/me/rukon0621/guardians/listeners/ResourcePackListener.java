@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.listeners;
 
-import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

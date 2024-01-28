@@ -1,6 +1,5 @@
 package me.rukon0621.guardians.vote;
 
-import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
