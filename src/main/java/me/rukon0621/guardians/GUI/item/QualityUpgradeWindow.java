@@ -52,7 +52,6 @@ public class QualityUpgradeWindow extends SingleEquipmentSelectWindow {
                     return;
                 }
                 player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 0.8f);
-
                 double result = Rand.randDouble(range.getFirst(), range.getSecond());
                 Msg.send(player, String.format("&e품질이 변동되었습니다! &7( %.2f -> %.2f )", itemData.getQuality(), itemData.getQuality() + result), pfix);
                 StringBuilder sb = new StringBuilder("품질");

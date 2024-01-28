@@ -45,6 +45,10 @@ public abstract class   SingleEquipmentSelectWindow extends ItemSelectableWindow
             Msg.warn(player, "기존에 장착된 아이템을 제거해주세요.");
             return;
         }
+        if(player.getOpenInventory().getItem(i) != null && player.getOpenInventory().getItem(i).getAmount() != 1) {
+            Msg.warn(player, "한 번에 여러개의 아이템을 넣을 수 없습니다.");
+            return;
+        }
         map.put(getItemSlot(), new EquipmentButton(player.getOpenInventory().getItem(i), getItemSlot()) {
         });
         player.getOpenInventory().setItem(i, null);

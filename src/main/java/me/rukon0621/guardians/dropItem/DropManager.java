@@ -52,7 +52,6 @@ public class DropManager {
     public static void reloadAllDropData() {
         dropData = new HashMap<>();
         Configure pathConfig = getPathConfig();
-        pathConfig.saveConfig();
         dropPathList.clear();
         for(String name : pathConfig.getConfig().getKeys(false)) {
             System.out.println("드롭 로딩 중 - " + name);
@@ -130,7 +129,9 @@ public class DropManager {
         ArrayList<Drop> drops = new ArrayList<>();
         ArrayList<DropAttribute> dropAttrs = new ArrayList<>();
         dropAttrs.add(new DropAttribute("질김", 1, 0, 50));
-        drops.add(new Drop("슬라임의 점액", 5, 10, 2, dropAttrs, 50, 0, 0, 99999));
+        drops.add(new Drop("슬라임의 점액", 5, 10,
+                2, dropAttrs, 50, 0,
+                0, 99999, false));
         config = getDropDataConfig(name);
         config.getConfig().set(name, drops);
         config.saveConfig();

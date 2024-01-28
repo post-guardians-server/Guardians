@@ -275,6 +275,7 @@ public class PlayerData {
                         ptpMap.remove(player.getName());
                     }
                     else player.teleport(finalLocation);
+                    RukonPVP.inst().getPvpManager().removePvpPotions(player);
                 }
             }.runTaskLater(main.getPlugin(), 10);
             HashMap<Integer, ItemStack> invData = (HashMap<Integer, ItemStack>) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(14)), new HashMap<>());
@@ -340,7 +341,6 @@ public class PlayerData {
                             @Override
                             public void run() {
                                 WorldPeriodicEvent.dailyEvent(player);
-                                RukonPVP.inst().getPvpManager().removePvpPotions(player);
                             }
                         }.runTask(main.getPlugin());
                     }

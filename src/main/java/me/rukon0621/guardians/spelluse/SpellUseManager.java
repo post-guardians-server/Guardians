@@ -9,6 +9,7 @@ import me.rukon0621.guardians.helper.FileUtil;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.PotionManager;
 import me.rukon0621.guardians.main;
+import me.rukon0621.rpvp.RukonPVP;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,6 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 import static me.rukon0621.guardians.main.pfix;
+import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
 
 public class SpellUseManager implements Listener {
 
@@ -58,6 +60,10 @@ public class SpellUseManager implements Listener {
         if(!e.getItemData().getType().equals("차징형 버프 아이템")) return;
         if(!spellMapper.containsKey(Msg.uncolor(e.getItemData().getName()))) return;
         Player player = e.getPlayer();
+        if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
+            Msg.warn(player, "PVP장에서는 사용할 수 없습니다.");
+            return;
+        }
         if(new PlayerData(player).getLevel() < e.getItemData().getRequiredLevel()) {
             Msg.warn(player, "이 아이템의 요구 레벨보다 사용자의 레벨이 낮아 아이템을 사용할 수 없습니다.");
             return;

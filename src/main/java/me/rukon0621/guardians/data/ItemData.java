@@ -844,6 +844,16 @@ public class ItemData {
         return data;
     }
 
+    public Map<Stat, Double> getStatValue() {
+        Map<Stat, Double> statMap = new HashMap<>();
+        for(String key : getSection(5)) {
+            Stat stat = Stat.getStatByCodeName(key);
+            if(stat == null) continue;
+            statMap.put(stat, (Double) dataMap.getOrDefault(key, 0) / (stat.isUsingPercentage() ? 100 : 1));
+        }
+        return statMap;
+    }
+
 
     private void reloadItemStat(int originalLevel, int newLevel, EnhanceLevel enLevel, EnhanceLevel newEnLevel , double quality, double newQuality) {
         double scale = 1;

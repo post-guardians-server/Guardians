@@ -342,6 +342,7 @@ public class LogInOutListener implements Listener, PluginMessageListener {
             Msg.send(player, "크리스마스 이벤트가 끝나 메리스에서 루테티아로 귀환했습니다.");
         }
 
+        /*
         //신규 튜토리얼 관련 초기화
         if (pdc.getLevel() < 5 && !StoryManager.getReadStory(player).contains("flag_tutorial"))
             new BukkitRunnable() {
@@ -356,6 +357,7 @@ public class LogInOutListener implements Listener, PluginMessageListener {
                     player.teleport(LocationSaver.getLocation("start"));
                 }
             }.runTaskLater(plugin, 20L);
+         */
 
 
 

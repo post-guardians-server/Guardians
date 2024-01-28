@@ -44,6 +44,17 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
                 return new PlayerData(player).getMoney() < StoneData.getGrantPrice(window.itemData.getLevel(), window.itemData.getGrade());
             }
         },
+        RIDING("라이딩에는 부여할 수 없습니다..") {
+            @Override
+            public void addLore(ItemClass item, StoneUseWindow window) {
+                item.addLore("&c라이딩에는 사용할 수 없습니다.");
+            }
+
+            @Override
+            public boolean isFailed(StoneUseWindow window) {
+                return window.itemData.isRiding();
+            }
+        },
         LOW_EQUIPMENT_LEVEL("장비의 레벨이 아다만트석보다 낮을 수 없습니다.") {
             @Override
             public void addLore(ItemClass item, StoneUseWindow window) {

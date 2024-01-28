@@ -71,8 +71,8 @@ public class ItemDisassembleWindow extends SingleEquipmentSelectWindow {
                     items.add(item);
                 }
 
-                int amount = exp / DIVISION;
-                int remain = exp % DIVISION;
+                long amount = exp / DIVISION;
+                long remain = exp % DIVISION;
                 ItemStack book = LevelData.getEquipmentExpBook(DIVISION);
                 for(int i = 0; i < amount ; i++) {
                     items.add(book);

@@ -151,7 +151,7 @@ public class SuccessionGUI extends ItemSelectableWindow {
                 it.addLore("&f- 강화 수치: " + decreasingEnhance + "강 감소");
                 it.addLore("&f- 아이템 레벨 " + decreasingLevel + " 감소");
                 it.addLore("&f- 품질 x0.9배 (40% 이하로 내려가지 않음)");
-                it.addLore("&f- 아다만트석 무작위 1개 소멸");
+                //it.addLore("&f- 아다만트석 무작위 1개 소멸");
                 it.addLore("&f두 장비의 요구레벨이 &c" + ALLOWED_LEVEL_DIF + " 초과&f로 차이나면 한 번에 계승할 수 없습니다.");
                 it.addLore(" ");
                 if(failStatus != null) it.addLore("&c" + failStatus.msg);

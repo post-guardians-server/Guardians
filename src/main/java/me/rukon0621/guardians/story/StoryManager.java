@@ -598,6 +598,8 @@ public class StoryManager {
                                     else if (num <= 20) Msg.send(player, String.format("&e이 히든 요소는 &c%d회 &e발견된 꽤나 알려진 히든 요소입니다. &b히든 요소는 많이 발견될 수록 보상이 줄어듭니다!", num - 1), pfix);
                                     else Msg.send(player, String.format("&e이 히든 요소는 &c%d회 &e발견된 이미 많이 알려진 히든 요소입니다. &b히든 요소는 많이 발견될 수록 보상이 줄어듭니다!", num - 1), pfix);
                                 }
+                                Msg.send(player, " ");
+                                Msg.send(player, "&4히든 요소&c에 관련된 것은 유포 및 거래하실 수 없습니다.", pfix);
                             }
                         }.runTaskLater(plugin, 25);
                     }
