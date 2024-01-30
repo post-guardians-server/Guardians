@@ -105,38 +105,6 @@ public class LogInOutListener implements Listener, PluginMessageListener {
         Main.getPlugin().getTeseionManager().savePlayerData(player, latch);
     }
 
-    /*
-    public static void saveAllPlayerDataToDB() {
-        long start = System.currentTimeMillis();
-        onAllSaving = true;
-        CountDownLatch latch = new CountDownLatch(dataCategories * plugin.getServer().getOnlinePlayers().size());
-        for(Player player : plugin.getServer().getOnlinePlayers()) {
-            if(savingPlayers.contains(player.getName())) {
-                Bukkit.getLogger().warning(player.getName() + " : 저장 패스 INTERPRET");
-                continue;
-            }
-            else if(loadingPlayers.contains(player.getName())) {
-                Bukkit.getLogger().warning(player.getName() + " : 로딩 패스 INTERPRET");
-                continue;
-            }
-            saveAllDataToDB(player, latch);
-        }
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    latch.await(5, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                onAllSaving = false;
-                System.out.println("모든 플레이어의 정보가 저장되었습니다. 소요시간(ms) : " + (System.currentTimeMillis() - start));
-            }
-        }.runTaskAsynchronously(plugin);
-    }
-     */
-
     public static void fullyEnableServer() {
         isServerFullyEnabled = true;
         for(Player player : unloadedPlayers) {

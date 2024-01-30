@@ -7,6 +7,7 @@ import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.guardians.main;
+import me.rukon0621.guardians.party.PartyManager;
 import me.rukon0621.guardians.story.StoryManager;
 import me.rukon0621.teseion.Teseion;
 import me.rukon0621.teseion.event.TeseionClearEvent;
@@ -15,6 +16,7 @@ import net.playavalon.avnparty.party.Party;
 import net.playavalon.avnparty.player.AvalonPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,9 +30,12 @@ public class TeseionListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onTeseionClear(TeseionClearEvent e) {
-        if(e.isWithOutEffect()) return;
+        if(e.isWithOutEffect()) {
+            if(e.getTeseion().isGuildTeseion()) PartyManager.removeParty(e.getInstance().getParty());
+            return;
+        }
         Teseion teseion = e.getTeseion();
         Party party  = e.getInstance().getParty();
         int rewardLevel, leaderRewardLevel;
@@ -124,23 +129,28 @@ public class TeseionListener implements Listener {
         }
         MailBoxManager.giveAllOrMailAll(leader, leaderDrops);
         LogManager.stat(leader, "테세이온", e.getTeseion().getName(), 1);
-
-
     }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onTeseionFail(TeseionFailEvent e) {
         if(e.getTeseion().getName().equals("windroad")) {
             Player player = e.getInstance().getParty().getLeader().getPlayer();
-            if(StoryManager.isRead(player, "벤터스_고블린실패")) return;
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    StoryManager.readStory(player, "벤터스_고블린실패");
-                }
-            }.runTaskLater(main.getPlugin(), 40);
+            if(StoryManager.isRead(player, "벤터스_고블린실패")) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        StoryManager.readStory(player, "벤터스_고블린실패");
+                    }
+                }.runTaskLater(main.getPlugin(), 40);
+            }
         }
-
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onTeseionClearSlow(TeseionClearEvent e) {
+        if(e.getTeseion().isGuildTeseion()) PartyManager.removeParty(e.getInstance().getParty());
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onTeseionFailSlow(TeseionFailEvent e) {
+        if(e.getTeseion().isGuildTeseion()) PartyManager.removeParty(e.getInstance().getParty());
+    }
 }

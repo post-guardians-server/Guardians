@@ -83,7 +83,9 @@ public class SystemEventsListener implements Listener {
     public void onSwapHandItems(PlayerSwapHandItemsEvent e) {
         Player player = e.getPlayer();
         e.setCancelled(true);
-
+        if(LogInOutListener.getSavingPlayers().contains(player.getName()) && LogInOutListener.getLoadingPlayers().contains(player.getName())) {
+            return;
+        }
         if(StoryManager.getPlayingStory(player) != null) {
             Msg.warn(player, "지금은 메뉴를 사용할 수 없습니다.");
             return;

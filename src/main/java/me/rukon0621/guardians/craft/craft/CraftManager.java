@@ -209,10 +209,23 @@ public class CraftManager implements Listener {
             }
             //제작 취소
             else if (e.getClick()==ClickType.SHIFT_RIGHT) {
-                removeWaitingItem(player, index);
-                player.playSound(player, Sound.ITEM_SHIELD_BREAK, 1, 0.8f);
-                Msg.send(player, "&6아이템의 제작을 취소하였습니다.", pfix);
-                table.openCraftTableGUI(player, y);
+                player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, 1.5f);
+                new ConfirmWindow(player) {
+                    @Override
+                    public void addLoreToExecuteButton(ItemClass it) {
+                        it.addLore("&c정말로 제작중이던 아이템을 취소하시겠습니다.");
+                        it.addLore("&4제작 재료를 돌려받을 수 없습니다.");
+                        it.addLore(" ");
+                    }
+
+                    @Override
+                    public void execute() {
+                        removeWaitingItem(player, index);
+                        player.playSound(player, Sound.ITEM_SHIELD_BREAK, 1, 0.8f);
+                        Msg.send(player, "&6아이템의 제작을 취소하였습니다.", pfix);
+                        table.openCraftTableGUI(player, y);
+                    }
+                };
                 return;
             }
             else if (e.getClick()==ClickType.SHIFT_LEFT) {

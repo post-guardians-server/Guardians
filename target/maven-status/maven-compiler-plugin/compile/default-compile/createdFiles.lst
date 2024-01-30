@@ -114,6 +114,7 @@ me\rukon0621\guardians\addspells\MythicPainSpell.class
 me\rukon0621\guardians\GUI\item\SingleEquipmentSelectWindow.class
 me\rukon0621\guardians\story\Scene$2.class
 me\rukon0621\guardians\helper\ActionBar.class
+me\rukon0621\guardians\craft\craft\CraftManager$2.class
 me\rukon0621\guardians\story\StoryManager$8.class
 me\rukon0621\guardians\bar\BarManager.class
 me\rukon0621\guardians\story\Cinematic$1$1.class
@@ -328,6 +329,7 @@ me\rukon0621\guardians\fastboard\FastReflection.class
 me\rukon0621\guardians\story\StoryManager.class
 me\rukon0621\guardians\GUI\ChannelWindow$1.class
 me\rukon0621\guardians\afk\AfkConfirmWindow.class
+me\rukon0621\guardians\fishing\FishingManager.class
 me\rukon0621\guardians\vote\VoteRewardSetCommand.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$4.class
 me\rukon0621\guardians\account\AccountCommandTabComp$1.class

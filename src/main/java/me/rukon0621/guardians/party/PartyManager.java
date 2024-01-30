@@ -20,7 +20,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static me.rukon0621.guardians.main.pfix;
 
@@ -220,6 +222,16 @@ public class PartyManager implements Listener {
         if(listener!=null) {
             listener.end();
             Msg.warn(player, "파티가 사라져 모집이 중단되었습니다.");
+        }
+    }
+    public static void removeParty(Party party) {
+        List<AvalonPlayer> avnPs = new ArrayList<>(party.getPlayers());
+        for(AvalonPlayer avnP : avnPs) {
+            avnP.setParty(null);
+            party.getPlayers().remove(avnP);
+            if(PartyWindow.isUsingPartyWindow(avnP.getPlayer())) {
+                new PartyCreateWindow(avnP.getPlayer());
+            }
         }
     }
 

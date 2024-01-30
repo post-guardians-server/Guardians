@@ -30,6 +30,10 @@ public class PartyWindow extends Window {
     private static final AvNParty partyPlugin = (AvNParty) Bukkit.getPluginManager().getPlugin("DungeonParties");
     private static final Map<Player, PartyWindow> usingPartyWindow = new HashMap<>();
 
+    public static boolean isUsingPartyWindow(Player player) {
+        return usingPartyWindow.containsKey(player);
+    }
+
     /**
      * 해당 플레이어가 파티창을 키고 있으면 party window reload
      * @param player player

@@ -7,9 +7,12 @@ import com.nisovin.magicspells.spells.TargetedEntitySpell;
 import com.nisovin.magicspells.util.MagicConfig;
 import com.nisovin.magicspells.util.TargetInfo;
 import me.rukon0621.guardians.main;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +99,6 @@ public class PainSpell extends TargetedPowerSpell implements TargetedEntitySpell
             //if(localDamage < 0)
             localDamage *= -1;
 
-            /*
             try {
                 double kbr = knockBackResistance;
                 AttributeInstance attr = target.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
@@ -105,8 +107,6 @@ public class PainSpell extends TargetedPowerSpell implements TargetedEntitySpell
                 v.setY(0);
                 target.setVelocity(target.getVelocity().subtract(v));
             } catch (NullPointerException ignored) {}
-             */
-
 
             if (this.tryAvoidingAntiCheatPlugins) {
                 target.damage(localDamage);

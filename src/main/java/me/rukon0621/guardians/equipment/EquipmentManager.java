@@ -353,7 +353,7 @@ public class EquipmentManager implements Listener {
 
         player.setMaxHealth(Math.max(10, Stat.HEALTH.getTotal(player)));
         player.setHealth(player.getMaxHealth() * previousHealth);
-        player.setWalkSpeed((float) (Math.min(Stat.MOVE_SPEED.getTotal(player), 200)/500.0));
+        player.setWalkSpeed(0.2f + (float) (Math.min((Stat.MOVE_SPEED.getTotal(player) - 100), 200) / 750.0));
 
         AttributeInstance attr = player.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
         assert attr != null;

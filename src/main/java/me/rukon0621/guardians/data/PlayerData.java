@@ -643,7 +643,7 @@ public class PlayerData {
         data.put("voteDays", value);
     }
     public int getVoteDays() {
-        return ((Number) data.get("voteDays")).intValue();
+        return ((Number) data.getOrDefault("voteDays", 0)).intValue();
     }
 
     public void setGuildID(UUID value) {
@@ -786,7 +786,7 @@ public class PlayerData {
     }
 
     public List<ItemStack> getBackpackData() {
-        return (List<ItemStack>) data.getOrDefault("backpackData", new HashSet<>());
+        return (List<ItemStack>) data.getOrDefault("backpackData", new ArrayList<>());
     }
     public void setBackpackData(List<ItemStack> value) {
         data.put("backpackData", value);

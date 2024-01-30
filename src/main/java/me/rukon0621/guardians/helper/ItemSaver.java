@@ -22,6 +22,9 @@ public class ItemSaver implements CommandExecutor {
     private static final main plugin = main.getPlugin();
     private static HashMap<String, ItemStack> itemSaverData;
 
+    public static HashMap<String, ItemStack> getItemSaverData() {
+        return itemSaverData;
+    }
 
     /**
      *
