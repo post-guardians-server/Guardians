@@ -2,6 +2,7 @@ package me.rukon0621.guardians.vote;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.helper.Broadcaster;
 import me.rukon0621.guardians.helper.ItemSaver;
 import me.rukon0621.guardians.helper.Msg;
@@ -37,8 +38,8 @@ public class VoteListener implements PluginMessageListener {
         MailBoxManager.giveOrMail(player, item);
         Msg.send(player, "추천 보상을 획득하셨습니다!", pfix);
         player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.5f);
-        //PlayerData pdc = new PlayerData(player);
-        //pdc.setVoteDays(pdc.getVoteDays() + 1);
-        //new VoteWindow(player, true);
+        PlayerData pdc = new PlayerData(player);
+        pdc.setVoteDays(pdc.getVoteDays() + 1);
+        new VoteWindow(player, true);
     }
 }

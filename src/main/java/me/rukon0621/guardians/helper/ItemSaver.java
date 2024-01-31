@@ -1,6 +1,7 @@
 package me.rukon0621.guardians.helper;
 
 import me.rukon0621.guardians.data.ItemData;
+import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.main;
 import me.rukon0621.pay.RukonPayment;
 import me.rukon0621.utils.util.MsgUtil;
@@ -161,7 +162,7 @@ public class ItemSaver implements CommandExecutor {
             if(original.getDataMap().containsKey("exp")) {
                 reloaded.setExp(original.getExp());
             }
-            if(original.isEquipment()&&!original.getType().equals("사증")) {
+            if(original.isEquipment()&&!original.getType().equals("사증") || (TypeData.getType(original.getType()).isMaterialOf("버프 아이템") && original.hasAttr("quality"))) {
                 reloaded.setQuality(original.getQuality());
             }
             reloaded.setSeason(-1);
