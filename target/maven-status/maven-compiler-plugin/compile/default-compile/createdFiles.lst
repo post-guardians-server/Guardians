@@ -8,6 +8,7 @@ me\rukon0621\guardians\noticeboard\NoticeBoardCommand.class
 me\rukon0621\guardians\listeners\DamagingListener$1.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$2.class
 me\rukon0621\guardians\data\PlayerData$1.class
+me\rukon0621\guardians\GUI\item\enhance\StoneUseWindow$FAIL_STATUS$6.class
 me\rukon0621\guardians\data\LevelData.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot.class
 me\rukon0621\guardians\dialogquest\QuestInProgress$1.class
@@ -208,6 +209,7 @@ me\rukon0621\guardians\listeners\ItemUseListener$1.class
 me\rukon0621\guardians\fastboard\FastBoardBase$TeamMode.class
 me\rukon0621\guardians\data\Stat.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot$8.class
+me\rukon0621\guardians\story\StoryManager$24.class
 me\rukon0621\guardians\addspells\BlackOutSpell.class
 me\rukon0621\guardians\storage\StorageNameListener$2$1.class
 me\rukon0621\guardians\GUI\item\ItemDisassembleWindow$1.class

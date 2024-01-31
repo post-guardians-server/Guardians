@@ -21,7 +21,7 @@ import static me.rukon0621.guardians.main.pfix;
 public class StoneRemoveWindow extends SingleEquipmentSelectWindow {
 
     private static long getPrice(int level, ItemGrade grade) {
-        return StoneData.getGrantPrice(level, grade);
+        return StoneData.getGrantPrice(level, grade) * 2;
     }
 
     private final List<Integer> stoneSlots = new ArrayList<>();

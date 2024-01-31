@@ -4,7 +4,9 @@ import me.rukon0621.guardians.GUI.item.SingleEquipmentSelectWindow;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.StoneData;
+import me.rukon0621.guardians.helper.InvClass;
 import me.rukon0621.guardians.helper.ItemClass;
+import me.rukon0621.guardians.helper.ItemSaver;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.gui.buttons.Button;
 import org.bukkit.Material;
@@ -12,6 +14,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+
+import static me.rukon0621.guardians.main.pfix;
 
 public class StoneUseWindow extends SingleEquipmentSelectWindow {
 
@@ -79,7 +83,19 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
                 return equipmentData.getAllStoneData().size() >= equipmentData.getGrade().getStoneMaxSlots();
             }
         },
-        ;
+        NO_STONE("아다만트석을 부여하려면 결속석이 필요합니다.") {
+            @Override
+            public void addLore(ItemClass item, StoneUseWindow window) {
+                item.addLore("&f아다만트를 부여하려면 &b" + window.getEquipmentType() + " 결속석&f이 필요합니다.");
+            }
+
+            @Override
+            public boolean isFailed(StoneUseWindow window) {
+                ItemData equipmentData = new ItemData(window.selectedEquipment);
+                ItemStack item = window.getStone();
+                return !InvClass.hasItem(window.player, item);
+            }
+        };
 
         private final String message;
         FAIL_STATUS(String message) {
@@ -96,6 +112,16 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
     private final StoneData stoneData;
     private final ItemData itemData;
     private FAIL_STATUS status = FAIL_STATUS.NULL;
+
+    public String getEquipmentType() {
+        ItemData equipmentData = new ItemData(selectedEquipment);
+        if(equipmentData.isWeapon()) return "무기";
+        else if (equipmentData.isArmor()) return "방어구";
+        else return "장신구";
+    }
+    public ItemStack getStone() {
+        return ItemSaver.getItem(getEquipmentType() + " 결속석").getItem();
+    }
 
     public StoneUseWindow(Player player, ItemStack stone) {
         super(player, "&f\uF000\uF033", 3);
@@ -121,6 +147,11 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
                     status.sendMessage(player);
                     return;
                 }
+
+                if(FAIL_STATUS.NO_STONE.isFailed(StoneUseWindow.this)) {
+                    FAIL_STATUS.NO_STONE.sendMessage(player);
+                    return;
+                }
                 PlayerData pdc = new PlayerData(player);
                 pdc.setMoney(pdc.getMoney() - StoneData.getGrantPrice(itemData.getLevel(), itemData.getGrade()));
                 player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 1.3f);
@@ -129,7 +160,8 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
                 stone.setAmount(stone.getAmount() - 1);
                 selectedEquipment = equipmentData.getItemStack();
                 player.closeInventory();
-                Msg.send(player, "장비에 성공적으로 아다만트의 힘을 부여했습니다.");
+                InvClass.removeItem(player, getStone());
+                Msg.send(player, "장비에 성공적으로 아다만트의 힘을 부여했습니다.", pfix);
             }
 
             @Override
@@ -141,8 +173,10 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
                 }
                 else {
                     it.addLore("&7부여 비용: &f" + StoneData.getGrantPrice(itemData.getLevel(), itemData.getGrade()) + "디나르");
+                    it.addLore("&7부여 재료: &f" + getEquipmentType() + " 결속성 1개");
                     it.addLore(" ");
                     it.addLore("&f클릭하여 아다만트석을 사용합니다.");
+                    it.addLore("&c주의: 부여를 해제해도 다시 돌려받을 수 없습니다.");
                 }
                 return it.getItem();
             }

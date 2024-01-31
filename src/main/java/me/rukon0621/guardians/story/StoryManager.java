@@ -1048,7 +1048,12 @@ public class StoryManager {
                 RukonPVP.inst().getPvpManager().batch(player);
             }
             else if(actionKey.equalsIgnoreCase("stoneRemove")) {
-                new StoneRemoveWindow(player);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        new StoneRemoveWindow(player);
+                    }
+                }.runTaskLater(main.getPlugin(), 1);
             }
 
             //!javaAction:CASTSHOP=name=<moneyType>
