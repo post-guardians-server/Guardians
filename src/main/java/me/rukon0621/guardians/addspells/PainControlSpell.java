@@ -1,5 +1,6 @@
 package me.rukon0621.guardians.addspells;
 
+import com.nisovin.magicspells.spelleffects.EffectPosition;
 import com.nisovin.magicspells.spells.BuffSpell;
 import com.nisovin.magicspells.util.MagicConfig;
 import org.bukkit.entity.LivingEntity;
@@ -8,9 +9,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class PainControlSpell extends BuffSpell {
     protected double defendProportion;
     protected double damageProportion;
+    private final Set<UUID> entities = new HashSet<>();
 
     public PainControlSpell(MagicConfig config, String spellName) {
         super(config, spellName);
@@ -20,22 +26,26 @@ public class PainControlSpell extends BuffSpell {
 
     @Override
     public boolean castBuff(LivingEntity livingEntity, float v, String[] strings) {
+        entities.add(livingEntity.getUniqueId());
         return true;
     }
 
     @Override
     public boolean isActive(LivingEntity livingEntity) {
-        return getDuration(livingEntity) > 0;
+        return entities.contains(livingEntity.getUniqueId());
     }
 
     @Override
     protected void turnOffBuff(LivingEntity livingEntity) {
-        setDuration(livingEntity, 0);
+        entities.remove(livingEntity.getUniqueId());
     }
 
     @Override
     protected void turnOff() {
-        durationEndTime.clear();
+        for (EffectPosition pos : EffectPosition.values()) {
+            this.cancelEffectForAllPlayers(pos);
+        }
+        entities.clear();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)

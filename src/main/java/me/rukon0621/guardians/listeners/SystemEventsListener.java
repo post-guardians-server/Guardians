@@ -1,6 +1,7 @@
 package me.rukon0621.guardians.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerStartSpectatingEntityEvent;
+import com.nisovin.magicspells.MagicSpells;
 import com.nisovin.magicspells.events.ConditionsLoadingEvent;
 import com.nisovin.magicspells.events.PassiveListenersLoadingEvent;
 import com.nisovin.magicspells.events.SpellEffectsLoadingEvent;
@@ -453,7 +454,6 @@ public class SystemEventsListener implements Listener {
         StoryManager.readStory(player, "reset");
     }
      */
-
     @EventHandler
     public void onLoadSpellEffects(SpellEffectsLoadingEvent e) {
         e.getSpellEffectManager().addSpellEffect("randomSound", RandomSoundEffect.class);

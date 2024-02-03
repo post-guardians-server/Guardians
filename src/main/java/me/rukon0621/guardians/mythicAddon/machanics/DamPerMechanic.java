@@ -10,7 +10,9 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.skills.SkillExecutor;
 import io.lumine.mythic.core.skills.SkillMechanic;
 import io.lumine.mythic.core.utils.annotations.MythicMechanic;
+import me.rukon0621.guardians.addspells.InvulSpell;
 import me.rukon0621.guardians.bar.BarManager;
+import me.rukon0621.guardians.data.Stat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -39,11 +41,14 @@ public class DamPerMechanic extends SkillMechanic implements ITargetedEntitySkil
                 new BukkitRunnable() {
                     @Override
                     public void run() {
+                        if(InvulSpell.isInvincible(le)) return;
                         le.setNoDamageTicks(0);
+                        double damage = (le.getMaxHealth() * percent);
                         if(le instanceof Player player) {
-                            BarManager.reloadBar(player, le.getMaxHealth() * percent);
+                            damage *= (1 - Stat.ABSOLUTE_ARMOR.getTotal(player));
+                            BarManager.reloadBar(player, damage);
                         }
-                        le.damage(le.getMaxHealth() * percent);
+                        le.damage(damage);
                     }
                 }.runTask(MythicBukkit.inst());
                 return SkillResult.SUCCESS;
