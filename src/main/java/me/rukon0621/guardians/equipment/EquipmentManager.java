@@ -553,15 +553,6 @@ public class EquipmentManager implements Listener {
         if(!(e.getWhoClicked() instanceof Player player)) return;
         if(!Msg.recolor(e.getView().getTitle()).equals(GuiName)) return;
         e.setCancelled(true);
-        if(e.getClick().equals(ClickType.DOUBLE_CLICK)) return;
-        if (e.getRawSlot()==-999) {
-            new MenuWindow(player);
-            player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1.5f);
-            return;
-        }
-        if(e.getCurrentItem()==null) return;
-        if(e.getRawSlot()>=82&&e.getRawSlot()<=84) return;
-
 
         //내 정보 확인
         for(int slot : informationIconSlots) {
@@ -582,6 +573,15 @@ public class EquipmentManager implements Listener {
                 return;
             }
         }
+        if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) return;
+        if(e.getClick().equals(ClickType.DOUBLE_CLICK)) return;
+        if (e.getRawSlot()==-999) {
+            new MenuWindow(player);
+            player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1.5f);
+            return;
+        }
+        if(e.getCurrentItem()==null) return;
+        if(e.getRawSlot()>=82&&e.getRawSlot()<=84) return;
 
         //장비 해제
         if(equipmentSlotData.containsValue(e.getRawSlot())) {

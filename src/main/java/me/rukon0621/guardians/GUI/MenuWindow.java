@@ -19,6 +19,7 @@ import me.rukon0621.guardians.skillsystem.SkillManager;
 import me.rukon0621.pay.blessing.BlessingWindow;
 import me.rukon0621.pay.pass.PassWindow;
 import me.rukon0621.rinstance.RukonInstance;
+import me.rukon0621.rpvp.RukonPVP;
 import me.rukon0621.rukonmarket.RukonMarket;
 import me.rukon0621.sampling.windows.SamplingPacksWindow;
 import org.bukkit.Material;
@@ -56,6 +57,11 @@ public class MenuWindow implements Listener {
     public MenuWindow(Player player, int page) {
         this.player = player;
         this.page = page;
+        if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
+            EquipmentManager.openEquipmentGUI(player);
+            return;
+        }
+
         if(RukonInstance.inst().getInstanceManager().isPlayerInInstance(player)) {
             Msg.warn(player, "이곳에서는 메뉴를 사용할 수 없습니다.", pfix);
             return;

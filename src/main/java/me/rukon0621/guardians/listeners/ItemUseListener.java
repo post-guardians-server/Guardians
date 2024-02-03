@@ -7,6 +7,7 @@ import me.rukon0621.guardians.GUI.item.enhance.StoneUseWindow;
 import me.rukon0621.guardians.areawarp.Area;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.data.ItemData;
+import me.rukon0621.guardians.data.ItemGrade;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.events.ItemClickEvent;
@@ -30,6 +31,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static me.rukon0621.guardians.main.getPlugin;
@@ -99,7 +102,25 @@ public class ItemUseListener implements Listener {
         else {
             switch (type) {
                 case "아다만트석" -> {
-                    new StoneUseWindow(player, player.getInventory().getItemInMainHand());
+                    List<String> lores = new ItemClass(player.getInventory().getItemInMainHand()).getLore();
+
+                    for(String lore : lores) {
+                        if(lore.contains("아다만트의 힘이 깃든 아다만트석이다")) {
+                            new StoneUseWindow(player, player.getInventory().getItemInMainHand());
+                            return;
+                        }
+                    }
+                    ItemData itemData = new ItemData(ItemSaver.getItem("에너지코어 회복").getItem().clone());
+                    if (Objects.requireNonNull(e.getItemData().getGrade()) == ItemGrade.NORMAL) {
+                        itemData.setValue(30);
+                    }
+                    else {
+                        itemData.setValue(60);
+                    }
+                    e.consume();
+                    MailBoxManager.giveOrMail(player, itemData.getItemStack());
+                    Msg.send(player, "이 아다만트석은 패치 이전의 아다만트석으로 사용할 수 없습니다. 이에 따라 에너지코어로 반환되었습니다. (일반 -> 30 / 언커먼 -> 60)", pfix);
+                    player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 0.8f);
                 }
                 case "가디언 패스" -> {
                     PaymentData pdc = new PaymentData(player);
