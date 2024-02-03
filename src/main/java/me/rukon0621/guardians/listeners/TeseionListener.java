@@ -62,7 +62,7 @@ public class TeseionListener implements Listener {
         ArrayList<ItemStack> leaderDrops = DropManager.getDropList(leader, leaderReward, leaderRewardLevel ,1);
         for(AvalonPlayer avnP : party.getPlayers()) {
             Player player = avnP.getPlayer();
-            ArrayList<ItemStack> drops = DropManager.getDropList(player, reward, rewardLevel, 1);
+            ArrayList<ItemStack> drops = DropManager.getDropList(player, reward, rewardLevel, teseion.isDistribution() ? 1D / teseion.getMaxPlayers() : 1);
             Msg.send(player, " ");
             Msg.send(player, " ");
             Msg.send(player, "&7┌────────────────────────┐");
@@ -91,7 +91,6 @@ public class TeseionListener implements Listener {
                 for(ItemStack item : leaderDrops) {
                     try {
                         Msg.send(player, String.format("  &7- %s &8(x%d&)", item.getItemMeta().getDisplayName(), item.getAmount()));
-
                     } catch (NullPointerException er) {
                         Msg.send(player, String.format("  &7- %s &8(x%d&)", item.getType(), item.getAmount()));
                     }

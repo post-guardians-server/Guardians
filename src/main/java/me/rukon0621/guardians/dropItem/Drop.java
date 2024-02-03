@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ public class Drop implements ConfigurationSerializable {
     private final int levelAbove;
     private final int levelBelow;
     private final boolean originalItem;
+    @Nullable
+    private final DropAdamantData adamantData;
 
     public static void setBurning(double multiply) {
         dropBurning = multiply;
@@ -56,7 +59,7 @@ public class Drop implements ConfigurationSerializable {
 
     public Drop(String itemSaver, int minMinusRange, int maxMinusRange, int loopNumber,
                 ArrayList<DropAttribute> dropAttrs, double chance,
-                int levelAbove, int craftLevelDiff, int levelBelow, boolean originalItem) {
+                int levelAbove, int craftLevelDiff, int levelBelow, boolean originalItem, @Nullable DropAdamantData adamantData) {
         this.itemSaver = itemSaver;
         this.minMinusRange = minMinusRange;
         this.maxMinusRange = maxMinusRange;
@@ -67,6 +70,7 @@ public class Drop implements ConfigurationSerializable {
         this.craftLevelDiff = craftLevelDiff;
         this.levelBelow = levelBelow;
         this.originalItem = originalItem;
+        this.adamantData = adamantData;
     }
 
     /**
@@ -178,8 +182,8 @@ public class Drop implements ConfigurationSerializable {
                 if(ignorePartyAndLuck) ch = chance * contribution;
                 else ch = chance * contribution * (1 + Stat.LUCK.getTotal(player) / 100) * dropBurning;
                 if(!Rand.chanceOf(ch)) continue;
-                if(!SHOW_MODE && itemSaver.startsWith("청사진")) {
-                    if(!StoryManager.getReadStory(player).contains("청사진 설명")) {
+                if(!SHOW_MODE) {
+                    if(itemSaver.startsWith("청사진") && !StoryManager.getReadStory(player).contains("청사진 설명")) {
                         StoryManager.addStory(player, "청사진 설명");
                         new BukkitRunnable() {
                             @Override
@@ -212,6 +216,20 @@ public class Drop implements ConfigurationSerializable {
                         if(TypeData.getType(idata.getType()).isMaterialOf("장비")) {
                             idata.setCraftLevel(Math.max(1, idata.getLevel() - Rand.randInt(0, craftLevelDiff)));
                             idata.setQuality(Rand.randDouble(35, 50));
+                        }
+                        if(!SHOW_MODE && TypeData.getType(idata.getType()).isMaterialOf("아다만트석")) {
+                            if(!StoryManager.getReadStory(player).contains("일일던전설명")) {
+                                StoryManager.addStory(player, "일일던전설명");
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        StoryManager.readStory(player,  "일일던전설명");
+                                    }
+                                }.runTaskLater(main.getPlugin(), 40);
+                            }
+                            if(adamantData != null) {
+                                idata.addStoneData(adamantData.generateStoneData());
+                            }
                         }
                         if(dropAttrs!=null) {
                             for(DropAttribute attr : dropAttrs) {
@@ -253,6 +271,7 @@ public class Drop implements ConfigurationSerializable {
         if(dropAttrs!=null&&!dropAttrs.isEmpty()) data.put("dropAttrs", dropAttrs);
         if(craftLevelDiff > 0) data.put("craftLevelDiff", craftLevelDiff);
         if(originalItem) data.put("original", true);
+        if(adamantData!=null) data.put("adamantData", adamantData);
         return data;
     }
 
@@ -265,7 +284,12 @@ public class Drop implements ConfigurationSerializable {
         int levelBelow = (int) data.getOrDefault("levelBelow", 99999);
         int craftLevelDiff = (int) data.getOrDefault("craftLevelDiff", 0);
         boolean original = (boolean) data.getOrDefault("original", false);
-        return new Drop((String) data.get("itemSaver"), minusRange, maxMinusRange, loopNumber, (ArrayList<DropAttribute>) data.getOrDefault("dropAttrs", new ArrayList<>()), chance.doubleValue(), levelAbove, craftLevelDiff, levelBelow, original);
+        DropAdamantData dropAdamantData;
+        if(data.containsKey("adamantData")) {
+            dropAdamantData = (DropAdamantData) data.get("adamantData");
+        }
+        else dropAdamantData = null;
+        return new Drop((String) data.get("itemSaver"), minusRange, maxMinusRange, loopNumber, (ArrayList<DropAttribute>) data.getOrDefault("dropAttrs", new ArrayList<>()), chance.doubleValue(), levelAbove, craftLevelDiff, levelBelow, original, dropAdamantData);
     }
 
     public String getItemSaver() {

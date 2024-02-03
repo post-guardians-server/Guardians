@@ -178,6 +178,9 @@ public enum Stat {
     public double getCollection(Player player) {
         return ((Number) new PlayerData(player).getData().getOrDefault("colt" + codeName,0)).doubleValue();
     }
+    public double getAdamantStone(Player player) {
+        return ((Number) new PlayerData(player).getData().getOrDefault("adast" + codeName,0)).doubleValue();
+    }
     public double getEnvironment(Player player) {
         return ((Number) new PlayerData(player).getData().getOrDefault("env" + codeName,0)).doubleValue();
     }
@@ -213,6 +216,10 @@ public enum Stat {
     public void setCollection(Player player, double value) {
         new PlayerData(player).getData().put("colt" + codeName, value);
     }
+    //버프 스텟
+    public void setAdamantStone(Player player, double value) {
+        new PlayerData(player).getData().put("adast" + codeName, value);
+    }
 
     public double getTotal(Player player) {
         double value = get(player) + getBase(player);
@@ -223,7 +230,7 @@ public enum Stat {
         } catch (IllegalArgumentException ignored) {
         }
         if(!statColor.endsWith("PER")) value += getEnvironment(player);
-        value += getBuff(player) + getAdd(player) + getCollection(player);
+        value += getBuff(player) + getAdd(player) + getCollection(player) + getAdamantStone(player);
         if(maxValue == -1) return value;
         return Math.min(value, maxValue);
     }

@@ -287,7 +287,6 @@ public class PlayerData {
             if(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate().compareTo(pdc.getLastLogin())>=1) {
                 dailyEvent = true;
             }
-            pdc.setLastLogin(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate());
             ArrayList<WaitingItem> list = (ArrayList<WaitingItem>) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(16)), new ArrayList<>());
             pdc.setWaitingItems(list);
             String playingStory = resultSet.getString(17);

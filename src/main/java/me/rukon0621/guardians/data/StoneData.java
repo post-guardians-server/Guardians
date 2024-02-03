@@ -69,7 +69,7 @@ public class StoneData {
     }
 
     public void applyToPlayer(Player player) {
-        stat.addBase(player, value);
+        stat.setAdamantStone(player, stat.getAdamantStone(player) + value);
     }
 
     public ItemClass getStoneItem() {

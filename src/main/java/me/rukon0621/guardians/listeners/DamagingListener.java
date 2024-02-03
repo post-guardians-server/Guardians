@@ -128,6 +128,11 @@ public class DamagingListener implements Listener {
             e.setCancelled(true);
             return;
         }
+        if(e.getCause().equals(EntityDamageEvent.DamageCause.VOID)) {
+            if(e.getEntity() instanceof LivingEntity le) {
+                e.setDamage(e.getDamage() + le.getMaxHealth() * 0.2);
+            }
+        }
         else if(e.getCause().equals(EntityDamageEvent.DamageCause.DROWNING)) {
             e.setCancelled(true);
             return;

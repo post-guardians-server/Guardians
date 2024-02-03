@@ -24,9 +24,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -118,13 +120,29 @@ public class WorldPeriodicEvent {
 
         LocalDate cntDate = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate();
 
-
-        //출첵 초기화
+        //출첵 초기화 & 월간 패키지
         if(cntDate.getMonth() != pdc.getLastLogin().getMonth() || cntDate.getYear() != pdc.getLastLogin().getYear()) {
             pdc.setVoteDays(0);
-            Msg.send(player, "1달이 지나 추천 출석 체크가 초기화되었습니다!", pfix);
+            pyd.getDonateData().remove("초급 월간 품질 패키지");
+            pyd.getDonateData().remove("중급 월간 품질 패키지");
+            pyd.getDonateData().remove("고급 월간 품질 패키지");
+            Msg.send(player, "1달이 지나 추천 출석 체크가 초기화되었습니다.", pfix);
         }
 
+        //주간 패키지
+        LocalDate targetDate = pdc.getLastLogin().with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+        //pdc.getLastLogin().isBefore(cntDate.getDayOfWeek().equals(DayOfWeek.FRIDAY) ? cntDate : cntDate.with(TemporalAdjusters.previous(DayOfWeek.FRIDAY)))
+        if(cntDate.isAfter(targetDate) || cntDate.equals(targetDate)) {
+            pyd.getDonateData().remove("초급 주간 전리품 가방 패키지");
+            pyd.getDonateData().remove("중급 주간 전리품 가방 패키지");
+            pyd.getDonateData().remove("고급 주간 전리품 가방 패키지");
+            pyd.getDonateData().remove("초급 주간 웨이브 패키지");
+            pyd.getDonateData().remove("중급 주간 웨이브 패키지");
+            pyd.getDonateData().remove("고급 주간 웨이브 패키지");
+            pyd.getDonateData().remove("초급 주간 제작 패키지");
+            pyd.getDonateData().remove("중급 주간 제작 패키지");
+            pyd.getDonateData().remove("고급 주간 제작 패키지");
+        }
 
         pdc.setLastLogin(cntDate);
         if(pyd.getRemainOfJackBlessing() > 0) {
@@ -177,6 +195,7 @@ public class WorldPeriodicEvent {
         player.closeInventory();
         DialogQuestManager.setQuestInProgress(player, qips);
         DialogQuestManager.setCompletedQuests(player, quests);
+        pdc.setLastLogin(cntDate);
         pdc.setDeathCount(0);
         pyd.setChangeLimit(0);
         Msg.send(player, " ");

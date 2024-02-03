@@ -41,12 +41,25 @@ public class StoneRemoveWindow extends SingleEquipmentSelectWindow {
             ItemData itemData = new ItemData(selectedEquipment);
             int size = itemData.getAllStoneData().size();
             int slot = 31 - (size - 1);
-            int index = 1;
-            for(StoneData data : itemData.getAllStoneData()) {
-                map.put(slot, new StoneIcon(itemData, data, index));
-                stoneSlots.add(slot);
-                index++;
-                slot += 2;
+
+            if(size == 6) {
+                int[] slots = new int[]{28, 29, 30, 32, 33, 34};
+                int index = 0;
+                for(StoneData data : itemData.getAllStoneData()) {
+                    slot = slots[index];
+                    map.put(slot, new StoneIcon(itemData, data, index));
+                    stoneSlots.add(slot);
+                    index++;
+                }
+            }
+            else {
+                int index = 1;
+                for(StoneData data : itemData.getAllStoneData()) {
+                    map.put(slot, new StoneIcon(itemData, data, index));
+                    stoneSlots.add(slot);
+                    index++;
+                    slot += 2;
+                }
             }
         }
         super.reloadGUI();

@@ -3,7 +3,10 @@ package me.rukon0621.guardians.dropItem;
 import me.rukon0621.backpack.BackPackUtil;
 import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.data.ItemData;
+import me.rukon0621.guardians.data.ItemGrade;
+import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.helper.Configure;
+import me.rukon0621.guardians.helper.Couple;
 import me.rukon0621.guardians.helper.FileUtil;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
@@ -12,10 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 import static me.rukon0621.guardians.main.pfix;
 
@@ -132,9 +133,18 @@ public class DropManager {
         ArrayList<Drop> drops = new ArrayList<>();
         ArrayList<DropAttribute> dropAttrs = new ArrayList<>();
         dropAttrs.add(new DropAttribute("질김", 1, 0, 50));
+
+        DropAdamantData dropAdamantData;
+        if(name.contains("아다만트석")) {
+            Map<Stat, Couple<Double, Double>> dr = new HashMap<>();
+            dr.put(Stat.ATTACK_DAMAGE, new Couple<>(0.5D, 3D));
+            dr.put(Stat.ARMOR, new Couple<>(0.5D, 3D));
+            dropAdamantData = new DropAdamantData(dr, ItemGrade.NORMAL);
+        }
+        else dropAdamantData = null;
         drops.add(new Drop("슬라임의 점액", 5, 10,
                 2, dropAttrs, 50, 0,
-                0, 99999, false));
+                0, 99999, false, dropAdamantData));
         config = getDropDataConfig(name);
         config.getConfig().set(name, drops);
         config.saveConfig();

@@ -13,11 +13,19 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import static me.rukon0621.guardians.main.pfix;
 
 public class VoteListener implements PluginMessageListener {
+
+    private Set<String> voteBlock = new HashSet<>();
+
     public VoteListener() {
         main plugin = main.getPlugin();
         plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, main.mainChannel, this);
@@ -30,7 +38,15 @@ public class VoteListener implements PluginMessageListener {
         String subChannel = in.readUTF();
         if(!subChannel.equals("vote")) return;
         String user = in.readUTF();
-        System.out.println(user + "voted!");
+        if(voteBlock.contains(user)) return;
+        voteBlock.add(user);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                voteBlock.remove(user);
+            }
+        }.runTaskLaterAsynchronously(main.getPlugin(), 100);
+        System.out.println(user + "님이 서버를 추천했습니다.");
         Broadcaster.broadcast(user + "님이 서버를 추천해주셨습니다! 감사합니다!", false, false);
         Player player = Bukkit.getPlayerExact(user);
         if(player==null) return;

@@ -125,6 +125,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\par
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dialogquest\DialogQuestManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\addspells\effect\MessageEffect.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\Rand.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\fishing\FishingManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\party\PartyRecruitListener.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\commands\ChatChannelCommand.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\listeners\OpenAudioListener.java
@@ -169,6 +170,7 @@ C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\par
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\mailbox\MailBoxManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\main.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\GUI\item\enhance\StoneRemoveWindow.java
+C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\dropItem\DropAdamantData.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\region\Region.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\helper\PotionManager.java
 C:\Users\User\Desktop\PGZ\GuardiansCode\src\main\java\me\rukon0621\guardians\areawarp\AreaCommand.java

@@ -18,6 +18,7 @@ import me.rukon0621.guild.element.GuildPlayer;
 import me.rukon0621.pay.PaymentData;
 import me.rukon0621.pay.RukonPayment;
 import me.rukon0621.pay.trade.TradeData;
+import me.rukon0621.rpvp.RukonPVP;
 import me.rukon0621.sampling.RukonSampling;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -139,128 +140,134 @@ public class EquipmentManager implements Listener {
             stat.setBase(player, 0);
             stat.setCollection(player, 0);
             stat.setEnvironment(player, 0);
+            stat.setAdamantStone(player, 0);
         }
         PlayerData pdc = new PlayerData(player);
         HashMap<String, ItemStack> map = new HashMap<>();
-        HashMap<String, ItemData> itemDataMap = new HashMap<>();
         HashMap<String, Number> equipmentStatus = new HashMap<>();
-        setWeapon(player, getWeapon(player));
-        ItemStack weapon = getWeapon(player);
 
-        String key = "무기";
-        map.put(key, weapon);
-        if(!weapon.getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+        if(false) {
+        //if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
+            ItemStack item = ItemSaver.getItem("PVP스텟 조정기").getItem().clone();
+            ItemData itemData = new ItemData(item);
+            itemData.setLevel(pdc.getLevel());
+            equipmentStatus = itemData.applyEquipmentStatToPlayer(player, equipmentStatus);
         }
-
-        key = "투구";
-        setHelmet(player, getHelmet(player));
-        map.put(key, getHelmet(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "갑옷";
-        setChest(player, getChest(player));
-        map.put(key, getChest(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "바지";
-        setLeggings(player, getLeggings(player));
-        map.put(key, getLeggings(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "부츠";
-        setBoots(player, getBoots(player));
-        map.put(key, getBoots(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "목걸이";
-        setNecklace(player, getNecklace(player));
-        map.put(key, getNecklace(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "벨트";
-        setBelt(player, getBelt(player));
-        map.put(key, getBelt(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "반지";
-        setRing(player, getRing(player));
-        map.put(key, getRing(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "라이딩";
-        setRiding(player, getRiding(player));
-        map.put(key, getRiding(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        key = "사증";
-        setPendant(player, getPendant(player));
-        map.put(key, getPendant(player));
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        if(!map.get(key).getType().equals(Material.AIR)) {
-            itemDataMap.put(key, new ItemData(map.get(key)));
-            equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
-        }
-
-        //라이딩 장착 장비창 만들어야함
-        //        //실제 인벤토리 반영
-        if(changeWeaponInventorySlot) {
-            try {
-                player.getInventory().setItem(0, weapon);
-                WeaponSkinWindow.reloadWeaponSkin(player);
-            } catch (Exception e) {
-                player.getInventory().setItem(0, new ItemStack(Material.AIR));
+        else {
+            HashMap<String, ItemData> itemDataMap = new HashMap<>();
+            setWeapon(player, getWeapon(player));
+            ItemStack weapon = getWeapon(player);
+            String key = "무기";
+            map.put(key, weapon);
+            if(!weapon.getType().equals(Material.AIR))  {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
             }
-        }
-        setRunes(player, getRunes(player));
-        ArrayList<ItemStack> items = getRunes(player);
-        ItemClass empty = new ItemClass(new ItemStack(Material.SCUTE), "&7장착된 룬 없음");
-        empty.setCustomModelData(92);
-        empty.addLore("&f장비 창에서 룬을 장착할 수 있습니다.");
-        for(int i = 0; i < 3 ;i++) {
-            String keyName = "룬"+(i+1);
-            map.put(keyName, items.get(i));
-            if(items.get(i).getType().equals(Material.AIR)) {
-                player.getInventory().setItem(1+i, empty.getItem());
+
+            key = "투구";
+            setHelmet(player, getHelmet(player));
+            map.put(key, getHelmet(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
             }
-            else {
-                ItemData itemData = new ItemData(items.get(i));
-                itemDataMap.put(keyName, itemData);
-                equipmentStatus = itemData.applyEquipmentStatToPlayer(player, equipmentStatus);
-                player.getInventory().setItem(1+i, items.get(i));
+
+            key = "갑옷";
+            setChest(player, getChest(player));
+            map.put(key, getChest(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
             }
+
+            key = "바지";
+            setLeggings(player, getLeggings(player));
+            map.put(key, getLeggings(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+
+            key = "부츠";
+            setBoots(player, getBoots(player));
+            map.put(key, getBoots(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+
+            key = "목걸이";
+            setNecklace(player, getNecklace(player));
+            map.put(key, getNecklace(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+
+            key = "벨트";
+            setBelt(player, getBelt(player));
+            map.put(key, getBelt(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+
+            key = "반지";
+            setRing(player, getRing(player));
+            map.put(key, getRing(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+
+            key = "라이딩";
+            setRiding(player, getRiding(player));
+            map.put(key, getRiding(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+
+            key = "사증";
+            setPendant(player, getPendant(player));
+            map.put(key, getPendant(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
+            }
+            //라이딩 장착 장비창 만들어야함
+            //        //실제 인벤토리 반영
+            if(changeWeaponInventorySlot) {
+                try {
+                    player.getInventory().setItem(0, weapon);
+                    WeaponSkinWindow.reloadWeaponSkin(player);
+                } catch (Exception e) {
+                    player.getInventory().setItem(0, new ItemStack(Material.AIR));
+                }
+            }
+            setRunes(player, getRunes(player));
+            ArrayList<ItemStack> items = getRunes(player);
+            ItemClass empty = new ItemClass(new ItemStack(Material.SCUTE), "&7장착된 룬 없음");
+            empty.setCustomModelData(92);
+            empty.addLore("&f장비 창에서 룬을 장착할 수 있습니다.");
+            for(int i = 0; i < 3 ;i++) {
+                String keyName = "룬"+(i+1);
+                map.put(keyName, items.get(i));
+                if(items.get(i).getType().equals(Material.AIR)) {
+                    player.getInventory().setItem(1+i, empty.getItem());
+                }
+                else {
+                    ItemData itemData = new ItemData(items.get(i));
+                    itemDataMap.put(keyName, itemData);
+                    equipmentStatus = itemData.applyEquipmentStatToPlayer(player, equipmentStatus);
+                    player.getInventory().setItem(1+i, items.get(i));
+                }
+            }
+            equipmentData.put(player, map);
+            equipmentItemData.put(player, itemDataMap);
         }
-        equipmentData.put(player, map);
-        equipmentItemData.put(player, itemDataMap);
+
+
         HashMap<String, Pair> attributesAbility = new HashMap<>();
         //전체 속성 반영
         PlayerData.reloadStatus(player);
@@ -360,35 +367,37 @@ public class EquipmentManager implements Listener {
         attr.setBaseValue(Stat.KB_RESISTANCE.getTotal(player));
         eqStatusData.put(player, equipmentStatus);
         BarManager.reloadBar(player);
-
-        cachedTotalPower.put(player.getUniqueId(), Stat.getTotalPower(player));
-        if(pdc.getGuildID() != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    Guild guild = Guild.loadGuild(pdc.getGuildID());
-                    if(guild == null) {
-                        Bukkit.getLogger().severe(player.getName() + "님의 길드: " + pdc.getGuildID() + "는 존재하지 않는 길드입니다.");
-                        return;
+        if(true) {
+        //if(!RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
+            cachedTotalPower.put(player.getUniqueId(), Stat.getTotalPower(player));
+            if(pdc.getGuildID() != null) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Guild guild = Guild.loadGuild(pdc.getGuildID());
+                        if(guild == null) {
+                            Bukkit.getLogger().severe(player.getName() + "님의 길드: " + pdc.getGuildID() + "는 존재하지 않는 길드입니다.");
+                            return;
+                        }
+                        GuildPlayer gp = guild.getMember(player.getUniqueId());
+                        if(gp == null) {
+                            Bukkit.getLogger().severe(player.getName() + "님의 길드: " + guild.getName() + "에 속하지 않은 맴버입니다.");
+                            return;
+                        }
+                        boolean change = false;
+                        if(!gp.getName().equals(player.getName())) {
+                            gp.setName(player.getName());
+                            change = true;
+                        }
+                        double totalPower = Stat.getTotalPower(player);
+                        if((int) gp.getTotalPower() != (int) totalPower) {
+                            gp.setTotalPower(totalPower);
+                            change = true;
+                        }
+                        if(change) guild.reloadMemberData();
                     }
-                    GuildPlayer gp = guild.getMember(player.getUniqueId());
-                    if(gp == null) {
-                        Bukkit.getLogger().severe(player.getName() + "님의 길드: " + guild.getName() + "에 속하지 않은 맴버입니다.");
-                        return;
-                    }
-                    boolean change = false;
-                    if(!gp.getName().equals(player.getName())) {
-                        gp.setName(player.getName());
-                        change = true;
-                    }
-                    double totalPower = Stat.getTotalPower(player);
-                    if((int) gp.getTotalPower() != (int) totalPower) {
-                        gp.setTotalPower(totalPower);
-                        change = true;
-                    }
-                    if(change) guild.reloadMemberData();
-                }
-            }.runTaskAsynchronously(main.getPlugin());
+                }.runTaskAsynchronously(main.getPlugin());
+            }
         }
     }
 

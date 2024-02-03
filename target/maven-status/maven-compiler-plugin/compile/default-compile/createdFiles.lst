@@ -11,6 +11,7 @@ me\rukon0621\guardians\data\PlayerData$1.class
 me\rukon0621\guardians\GUI\item\enhance\StoneUseWindow$FAIL_STATUS$6.class
 me\rukon0621\guardians\data\LevelData.class
 me\rukon0621\guardians\skillsystem\SkillEquipSlot.class
+me\rukon0621\guardians\vote\VoteListener$1.class
 me\rukon0621\guardians\dialogquest\QuestInProgress$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow$3.class
 me\rukon0621\guardians\offlineMessage\OfflineMessageManager$3$1.class
@@ -329,6 +330,7 @@ me\rukon0621\guardians\commands\ChatChannelCommand.class
 me\rukon0621\guardians\dropItem\window\DropShowWindow.class
 me\rukon0621\guardians\fastboard\FastReflection.class
 me\rukon0621\guardians\story\StoryManager.class
+me\rukon0621\guardians\dropItem\DropAdamantData.class
 me\rukon0621\guardians\GUI\ChannelWindow$1.class
 me\rukon0621\guardians\afk\AfkConfirmWindow.class
 me\rukon0621\guardians\fishing\FishingManager.class
@@ -339,6 +341,7 @@ me\rukon0621\guardians\story\Scene.class
 me\rukon0621\guardians\story\StoryManager$18.class
 me\rukon0621\guardians\region\RegionManager$2$2.class
 me\rukon0621\guardians\equipment\EquipmentManager$1.class
+me\rukon0621\guardians\helper\DateUtil$1.class
 me\rukon0621\guardians\party\PartyJoinCommand.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$7.class

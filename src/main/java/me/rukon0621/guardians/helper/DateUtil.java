@@ -1,5 +1,6 @@
 package me.rukon0621.guardians.helper;
 
+import java.time.DayOfWeek;
 import java.util.Date;
 
 public class DateUtil {
@@ -27,6 +28,18 @@ public class DateUtil {
         else {
             return String.format("%d일 %d시간 %d분 %d초", second/86400, (second/3600)%24, second%3600/60, second%3600%60);
         }
+    }
+
+    public static String getKoreanWeekDay(DayOfWeek dayOfWeek) {
+        return switch (dayOfWeek) {
+            case MONDAY -> "월";
+            case TUESDAY -> "화";
+            case WEDNESDAY -> "수";
+            case THURSDAY -> "목";
+            case FRIDAY -> "금";
+            case SATURDAY -> "토";
+            case SUNDAY -> "일";
+        };
     }
 
     public static Date makeTime(long minutes, long second) {
