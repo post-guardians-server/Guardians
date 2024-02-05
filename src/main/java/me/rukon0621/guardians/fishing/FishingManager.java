@@ -1,5 +1,6 @@
 package me.rukon0621.guardians.fishing;
 
+import me.rukon0621.guardians.areawarp.Area;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.ItemGrade;
@@ -8,6 +9,7 @@ import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
@@ -20,13 +22,25 @@ public class FishingManager implements Listener {
     private final Map<String, Map<ItemGrade, Set<String>>> fishingData = new HashMap<>();
     private final Map<String, ItemGrade> highestGradeAtArea = new HashMap<>();
 
+    private final double[] stackedArrayList = new double[8];
+
     public FishingManager() {
         Bukkit.getServer().getPluginManager().registerEvents(this, main.getPlugin());
+        reloadFishingData();
+        for(int x = 0; x < 8; x++) {
+            stackedArrayList[x] = Math.sqrt(-(14 * x - 100)) * 1.3;
+            if(x > 0) stackedArrayList[x] += stackedArrayList[x - 1];
+        }
     }
 
     public void reloadFishingData() {
         File folder = new File(FileUtil.getOuterPluginFolder() + "/rukonFishing");
         if(!folder.exists()) folder.mkdir();
+        for(Area area : AreaManger.getAreaData().values()) {
+            new Configure(folder.getPath() + "/" + area.getName() + ".yml");
+        }
+
+
         Bukkit.getLogger().info("낚시 정보 리로드 중...");
         fishingData.clear();
         highestGradeAtArea.clear();
@@ -63,6 +77,16 @@ public class FishingManager implements Listener {
         }
         for(String area : highestGradeAtArea.keySet()) {
             highestGradeAtArea.put(area, highestGradeAtArea.put(area, highestGradeAtArea.get("default").ordinal() > highestGradeAtArea.get(area).ordinal() ? highestGradeAtArea.get("default") : highestGradeAtArea.get(area)));
+            System.out.println(area + " h- " + highestGradeAtArea.get(area));
+        }
+        for (String area : fishingData.keySet()) {
+            System.out.println("area - " + area);
+            for(ItemGrade grade : fishingData.get(area).keySet()) {
+                System.out.println(grade);
+                for(String s : fishingData.get(area).get(grade)) {
+                    System.out.println(s);
+                }
+            }
         }
         Bukkit.getLogger().info("낚시 정보 리로드 완료!");
     }
@@ -71,37 +95,70 @@ public class FishingManager implements Listener {
         if(!fishingData.get(area).containsKey(grade)) return new HashSet<>();
         return fishingData.get(area).get(grade);
     }
+    public static ItemGrade generateGrade(double startRange) {
+        double d = Rand.randDouble(startRange, 100);
+        for(int i = ItemGrade.values().length - 1; i >= 0; i--) {
+            ItemGrade grade = ItemGrade.values()[i];
+            if(d >= (100 - grade.getFishingChance())) return grade;
+        }
+        return ItemGrade.NORMAL;
+    }
 
     @Nullable
-    public ItemData getResult(Player player, ItemData rod) {
+    public ItemData getResult(Player player, ItemData rodData) {
         PlayerData pdc = new PlayerData(player);
         String area = pdc.getArea();
-        double max = 0;
-        for(ItemGrade grade : ItemGrade.values()) {
-            if(highestGradeAtArea.get(area).ordinal() < grade.ordinal()) break;
-            max += grade.getFishingChance();
+        int qualLevel = rodData.getAttrLevel("고품질 포획률 증가");
+        int gradeLevel = rodData.getAttrLevel("고등급 포획률 증가");
+        int addLevel = rodData.getAttrLevel("고레벨 포획률 증가");
+        int durLevel = rodData.getAttrLevel("내구력");
+
+        ItemGrade resultGrade = generateGrade(stackedArrayList[gradeLevel]);
+        if(resultGrade.ordinal() > highestGradeAtArea.get(area).ordinal()) {
+            resultGrade = highestGradeAtArea.get(area);
         }
-        double stacked = 0;
-        double r = Rand.randDouble(0, max);
-        ItemGrade resultGrade = null;
-        for(ItemGrade grade : ItemGrade.values()) {
-            if (highestGradeAtArea.get(area).ordinal() < grade.ordinal()) break;
-            stacked += grade.getFishingChance();
-            if(r >= stacked) {
-                resultGrade = grade;
-            }
-        }
+
         if(resultGrade == null) {
             Msg.warn(player, "낚시 도중 오류가 발생했습니다.");
             return null;
         }
+
         Set<String> items = new HashSet<>(getFishingData(area, resultGrade));
         items.addAll(getFishingData("default", resultGrade));
         if(items.isEmpty()) {
             Msg.warn(player, "오류: 비어있는 데이터를 참조했습니다.");
             return null;
         }
-        String result = Rand.getRandomCollectionElement(items);
-        return new ItemData(ItemSaver.getItem(result));
+        ItemData fishData = new ItemData(ItemSaver.getItem(Rand.getRandomCollectionElement(items)));
+        fishData.setQuality(generateQualityByLevel(qualLevel));
+        fishData.setLevel(new PlayerData(player).getLevel() - Rand.randInt(0, (10 - addLevel)));
+        if(Rand.randInt(0, durLevel) == 0) {
+            rodData.consumeDurability();
+        }
+        return fishData;
+    }
+
+
+    public static double generateQualityByLevel(int level) {
+        int[] range = new int[]{100, 90, 80, 70, 60, 50};
+        double[] stackedQualityArrayList = new double[100];
+        for(int i = 0;i < 100; i++) {
+            stackedQualityArrayList[i] = pdf(i, level);
+            if(i > 0) stackedQualityArrayList[i] += stackedQualityArrayList[i - 1];
+        }
+        double d = Rand.randDouble(0, stackedQualityArrayList[99]);
+        int qual = 0;
+        while(d > stackedQualityArrayList[qual]) {
+            qual++;
+            if(qual > 99) {
+                qual = 99;
+                break;
+            }
+        }
+        return qual + new Random().nextDouble();
+    }
+
+    private static double pdf(int x, int level) {
+        return Math.pow(Math.E, -(Math.pow((x - (50 + (level * 3))), 2)/500)) * 100;
     }
 }

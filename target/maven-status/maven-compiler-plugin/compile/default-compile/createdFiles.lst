@@ -32,6 +32,7 @@ me\rukon0621\guardians\mythicAddon\machanics\ExecuteSpellMechanic$1.class
 me\rukon0621\guardians\story\StoryManager$17.class
 me\rukon0621\guardians\account\AccountManager$1.class
 me\rukon0621\guardians\craft\craft\CraftManager.class
+me\rukon0621\guardians\fishing\FishingCommand.class
 me\rukon0621\guardians\listeners\ItemUseListener$5$1.class
 me\rukon0621\guardians\story\StoryManager$6.class
 me\rukon0621\guardians\listeners\DamagingListener.class
@@ -102,6 +103,7 @@ me\rukon0621\guardians\dropItem\window\DropShowWindow$1$1$1.class
 me\rukon0621\guardians\skillsystem\SkillManager$3.class
 me\rukon0621\guardians\data\PlayerData$4.class
 me\rukon0621\guardians\addspells\TargetedMultiSpell.class
+me\rukon0621\guardians\GUI\item\enhance\RepairWindow$2.class
 me\rukon0621\guardians\listeners\SystemEventsListener$2$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\PreSkillWindow.class
 me\rukon0621\guardians\storage\StorageManager$4$2.class
@@ -116,9 +118,11 @@ me\rukon0621\guardians\addspells\MythicPainSpell.class
 me\rukon0621\guardians\GUI\item\SingleEquipmentSelectWindow.class
 me\rukon0621\guardians\story\Scene$2.class
 me\rukon0621\guardians\helper\ActionBar.class
+me\rukon0621\guardians\GUI\item\enhance\FishingRodEnhanceWindow$FAIL_STATUS$1.class
 me\rukon0621\guardians\craft\craft\CraftManager$2.class
 me\rukon0621\guardians\story\StoryManager$8.class
 me\rukon0621\guardians\bar\BarManager.class
+me\rukon0621\guardians\GUI\item\enhance\FishingRodEnhanceWindow$FAIL_STATUS.class
 me\rukon0621\guardians\story\Cinematic$1$1.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1$2.class
 me\rukon0621\guardians\commands\BuffClearCommand.class
@@ -140,6 +144,7 @@ me\rukon0621\guardians\listeners\SystemEventsListener.class
 me\rukon0621\guardians\GUI\item\enhance\StoneUseWindow$FAIL_STATUS$2.class
 me\rukon0621\guardians\party\PartyRecruitCommand.class
 me\rukon0621\guardians\addspells\TargetedMultiSpell$Action.class
+me\rukon0621\guardians\GUI\item\enhance\RepairWindow$1.class
 me\rukon0621\guardians\storage\StorageManager$4$1.class
 me\rukon0621\guardians\addspells\AbsolutePainSpell.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1$1.class
@@ -164,6 +169,7 @@ me\rukon0621\guardians\GUI\crafting\CraftAcceleratingWindow$WaitingItemButton.cl
 me\rukon0621\guardians\skillsystem\SkillManager$2.class
 me\rukon0621\guardians\data\PlayerData$3$1.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$6.class
+me\rukon0621\guardians\GUI\item\enhance\FishingRodEnhanceWindow.class
 me\rukon0621\guardians\mobType\MobTypeCommand.class
 me\rukon0621\guardians\data\DataClass.class
 me\rukon0621\guardians\GUI\item\enhance\StoneRemoveWindow$StoneIcon.class
@@ -282,6 +288,7 @@ me\rukon0621\guardians\listeners\LogInOutListener$3$1$2.class
 me\rukon0621\guardians\storage\StorageManager$4.class
 me\rukon0621\guardians\mailbox\MailBoxManager$1$2.class
 me\rukon0621\guardians\story\StoryManager$14.class
+me\rukon0621\guardians\GUI\item\enhance\FishingRodEnhanceWindow$FAIL_STATUS$2.class
 me\rukon0621\guardians\GUI\item\SingleEquipmentSelectWindow$1.class
 me\rukon0621\guardians\GUI\item\enhance\StoneUseWindow$FAIL_STATUS$5.class
 me\rukon0621\guardians\afk\AfkManager$2.class
@@ -343,6 +350,7 @@ me\rukon0621\guardians\region\RegionManager$2$2.class
 me\rukon0621\guardians\equipment\EquipmentManager$1.class
 me\rukon0621\guardians\helper\DateUtil$1.class
 me\rukon0621\guardians\party\PartyJoinCommand.class
+me\rukon0621\guardians\GUI\item\enhance\RepairWindow.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillTreeWindow$1.class
 me\rukon0621\guardians\listeners\SystemEventsListener$7.class
 me\rukon0621\guardians\dialogquest\DialogQuestManager$QuestType.class
@@ -375,5 +383,6 @@ me\rukon0621\guardians\GUI\ChannelWindow$1$1.class
 me\rukon0621\guardians\listeners\LogInOutListener$6.class
 me\rukon0621\guardians\skillsystem\skilltree\windows\SkillWindowData.class
 me\rukon0621\guardians\fastboard\FastReflection$PacketConstructor.class
+me\rukon0621\guardians\GUI\item\enhance\FishingRodEnhanceWindow$1.class
 me\rukon0621\guardians\afk\AfkConfirmWindow$1$1.class
 me\rukon0621\guardians\helper\ItemSaverCommandTabComp.class

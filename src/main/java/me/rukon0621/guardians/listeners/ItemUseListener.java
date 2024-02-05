@@ -3,6 +3,8 @@ package me.rukon0621.guardians.listeners;
 import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.GUI.crafting.CraftAcceleratingWindow;
 import me.rukon0621.guardians.GUI.item.QualityUpgradeWindow;
+import me.rukon0621.guardians.GUI.item.enhance.FishingRodEnhanceWindow;
+import me.rukon0621.guardians.GUI.item.enhance.RepairWindow;
 import me.rukon0621.guardians.GUI.item.enhance.StoneUseWindow;
 import me.rukon0621.guardians.areawarp.Area;
 import me.rukon0621.guardians.areawarp.AreaManger;
@@ -121,6 +123,16 @@ public class ItemUseListener implements Listener {
                     MailBoxManager.giveOrMail(player, itemData.getItemStack());
                     Msg.send(player, "이 아다만트석은 패치 이전의 아다만트석으로 사용할 수 없습니다. 이에 따라 에너지코어로 반환되었습니다. (일반 -> 30 / 언커먼 -> 60)", pfix);
                     player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 0.8f);
+                }
+                case "낚시대" -> {
+                    new RepairWindow(player, player.getInventory().getItemInMainHand());
+                }
+                case "낚시대 강화 주문서" -> {
+                    for(String attr : new ItemData(player.getInventory().getItemInMainHand()).getAttrs()) {
+                        new FishingRodEnhanceWindow(player, attr, player.getInventory().getItemInMainHand());
+                        return;
+                    }
+                    Msg.warn(player, "탐색되는 주문서 정보가 존재하지 않습니다.");
                 }
                 case "가디언 패스" -> {
                     PaymentData pdc = new PaymentData(player);

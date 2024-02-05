@@ -158,6 +158,9 @@ public class ItemSaver implements CommandExecutor {
             if(original.hasKey("craftLevel")) {
                 reloaded.setCraftLevel(original.getCraftLevel());
             }
+            if(original.hasKey("durability")) {
+                reloaded.setDurability(original.getDurability());
+            }
 
             if(original.getDataMap().containsKey("exp")) {
                 reloaded.setExp(original.getExp());

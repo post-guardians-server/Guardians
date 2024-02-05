@@ -310,7 +310,7 @@ public class StoryManager {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                Objects.requireNonNull(Main.getPlugin().getTeseionManager().getTeseion(finalScript.split(":")[1].trim())).play(player);
+                                Objects.requireNonNull(Main.getPlugin().getTeseionManager().getTeseion(finalScript.split(":")[1].trim())).play(player, false);
                             }
                         }.runTaskLater(plugin, 5);
                     }
@@ -464,8 +464,8 @@ public class StoryManager {
                     Msg.warn(player, fwName + " - 해당 이름의 필드웨이브를 찾을 수 없습니다.");
                     return;
                 }
-                if(fromOrigin) fw.play(player);
-                else fw.play(player, player.getLocation());
+                if(fromOrigin) fw.play(player, false);
+                else fw.play(player, player.getLocation(), false);
             }
             //title:title,subtitle,stay,fadein,fadeout
             else if(sct.startsWith("!TITLE")) {

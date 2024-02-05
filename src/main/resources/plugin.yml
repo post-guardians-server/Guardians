@@ -19,6 +19,10 @@ permissions:
   cosmeticscore.user.cosmetics.seeingui.*:
     default: true
 commands:
+  reloadFishing:
+    permission: guardians.oper
+    aliases:
+      - 낚시리로드
   reloadSpellUse:
     permission: guardians.oper
     aliases:

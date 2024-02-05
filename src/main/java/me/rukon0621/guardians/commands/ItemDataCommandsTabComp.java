@@ -35,6 +35,7 @@ public class ItemDataCommandsTabComp implements TabCompleter {
         argument1.add("방어구설정");
         argument1.add("행운력설정");
         argument1.add("장신구설정");
+        argument1.add("내구도설정");
         argument1.add("스텟설정");
         argument1.add("아다만트석");
         argument1.add("요구레벨설정");

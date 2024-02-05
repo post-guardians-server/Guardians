@@ -23,6 +23,8 @@ import me.rukon0621.guardians.dialogquest.*;
 import me.rukon0621.guardians.dropItem.*;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.events.WorldPeriodicEvent;
+import me.rukon0621.guardians.fishing.FishingCommand;
+import me.rukon0621.guardians.fishing.FishingManager;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.listeners.*;
 import me.rukon0621.guardians.mailbox.MailBoxCommand;
@@ -80,6 +82,7 @@ public class main extends JavaPlugin {
     private SkillTreeManager skillTreeManager;
     private VariableManager variableManager;
     private SpellUseManager spellUseManager;
+    private FishingManager fishingManager;
     private VoteManager voteManager;
     private AfkManager afkManager;
     public static String DB_NAME;
@@ -163,6 +166,7 @@ public class main extends JavaPlugin {
         new BarManager();
         new NoticeBoardManager();
         new AreaManger();
+        fishingManager = new FishingManager();
         new MythicListener();
         spellUseManager = new SpellUseManager();
         bluePrintManager = new BluePrintManager();
@@ -180,6 +184,7 @@ public class main extends JavaPlugin {
         new SpellUseReloadCommand();
         new DialogCommands();
         new DQDataCommands();
+        new FishingCommand();
         new QuestCommands();
         new MailBoxCommand();
         new BuffClearCommand();
@@ -292,6 +297,10 @@ public class main extends JavaPlugin {
         }
         else if(isDevServer()) PLUGIN_FOLDER_NAME = "devGuardians";
         else PLUGIN_FOLDER_NAME = "guardians";
+    }
+
+    public FishingManager getFishingManager() {
+        return fishingManager;
     }
 
     public AccountManager getAccountManager() {

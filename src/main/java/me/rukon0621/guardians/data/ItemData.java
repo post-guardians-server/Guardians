@@ -4,6 +4,7 @@ import me.rukon0621.guardians.GUI.item.ItemDisassembleWindow;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import me.rukon0621.pay.RukonPayment;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -305,6 +306,11 @@ public class ItemData {
                 value = Integer.parseInt(lore.split(": ")[1].trim());
                 setCraftLevel(value);
             }
+            else if(lore.startsWith("내구도: ")) {
+                String[] data = lore.split(": ")[1].split("/");
+                setDurability(Integer.parseInt(data[0]));
+                setMaxDurability(Integer.parseInt(data[1]));
+            }
             else if(lore.startsWith("등급: ")) {
                 setGrade(ItemGrade.getValueByName(lore.split(": ")[1].trim()));
             }
@@ -464,7 +470,6 @@ public class ItemData {
                     || lore.startsWith("\uE01F")) {
                 addStoneData(new StoneData(lore));
             }
-
             else {
                 extraLore.add(coloredLore);
             }
@@ -501,6 +506,9 @@ public class ItemData {
                             break;
                         case "reqLevel":
                             if (getRequiredLevel() > 0) item.addLore("&7요구 레벨: &f" + getRequiredLevel());
+                            break;
+                        case "durability":
+                            item.addLore(String.format("&7내구도: &f%d/%d", getDurability(), getMaxDurability()));
                             break;
                         case "craftLevel":
                             item.addLore("&7제작 레벨: &f" + getCraftLevel());
@@ -601,6 +609,14 @@ public class ItemData {
         } catch (NullPointerException e) {
             item.setName(name);
         }
+        if(getType().equals("낚시대")) {
+            int lure = getAttrLevel("미끼");
+            if(lure > 0) {
+                item.getItem().removeEnchantment(Enchantment.LURE);
+                item.getItem().addEnchantment(Enchantment.LURE, lure);
+                item.addFlag(ItemFlag.HIDE_ENCHANTS);
+            }
+        }
         item.addFlag(ItemFlag.HIDE_ATTRIBUTES);
         return item;
     }
@@ -613,6 +629,9 @@ public class ItemData {
         }
         if(list.contains("exp")) {
             sorted.add("exp");
+        }
+        if(list.contains("durability")) {
+            sorted.add("durability");
         }
         if(list.contains("enhanceLevel")) {
             sorted.add("enhanceLevel");
@@ -981,6 +1000,38 @@ public class ItemData {
     }
     public int getLevel() {
         return DataClass.toInt(dataMap.getOrDefault("level", 1));
+    }
+    public void setDurability(int value) {
+        String keyName = "durability";
+        int section = 0;
+        if(!getSection(section).contains(keyName)) getSection(section).add(keyName);
+        dataMap.put(keyName, value);
+    }
+    public int getDurability() {
+        return DataClass.toInt(dataMap.getOrDefault("durability", getMaxDurability()));
+    }
+
+    public boolean isBroken() {
+        return getDurability() <= 0;
+    }
+
+    public void consumeDurability() {
+        setDurability(getDurability() - 1);
+    }
+
+    public void repairDurability() {
+        setDurability(getMaxDurability());
+    }
+
+    public void setMaxDurability(int value) {
+        String keyName = "maxDurability";
+        int section = 0;
+        if(!getSection(section).contains(keyName)) getSection(section).add(keyName);
+        dataMap.put("maxDurability", value);
+    }
+
+    public int getMaxDurability() {
+        return DataClass.toInt(dataMap.getOrDefault("maxDurability", 0));
     }
 
     public void setEnhanceLevel(EnhanceLevel value) {

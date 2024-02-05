@@ -453,6 +453,32 @@ public class ItemDataCommands implements CommandExecutor {
             player.getInventory().setItemInMainHand(idata.getItemStack());
             Msg.send(player, "성공적으로 아이템 데이터를 변경하였습니다.", pfix);
         }
+        else if (args[0].equals("내구도설정")) {
+            if(player.getInventory().getItemInMainHand().getType()== Material.AIR) {
+                Msg.send(player, "&c손에 아이템을 들어주세요.", pfix);
+                return true;
+            }
+            if(args.length < 3) {
+                usage(player, args[0], true);
+                return true;
+            }
+
+            int durability, maxDurability;
+            ItemData itemData = new ItemData(player.getInventory().getItemInMainHand());
+            try {
+                durability = Integer.parseInt(args[1]);
+                maxDurability = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                Msg.send(player, "&c제대로된 숫자를 입력해주세요.", pfix);
+                return true;
+            }
+            if(durability == 0) durability = itemData.getDurability();
+            if(maxDurability == 0) maxDurability = itemData.getMaxDurability();
+            itemData.setDurability(durability);
+            itemData.setMaxDurability(maxDurability);
+            player.getInventory().setItemInMainHand(itemData.getItemStack());
+            Msg.send(player, "성공적으로 아이템 데이터를 변경하였습니다.", pfix);
+        }
         else if (args[0].startsWith("방")) {
             if(player.getInventory().getItemInMainHand().getType()== Material.AIR) {
                 Msg.send(player, "&c손에 아이템을 들어주세요.", pfix);
@@ -751,6 +777,10 @@ public class ItemDataCommands implements CommandExecutor {
         else if (arg.equals("장신구설정")) {
             Msg.send(player, "&6/아이템데이터 장[신구설정] <방어관통> <회피력>");
             Msg.send(player, "&7   손에 든 아이템의 스텟을 설정합니다.");
+        }
+        else if (arg.equals("내구도설정")) {
+            Msg.send(player, "&6/아이템데이터 내구도설정 <내구도> <최대내구도>");
+            Msg.send(player, "&7   0을 넣을시 변하지 않습니다.");
         }
         else if (arg.equals("세이버")) {
             Msg.send(player, "&6/아이템데이터 세이버 <아이템 세이버 이름>");
