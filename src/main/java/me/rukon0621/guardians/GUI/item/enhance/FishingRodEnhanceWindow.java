@@ -21,10 +21,10 @@ public class FishingRodEnhanceWindow extends SingleEquipmentSelectWindow {
 
     private enum FAIL_STATUS {
 
-        NO_EQUIPMENT("부여할 낚시대를 넣어주세요.") {
+        NO_EQUIPMENT("부여할 낚싯대를 넣어주세요.") {
             @Override
             void addLore(ItemClass it) {
-                it.addLore("&c주문서를 부여할 낚시대를 선택하십시오.");
+                it.addLore("&c주문서를 부여할 낚싯대를 선택하십시오.");
             }
 
             @Override
@@ -80,7 +80,7 @@ public class FishingRodEnhanceWindow extends SingleEquipmentSelectWindow {
                 }
                 bookItem.setAmount(bookItem.getAmount() - 1);
                 ItemData itemData = new ItemData(selectedEquipment);
-                itemData.setAttr(attr, itemData.getAttrLevel(attr));
+                itemData.setAttr(attr, itemData.getAttrLevel(attr) + 1);
                 selectedEquipment = itemData.getItemStack();
                 player.closeInventory();
                 player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 0.8f);
@@ -90,6 +90,7 @@ public class FishingRodEnhanceWindow extends SingleEquipmentSelectWindow {
             @Override
             public ItemStack getIcon() {
                 ItemClass item = new ItemClass(new ItemStack(Material.SCUTE), "&e『 주문서 부여 』");
+                item.setCustomModelData(7);
                 if(failStatus != null) failStatus.addLore(item);
                 else item.addLore("&f클릭하여 주문서를 사용합니다.");
                 return item.getItem();
@@ -123,8 +124,8 @@ public class FishingRodEnhanceWindow extends SingleEquipmentSelectWindow {
         ItemStack item = player.getOpenInventory().getItem(i);
         if(item == null) return;
         ItemData itemData = new ItemData(item);
-        if(!TypeData.getType(itemData.getType()).isMaterialOf("낚시대")) {
-            Msg.warn(player, "낚시대를 넣어주세요.");
+        if(!TypeData.getType(itemData.getType()).isMaterialOf("낚싯대")) {
+            Msg.warn(player, "낚싯대를 넣어주세요.");
             return;
         }
         super.select(i);

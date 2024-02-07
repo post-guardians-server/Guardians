@@ -1,6 +1,7 @@
 package me.rukon0621.guardians.helper;
 
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -74,6 +75,13 @@ public class ItemClass {
     public void addFlag(ItemFlag flag) {
         meta.addItemFlags(flag);
     }
+    public void addEnchant(Enchantment enchantment, int level, boolean ignoreLevelRestriction) {
+        meta.addEnchant(enchantment, level, ignoreLevelRestriction);
+    }
+    public void removeEnchant(Enchantment enchantment) {
+        meta.removeEnchant(enchantment);
+    }
+
     public void removeFlag(ItemFlag flag) {
         meta.removeItemFlags(flag);
     }

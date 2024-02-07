@@ -9,6 +9,7 @@ import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -60,13 +61,10 @@ public class FishingManager implements Listener {
                     highestGradeAtArea.put(area, (highestGradeAtArea.get(area).ordinal() < grade.ordinal() ? grade : highestGradeAtArea.get(area)));
                     for(String item : config.getConfig().getStringList(key)) {
                         if(!ItemSaver.isItemExist(item)) {
-                            Bukkit.getLogger().warning(item + " - 이 아이템 세이버를 탐색할 수 없습니다.");
+                            Bukkit.getLogger().severe(item + " - 이 아이템 세이버를 탐색할 수 없습니다.");
                             continue;
                         }
                         set.add(item);
-                    }
-                    if(set.isEmpty()) {
-                        Bukkit.getLogger().warning(area + " - 이 지역에 대한 정보는 비어 있습니다.");
                     }
                     data.put(grade, set);
                 } catch (IllegalArgumentException e) {
@@ -104,6 +102,22 @@ public class FishingManager implements Listener {
         return ItemGrade.NORMAL;
     }
 
+    public long getFishPrice(ItemData fishData) {
+        long price;
+        switch (fishData.getGrade()) {
+            case NORMAL -> price = 20;
+            case UNCOMMON -> price = 25;
+            case UNIQUE -> price = 1000;
+            case EPIC -> price = 2200;
+            case LEGEND -> price = 10000;
+            case ANCIENT -> price = 70000;
+            default -> price = 0;
+        }
+
+
+        return price;
+    }
+
     @Nullable
     public ItemData getResult(Player player, ItemData rodData) {
         PlayerData pdc = new PlayerData(player);
@@ -116,6 +130,9 @@ public class FishingManager implements Listener {
         ItemGrade resultGrade = generateGrade(stackedArrayList[gradeLevel]);
         if(resultGrade.ordinal() > highestGradeAtArea.get(area).ordinal()) {
             resultGrade = highestGradeAtArea.get(area);
+        }
+        while(fishingData.get(area).get(resultGrade) == null || fishingData.get(area).get(resultGrade).isEmpty()) {
+            resultGrade = ItemGrade.values()[resultGrade.ordinal() - 2];
         }
 
         if(resultGrade == null) {
@@ -135,9 +152,10 @@ public class FishingManager implements Listener {
         if(Rand.randInt(0, durLevel) == 0) {
             rodData.consumeDurability();
         }
+        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1.5f);
+        player.getInventory().setItemInMainHand(rodData.getItemStack());
         return fishData;
     }
-
 
     public static double generateQualityByLevel(int level) {
         int[] range = new int[]{100, 90, 80, 70, 60, 50};

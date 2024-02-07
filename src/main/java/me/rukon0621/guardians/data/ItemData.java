@@ -177,6 +177,7 @@ public class ItemData {
         accessoryType.addAll(TypeData.getType("장신구").getChild());
 
         equipmentType.add("사증");
+        equipmentType.add("낚싯대");
         equipmentType.addAll(weaponType);
         equipmentType.addAll(armorType);
         equipmentType.addAll(accessoryType);
@@ -478,7 +479,7 @@ public class ItemData {
 
     public ItemClass getItem() {
         parseAllAttribute();
-        if(isEquipment()) {
+        if(isEquipment() && !getType().equals("낚싯대")) {
             if(!hasAttr("grade")) {
                 setGrade(ItemGrade.UNKNOWN);
             }
@@ -609,11 +610,11 @@ public class ItemData {
         } catch (NullPointerException e) {
             item.setName(name);
         }
-        if(getType().equals("낚시대")) {
+        if(getType().equals("낚싯대")) {
             int lure = getAttrLevel("미끼");
             if(lure > 0) {
-                item.getItem().removeEnchantment(Enchantment.LURE);
-                item.getItem().addEnchantment(Enchantment.LURE, lure);
+                item.removeEnchant(Enchantment.LURE);
+                item.addEnchant(Enchantment.LURE, lure, true);
                 item.addFlag(ItemFlag.HIDE_ENCHANTS);
             }
         }
@@ -654,7 +655,7 @@ public class ItemData {
         if(list.contains("value")) {
             sorted.add("value");
         }
-        if(isEquipment()&&!getType().equals("사증")) {
+        if((isEquipment()&&!getType().equals("사증")) || TypeData.getType(getType()).isMaterialOf("버프 아이템") || TypeData.getType(getType()).isMaterialOf("낚시 포획물")) {
             sorted.add("quality");
         }
         //if(list.contains("season")) sorted.add("season");

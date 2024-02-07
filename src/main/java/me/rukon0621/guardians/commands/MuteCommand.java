@@ -119,7 +119,7 @@ public class MuteCommand extends AbstractCommand implements Listener {
         if(arg1.equals("추가")) {
             long millis = e.getIn().readLong();
             pdc.setMuteMillis(Math.max(System.currentTimeMillis(), pdc.getMuteMillis()) + millis);
-            Msg.send(player, "관리자에 의해 " + DateUtil.formatDate(millis / 1000L) + " 간 채팅이 금지되었습니다.", pfix);
+            Msg.send(player, "관리자에 의해 " + DateUtil.formatDate(millis / 1000L) + " 간 채팅이 금지되었습니다. 뮤트 이후 3일 이내로 디스코드의 티켓을 통해 이의를 제기할 수 있습니다.", pfix);
             player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.5f);
         }
         else if(arg1.equals("해제")) {

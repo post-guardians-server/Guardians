@@ -165,7 +165,7 @@ public class ItemSaver implements CommandExecutor {
             if(original.getDataMap().containsKey("exp")) {
                 reloaded.setExp(original.getExp());
             }
-            if(original.isEquipment()&&!original.getType().equals("사증") || (TypeData.getType(original.getType()).isMaterialOf("버프 아이템") && original.hasAttr("quality"))) {
+            if(original.isEquipment()&&!original.getType().equals("사증") || TypeData.getType(original.getType()).isMaterialOf("버프 아이템") || TypeData.getType(original.getType()).isMaterialOf("낚시 포획물") || original.hasAttr("quality")) {
                 reloaded.setQuality(original.getQuality());
             }
             reloaded.setSeason(-1);

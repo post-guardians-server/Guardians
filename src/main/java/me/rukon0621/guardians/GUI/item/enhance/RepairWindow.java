@@ -19,11 +19,11 @@ import static me.rukon0621.guardians.main.pfix;
 public class RepairWindow extends Window {
     private static final int runar = 49;
     public RepairWindow(Player player, ItemStack item) {
-        super(player, "&f\uF000", 1);
+        super(player, "&f\uF000", 3);
         map.put(11, new Button() {
             @Override
             public void execute(Player player, ClickType clickType) {
-                if(player.getInventory().getItemInMainHand().equals(item)) {
+                if(!player.getInventory().getItemInMainHand().equals(item)) {
                     Msg.warn(player, "손에 아이템을 들고 있어야합니다.");
                     return;
                 }
@@ -56,11 +56,12 @@ public class RepairWindow extends Window {
                 player.getInventory().setItemInMainHand(itemData.getItemStack());
                 player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, 1, 1.5f);
                 Msg.send(player, "장비를 수리했습니다.", pfix);
+                player.closeInventory();
             }
 
             @Override
             public ItemStack getIcon() {
-                ItemClass item = new ItemClass(new ItemStack(Material.RED_WOOL), "&a수리 진행하기");
+                ItemClass item = new ItemClass(new ItemStack(Material.GREEN_WOOL), "&a수리 진행하기");
                 item.addLore("&f좌클릭하면 장비 수리키트를 사용하여 수리합니다.");
                 item.addLore(" ");
                 item.addLore("&f우클릭하면 " + runar + " 루나르를 지불하고 수리를 진행합니다.");

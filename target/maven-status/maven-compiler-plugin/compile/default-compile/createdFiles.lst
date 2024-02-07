@@ -313,6 +313,7 @@ me\rukon0621\guardians\listeners\ItemUseListener$4.class
 me\rukon0621\guardians\listeners\TeseionListener$2.class
 me\rukon0621\guardians\data\PlayerData.class
 me\rukon0621\guardians\listeners\ResourcePackListener.class
+me\rukon0621\guardians\fishing\FishingManager$1.class
 me\rukon0621\guardians\story\StoryManager$19.class
 me\rukon0621\guardians\dropItem\DropManager.class
 me\rukon0621\guardians\GUI\TrashcanGUI.class

@@ -124,11 +124,9 @@ public class ItemUseListener implements Listener {
                     Msg.send(player, "이 아다만트석은 패치 이전의 아다만트석으로 사용할 수 없습니다. 이에 따라 에너지코어로 반환되었습니다. (일반 -> 30 / 언커먼 -> 60)", pfix);
                     player.playSound(player, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1, 0.8f);
                 }
-                case "낚시대" -> {
-                    new RepairWindow(player, player.getInventory().getItemInMainHand());
-                }
-                case "낚시대 강화 주문서" -> {
+                case "낚싯대 강화 주문서" -> {
                     for(String attr : new ItemData(player.getInventory().getItemInMainHand()).getAttrs()) {
+                        player.playSound(player, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1, 1.3f);
                         new FishingRodEnhanceWindow(player, attr, player.getInventory().getItemInMainHand());
                         return;
                     }

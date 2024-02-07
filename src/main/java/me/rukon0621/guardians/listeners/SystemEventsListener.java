@@ -8,6 +8,7 @@ import com.nisovin.magicspells.events.SpellEffectsLoadingEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.rukon0621.guardians.GUI.MenuWindow;
 import me.rukon0621.guardians.GUI.TrashcanGUI;
+import me.rukon0621.guardians.GUI.item.enhance.RepairWindow;
 import me.rukon0621.guardians.addspells.effect.MessageEffect;
 import me.rukon0621.guardians.addspells.effect.RandomSoundEffect;
 import me.rukon0621.guardians.addspells.modifier.SkillTreeModifier;
@@ -52,8 +53,10 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -348,8 +351,33 @@ public class SystemEventsListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if(player.getGameMode()==GameMode.CREATIVE) return;
+
+        if(e.getAction().equals(Action.RIGHT_CLICK_AIR) && e.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.FISHING_ROD)) {
+            ItemData itemData = new ItemData(player.getInventory().getItemInMainHand());
+
+            if(player.isSneaking()) {
+                e.setCancelled(true);
+                player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, 1.3f);
+                new RepairWindow(player, player.getInventory().getItemInMainHand());
+                return;
+            }
+            else if(itemData.isBroken()) {
+                e.setCancelled(true);
+                player.playSound(player, Sound.ITEM_ARMOR_EQUIP_IRON, 1, 1.3f);
+                Msg.warn(player, "이 아이템은 내구도가 다 된 아이템으로 수리가 필요합니다.");
+                new RepairWindow(player, player.getInventory().getItemInMainHand());
+                return;
+            }
+            return;
+        }
         e.setCancelled(true);
     }
+
+    @EventHandler
+    public void onItemDamaged(PlayerItemDamageEvent e) {
+        e.setCancelled(true);
+    }
+
     @EventHandler
     public void onInteract(EntityInteractEvent e) {
         if(e.getEntity() instanceof Player) return;
