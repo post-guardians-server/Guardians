@@ -62,7 +62,7 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
         LOW_EQUIPMENT_LEVEL("장비의 레벨이 아다만트석보다 낮을 수 없습니다.") {
             @Override
             public void addLore(ItemClass item, StoneUseWindow window) {
-                item.addLore("장비의 레벨이 아다만트석보다 낮을 수 없습니다.");
+                item.addLore("&c장비의 레벨이 아다만트석보다 낮을 수 없습니다.");
             }
 
             @Override
@@ -91,9 +91,7 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
 
             @Override
             public boolean isFailed(StoneUseWindow window) {
-                ItemData equipmentData = new ItemData(window.selectedEquipment);
-                ItemStack item = window.getStone();
-                return !InvClass.hasItem(window.player, item);
+                return !ItemData.hasItemOnlyName(window.player, window.getStone());
             }
         };
 
@@ -160,7 +158,7 @@ public class StoneUseWindow extends SingleEquipmentSelectWindow {
                 stone.setAmount(stone.getAmount() - 1);
                 selectedEquipment = equipmentData.getItemStack();
                 player.closeInventory();
-                InvClass.removeItem(player, getStone());
+                ItemData.removeItem(player, new ItemData(getStone()), false);
                 Msg.send(player, "장비에 성공적으로 아다만트의 힘을 부여했습니다.", pfix);
             }
 

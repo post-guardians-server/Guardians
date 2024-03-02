@@ -5,6 +5,7 @@ import me.rukon0621.callback.LogManager;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.ItemGrade;
 import me.rukon0621.guardians.data.Stat;
+import me.rukon0621.guardians.data.StoneData;
 import me.rukon0621.guardians.helper.Configure;
 import me.rukon0621.guardians.helper.Couple;
 import me.rukon0621.guardians.helper.FileUtil;
@@ -14,9 +15,9 @@ import me.rukon0621.guardians.main;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 import static me.rukon0621.guardians.main.pfix;
 
@@ -24,6 +25,7 @@ public class DropManager {
     private static final main plugin = main.getPlugin();
     private static HashMap<String, ArrayList<Drop>> dropData;
     private static final ArrayList<String> dropPathList = new ArrayList<>();
+    private static final List<Couple<Integer, Map<ItemGrade, DropAdamantData>>> dropAdamantData = new ArrayList<>();
 
     public static Set<String> getDropNames() {
         return dropData.keySet();
@@ -37,6 +39,49 @@ public class DropManager {
      *
      * @return 드롭의 path가 저장된 configure 객체를 반환
      */
+
+
+    /**
+     *
+     * @param stoneData 아다만트석 정보
+     * @param level 해당 아다만트석의 레벨
+     * @return 해당 레벨과 등급 스텟을 토대로 드롭 파일에서 나올 수 있는 수치로 정보를 리롤함.
+     */
+    @Nullable
+    public static StoneData rerollStoneData(StoneData stoneData, int level) {
+        for(Couple<Integer, Map<ItemGrade, DropAdamantData>> data : dropAdamantData) {
+            if(level > data.getFirst() || !data.getSecond().containsKey(stoneData.getGrade())) continue;
+            return data.getSecond().get(stoneData.getGrade()).generateStoneData(stoneData.getStat());
+        }
+        return null;
+    }
+    /**
+     *
+     * @param stoneData 아다만트석 정보
+     * @param level 해당 아다만트석의 레벨
+     * @return 해당 레벨과 등급 스텟을 토대로 드롭 파일에서 나올 수 있는 수치로 정보를 리롤함.
+     */
+    @Nullable
+    public static Couple<Double, Double> getAvailableValue(StoneData stoneData, int level) {
+        for(Couple<Integer, Map<ItemGrade, DropAdamantData>> data : dropAdamantData) {
+            if(level > data.getFirst() || !data.getSecond().containsKey(stoneData.getGrade())) continue;
+            return data.getSecond().get(stoneData.getGrade()).getAvailableValue(stoneData.getStat());
+        }
+        return null;
+    }
+
+    public static void addAdamantData(int fixedLevel, DropAdamantData adamantData) {
+        for(Couple<Integer, Map<ItemGrade, DropAdamantData>> data : dropAdamantData) {
+            if(!data.getFirst().equals(fixedLevel)) continue;
+            Map<ItemGrade, DropAdamantData> map = data.getSecond();
+            map.put(adamantData.getGrade(), adamantData);
+            return;
+        }
+        Map<ItemGrade, DropAdamantData> map = new HashMap<>();
+        map.put(adamantData.getGrade(), adamantData);
+        dropAdamantData.add(new Couple<>(fixedLevel, map));
+    }
+
     public static Configure getPathConfig() {
         return new Configure( "dropPath.yml", FileUtil.getOuterPluginFolder() + "/dropData");
     }
@@ -54,6 +99,7 @@ public class DropManager {
     }
 
     public static void reloadAllDropData() {
+        dropAdamantData.clear();
         dropData = new HashMap<>();
         Configure pathConfig = getPathConfig();
         dropPathList.clear();
@@ -64,6 +110,22 @@ public class DropManager {
             ArrayList<Drop> drops = (ArrayList<Drop>) config.getConfig().getList(name);
             dropData.put(name, drops);
         }
+        dropAdamantData.sort(Comparator.comparingInt(Couple::getFirst));
+
+        System.out.println("drop adamant data reloading log");
+        dropAdamantData.forEach(data -> {
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println("lv: " + data.getFirst());
+            data.getSecond().forEach((k, v) -> {
+                System.out.println(" ");
+                System.out.println("grade - " + k.toString());
+                v.getStats().forEach((k2, v2) -> {
+                    System.out.printf(k2 + " - %.2f ~ %.2f%n", v2.getFirst(), v2.getSecond() );
+                });
+            });
+        });
+
     }
 
     public static boolean hasDrop(String name) {
@@ -144,7 +206,7 @@ public class DropManager {
         else dropAdamantData = null;
         drops.add(new Drop("슬라임의 점액", 5, 10,
                 2, dropAttrs, 50, 0,
-                0, 99999, false, dropAdamantData));
+                0, 99999, false, dropAdamantData, -1));
         config = getDropDataConfig(name);
         config.getConfig().set(name, drops);
         config.saveConfig();

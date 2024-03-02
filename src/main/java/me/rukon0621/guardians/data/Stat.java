@@ -1,5 +1,6 @@
 package me.rukon0621.guardians.data;
 
+import me.rukon0621.rpvp.RukonPVP;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -67,6 +68,12 @@ public enum Stat {
             false, "#a08feb", true, true, 1D),
     KB_RESISTANCE("kbResistance", "넉백 저항력", 0.027,
             false, "#a08feb", true, true, 1D),
+    MONSTER_ARMOR("mobArmor", "몬스터 방어력", 0.11,
+            false, "#61e8b8", true, false, -1D),
+    MONSTER_ARMOR_PER("mobArmorPer", "몬스터 방어력", 0.015,
+            false, "#61e8b8", false, true, -1D),
+    MONSTER_DAMAGE("mobDamage", "몬스터 공격력", 0.11,
+            false, "#ff7f64",true, false, -1D),
     ;
 
 
@@ -85,6 +92,9 @@ public enum Stat {
         double am = Stat.ARMOR.getTotal(player) * (1 - armorIgnore);
         double per = (dam / (5 * am)) * 0.7;
         return Math.min(per, 1);
+
+        //dam = 100
+        //am = 50
     }
 
 
@@ -121,7 +131,7 @@ public enum Stat {
         double num = Stat.ATTACK_DAMAGE.getTotal(player);
         num *= 1 + (Stat.CRT_CHANCE.getTotal(player) * Stat.CRT_DAMAGE.getTotal(player));
         num *= (1 + Stat.IGNORE_ARMOR.getTotal(player));
-        num += (Stat.ARMOR.getTotal(player) * (1 + Stat.EVADE.getTotal(player)));
+        num += ((Stat.ARMOR.getTotal(player) + MONSTER_ARMOR.getTotal(player) * 0.5) * (1 + Stat.EVADE.getTotal(player)));
         num += (Stat.HEALTH.getTotal(player) / 2.7) * (1 + Stat.REGEN.getTotal(player) / (Stat.HEALTH.getTotal(player) / 2));
         return num;
     }
@@ -226,11 +236,14 @@ public enum Stat {
         try {
             Stat stat = Stat.valueOf(this + "_PER");
             value *= (1 + stat.getTotal(player));
-            value *= (1 + stat.getEnvironment(player));
         } catch (IllegalArgumentException ignored) {
         }
-        if(!statColor.endsWith("PER")) value += getEnvironment(player);
-        value += getBuff(player) + getAdd(player) + getCollection(player) + getAdamantStone(player);
+        value += getEnvironment(player);
+        value += getAdd(player) + getAdamantStone(player);
+        if(!RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player))  {
+            value += getCollection(player);
+            value += getBuff(player);
+        }
         if(maxValue == -1) return value;
         return Math.min(value, maxValue);
     }

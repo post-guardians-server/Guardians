@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -25,23 +26,28 @@ public class FishingCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        long price = 0;
-        Map<ItemGrade, Integer> map = new HashMap<>();
 
         if(args.length > 0) {
             if(commandSender instanceof Player player) {
-                for(int i = 0; i < Integer.parseInt(args[0]); i++) {
-                    ItemData itemData = manager.getResult(player, new ItemData(player.getInventory().getItemInMainHand()));
-                    price += manager.getFishPrice(itemData);
-                    map.put(itemData.getGrade(), map.getOrDefault(itemData.getGrade(), 0) + 1);
-                }
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        long price = 0;
+                        Map<ItemGrade, Integer> map = new HashMap<>();
+                        for(int i = 0; i < Integer.parseInt(args[0]); i++) {
+                            ItemData itemData = manager.getResult(player, new ItemData(player.getInventory().getItemInMainHand()));
+                            price += manager.getFishPrice(itemData);
+                            map.put(itemData.getGrade(), map.getOrDefault(itemData.getGrade(), 0) + 1);
+                        }
 
-                for(ItemGrade grade : ItemGrade.values()) {
-                    if(!map.containsKey(grade)) continue;
-                    Msg.send(player, grade.getStr() + " - " + map.get(grade));
-                }
+                        for(ItemGrade grade : ItemGrade.values()) {
+                            if(!map.containsKey(grade)) continue;
+                            Msg.send(player, grade.getStr() + " - " + map.get(grade));
+                        }
 
-                Msg.send(player, "totalPrice - " + price);
+                        Msg.send(player, "totalPrice - " + price);
+                    }
+                }.runTaskAsynchronously(main.getPlugin());
 
             }
             return true;

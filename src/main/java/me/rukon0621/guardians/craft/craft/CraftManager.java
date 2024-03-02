@@ -450,6 +450,10 @@ public class CraftManager implements Listener {
         if(recipe.getSpecialOptions().contains("process")) {
             isProcessed = true;
             resultData = new ItemData(new ItemStack(inv.getItem(9)));
+            ItemData itemData = new ItemData(inv.getItem(9));
+            if(itemData.hasQuality()) {
+                resultData.setQuality(itemData.getQuality());
+            }
         }
         else resultData = new ItemData(result);
 
@@ -498,11 +502,17 @@ public class CraftManager implements Listener {
         if(!isProcessed) {
             //아이템 속성 확인 (주재료 속성의 평균(반올림, min 1)값)
             HashMap<String, Integer> attrMap = new HashMap<>();
+
+
+            int qualityContainItem = 0;
+            double quality = 0;
             int process = 9999;
             for(ItemData itemData : mainMaterData) {
+                if(itemData.hasQuality()) {
+                    quality += itemData.getQuality();
+                    qualityContainItem++;
+                }
                 if(itemData.getProcessTime() != -1) process = Math.min(process, itemData.getProcessTime());
-
-
                 for(String attr : itemData.getAttrs()) {
                     if(!attrMap.containsKey(attr)) {
                         attrMap.put(attr, itemData.getAttrLevel(attr));
@@ -518,6 +528,9 @@ public class CraftManager implements Listener {
                 resultData.addAttr(attr, attr_level);
             }
             if(!resultData.isEquipment() && process != 9999) resultData.setProcessTime(process);
+            if(qualityContainItem > 0) {
+                resultData.setQuality(quality);
+            }
         }
 
         //레시피 추가속성 계산

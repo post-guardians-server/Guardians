@@ -6,6 +6,7 @@ import com.nisovin.magicspells.events.ConditionsLoadingEvent;
 import com.nisovin.magicspells.events.PassiveListenersLoadingEvent;
 import com.nisovin.magicspells.events.SpellEffectsLoadingEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
+import me.rukon0621.callback.speaker.SpeakerListenEvent;
 import me.rukon0621.guardians.GUI.MenuWindow;
 import me.rukon0621.guardians.GUI.TrashcanGUI;
 import me.rukon0621.guardians.GUI.item.enhance.RepairWindow;
@@ -22,6 +23,7 @@ import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.events.ItemClickEvent;
+import me.rukon0621.guardians.helper.LocationSaver;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.helper.Rand;
 import me.rukon0621.guardians.main;
@@ -39,6 +41,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -65,6 +68,7 @@ import java.util.concurrent.CountDownLatch;
 import static me.rukon0621.guardians.commands.MoneyCommand.moneyName;
 import static me.rukon0621.guardians.data.LevelData.EXP_BOOK_TYPE_NAME;
 import static me.rukon0621.guardians.data.LevelData.reloadIndicator;
+import static me.rukon0621.guardians.main.isVoidLandServer;
 import static me.rukon0621.guardians.main.pfix;
 
 public class SystemEventsListener implements Listener {
@@ -72,6 +76,7 @@ public class SystemEventsListener implements Listener {
     private final Set<Player> blockRiding = new HashSet<>();
     private final Set<Player> interacting = new HashSet<>();
     private final Set<String> blockMenu = new HashSet<>();
+    public static boolean transmitChestBlocked = false;
 
     public SystemEventsListener() {
         main.getPlugin().getServer().getPluginManager().registerEvents(this, main.getPlugin());
@@ -81,6 +86,17 @@ public class SystemEventsListener implements Listener {
                 interacting.clear();
             }
         }.runTaskTimerAsynchronously(plugin, 0, 600);
+    }
+
+    @EventHandler
+    public void onSpeakListen(SpeakerListenEvent e) {
+        if(e.getMainAction().equalsIgnoreCase("transmitChestStart")) {
+            transmitChestBlocked = true;
+        }
+        else if(e.getMainAction().equalsIgnoreCase("transmitChestEnd")) {
+            transmitChestBlocked = false;
+        }
+
     }
 
     @EventHandler
@@ -212,6 +228,7 @@ public class SystemEventsListener implements Listener {
 
     @EventHandler
     public void onPickUp(EntityPickupItemEvent e) {
+        if(isVoidLandServer()) return;
         if(e.getEntity() instanceof Player player) {
             if(player.getGameMode().equals(GameMode.CREATIVE)) return;
             e.setCancelled(true);
@@ -219,10 +236,20 @@ public class SystemEventsListener implements Listener {
     }
 
     @EventHandler
-    public void onDropItem(PlayerDropItemEvent e) {
+    public void onDrop(PlayerDropItemEvent e) {
+        if(isVoidLandServer()) return;
         Player player = e.getPlayer();
         if(player.getGameMode()==GameMode.CREATIVE) return;
         e.setCancelled(true);
+        if(e.getPlayer().getInventory().getHeldItemSlot() == 0 && !EquipmentManager.getWeapon(e.getPlayer()).getType().equals(Material.AIR)) {
+            return;
+        }
+        if(DamagingListener.getRemainCombatTime(player) > 0) {
+            Msg.warn(player, "전투 중에는 아이템을 버릴 수 없습니다.");
+            return;
+        }
+        player.playSound(player, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1, 1.3f);
+        new TrashcanGUI(player);
     }
 
     @EventHandler
@@ -347,7 +374,7 @@ public class SystemEventsListener implements Listener {
         e.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if(player.getGameMode()==GameMode.CREATIVE) return;
@@ -403,6 +430,10 @@ public class SystemEventsListener implements Listener {
         Player player = e.getPlayer();
         //player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 99999999, 120, false, false, false));
         if(RukonInstance.inst().getInstanceManager().isPlayerInInstance(player)) return;
+        if(main.isVoidLandServer()) {
+            e.setRespawnLocation(LocationSaver.getLocation("shelter"));
+            return;
+        }
         RegionManager.getPlayerRegion(player).clear();
         PlayerData pdc = new PlayerData(player);
         Location loc = AreaManger.getArea(pdc.getArea()).getReturnLoc();
@@ -497,20 +528,6 @@ public class SystemEventsListener implements Listener {
     public void onLoadSpellPassive(PassiveListenersLoadingEvent e) {
         e.getPassiveManager().addListener(GuardiansDamageListener.class, "takeGuardiansDamage");
         e.getPassiveManager().addListener(GiveGuardiansDamageListener.class, "giveGuardiansDamage");
-    }
-
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent e) {
-        if(e.getPlayer().getInventory().getHeldItemSlot() == 0 && !EquipmentManager.getWeapon(e.getPlayer()).getType().equals(Material.AIR)) {
-            return;
-        }
-        Player player = e.getPlayer();
-        if(DamagingListener.getRemainCombatTime(player) > 0) {
-            Msg.warn(player, "전투 중에는 아이템을 버릴 수 없습니다.");
-            return;
-        }
-        player.playSound(player, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1, 1.3f);
-        new TrashcanGUI(player);
     }
 
 }

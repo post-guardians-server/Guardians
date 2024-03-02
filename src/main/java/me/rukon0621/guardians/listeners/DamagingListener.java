@@ -35,10 +35,7 @@ import me.rukon0621.teseion.TeseionInstance;
 import net.playavalon.avnparty.AvNParty;
 import net.playavalon.avnparty.player.AvalonPlayer;
 import org.bukkit.*;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -53,6 +50,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import static me.rukon0621.guardians.main.isVoidLandServer;
 import static me.rukon0621.guardians.main.pfix;
 
 public class DamagingListener implements Listener {
@@ -245,13 +243,13 @@ public class DamagingListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDamageByEntity(EntityDamageByEntityEvent e) {
+        if(main.isVoidLandServer() && e.getEntity().getType().equals(EntityType.HUSK)) return;
         if(e.getEntity() instanceof ArmorStand && e.getDamager() instanceof Player) {
             e.setCancelled(true);
             return;
         }
         boolean crit = false, stun = false;
         double armorIgnore = 0.0, armor = 0, critDamage = 0, stunDuration = 0, multiply = 1;
-
         Player attacker = null;
         Player victim = null;
         if(!(e.getEntity() instanceof LivingEntity le)) return;
@@ -268,7 +266,7 @@ public class DamagingListener implements Listener {
             if(getRemainCombatTime(player)==-1&&!playingCombatBgm.contains(player)) {
                 if(!RukonWave.inst().getFieldWaveManager().isPlayingFieldWave(player)&&!RukonInstance.inst().getInstanceManager().isPlayerInInstance(player)) {
                     ArrayList<String> set = AreaManger.getArea(pdc.getArea()).getBattleBgm();
-                    if(set.size()>0) {
+                    if(!set.isEmpty()) {
                         if(OpenAudioListener.playBgm(player, Rand.getRandomCollectionElement(set))) {
                             playingCombatBgm.add(player);
                         }
@@ -294,7 +292,7 @@ public class DamagingListener implements Listener {
 
             //임시적으로 테세이온 딜 조정
             if(RukonInstance.inst().getInstanceManager().getPlayerInstance(player) instanceof TeseionInstance) {
-                e.setDamage(e.getDamage()/2+1);
+                    e.setDamage(e.getDamage()/2+1);
             }
 
             victim = player;
@@ -321,9 +319,15 @@ public class DamagingListener implements Listener {
                 multiply *= (Stat.getPlayerArmor(player, e.getDamage(), armorIgnore));
                 //multiply *= 1 - Math.min(0.9, Stat.ARMOR.getTotal(player) / (Stat.ATTACK_DAMAGE.getTotal(player) * Stat.PLAYER_ARMOR_ATTACK_CONST));
             }
-            else armor = Stat.ARMOR.getTotal(player);
+            else {
+                armor = Stat.ARMOR.getTotal(player) + Stat.MONSTER_ARMOR.getTotal(player);
+            }
             if(attacker!=null&&AreaManger.getArea(pdc.getArea()).getConditions().contains("playerDamageHalf")) e.setDamage(e.getDamage() * 0.8);
         }
+        else {
+            e.setDamage(e.getDamage() + Stat.MONSTER_DAMAGE.getTotal(attacker));
+        }
+
         if(e.getDamager() instanceof LivingEntity at) {
             GuardiansDamageEvent ev = new GuardiansDamageEvent(at, le);
             Bukkit.getPluginManager().callEvent(ev);
@@ -344,7 +348,7 @@ public class DamagingListener implements Listener {
                 e.setDamage(minDam);
             }
         }
-        if(e.getDamage() < 0) e.setDamage(0);
+        if(e.getDamage() < 1) e.setDamage(1);
 
         if(attacker!=null) {
             e.setDamage(multiply * e.getDamage());
@@ -475,20 +479,13 @@ public class DamagingListener implements Listener {
                     playersOnCombat.put(uuid, System.currentTimeMillis() + (1000L * dropCombatSecond)/5);
                     DropManager.giveDrop(player, name, level, contribution / 100);
                     player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, Rand.randFloat(1.3, 1.7));
-                    //Msg.send(player,  "&6"+name+"&f : &e몬스터를 성공적으로 처치하였습니다.", pfix);
-                    //Msg.send(player, "&7     - 처치 참여 인원 : " + attackersSize + "명");
-                    //Msg.send(player, String.format("&7     - 처치 기여도 : %.2f%%", contribution));
                     Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%d명 중 %.1f%%&7)", name, attackersSize, contribution), pfix);
                     /*
-                    if(contribution == 100) Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%.0f%%&7 &8| &7장비 경험치: &f%.2f)", name, contribution, LevelData.getDropExp(level)), pfix);
-                    else Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%d명 중 %.1f%%&7 &8| &7장비 경험치: &f%.2f)", name, attackersSize, contribution, LevelData.getDropExp(level)), pfix);
-                    List<String> levelUP = EquipmentManager.addExp(player, LevelData.getDropExp(level) * contribution / 100);
-                    if(!levelUP.isEmpty()) {
-                        StringBuilder sb = new StringBuilder();
-                        for(String s : levelUP) sb.append(", ").append(s);
-                        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1.2f);
-                        Msg.send(player, " ");
-                        Msg.send(player, "&e" + sb.toString().replaceFirst(", ", "") +"&f의 레벨이 올랐습니다! 레벨에 따라 능력치와 품질이 변동됩니다.", pfix);
+                    double exp = expManager.getExpOfMob(name) * contribution / 100;
+                    Msg.send(player, String.format("&e%s &f토벌 완료! &7(기여도: &f%d명 중 %.1f%%&7, 경험치: %.1f)", name, attackersSize, contribution, exp), pfix);
+                    boolean levelUP = expManager.addExp(player, exp);
+                    if(levelUP) {
+                        Msg.send(player, "&e가디언의 사증&f이 레벨업 했습니다!", pfix);
                         EquipmentManager.reloadEquipment(player, false);
                     }
                      */
@@ -535,12 +532,13 @@ public class DamagingListener implements Listener {
             }
         }.runTaskLater(plugin, 20);
         if(RukonInstance.inst().getInstanceManager().isPlayerInInstance(player)) return;
+        PlayerData.setPlayerStun(player, false);
+        PlayerData.setPlayerSlowStun(player, false);
         player.playSound(e.getEntity(), Sound.ENTITY_WITHER_HURT, 1, 0.5f);
-
-        PlayerData pdc = new PlayerData(player);
+        OpenAudioListener.stopSong(player, "bgm");
+        if(main.isVoidLandServer()) return;
         deathPenalty(player);
         playersOnCombat.remove(player);
-        OpenAudioListener.stopSong(player, "bgm");
     }
 
     public static void deathPenalty(Player player) {

@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class   SingleEquipmentSelectWindow extends ItemSelectableWindow {
+public abstract class SingleEquipmentSelectWindow extends ItemSelectableWindow {
     protected ItemStack selectedEquipment = null;
 
     public SingleEquipmentSelectWindow(Player player, String title, int rows) {

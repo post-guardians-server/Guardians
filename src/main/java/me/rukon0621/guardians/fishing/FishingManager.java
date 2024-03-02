@@ -21,7 +21,6 @@ import java.util.*;
 
 public class FishingManager implements Listener {
     private final Map<String, Map<ItemGrade, Set<String>>> fishingData = new HashMap<>();
-    private final Map<String, ItemGrade> highestGradeAtArea = new HashMap<>();
 
     private final double[] stackedArrayList = new double[8];
 
@@ -40,11 +39,8 @@ public class FishingManager implements Listener {
         for(Area area : AreaManger.getAreaData().values()) {
             new Configure(folder.getPath() + "/" + area.getName() + ".yml");
         }
-
-
         Bukkit.getLogger().info("낚시 정보 리로드 중...");
         fishingData.clear();
-        highestGradeAtArea.clear();
         for(File file : folder.listFiles()) {
             String area = file.getName().replaceAll(".yml", "");
             if(!area.equals("default") && AreaManger.getArea(area) == null) {
@@ -53,12 +49,10 @@ public class FishingManager implements Listener {
             }
             Configure config = new Configure(file);
             Map<ItemGrade, Set<String>> data = new HashMap<>();
-            highestGradeAtArea.put(area, ItemGrade.NORMAL);
             for(String key : config.getConfig().getKeys(false)) {
                 try {
                     Set<String> set = new HashSet<>();
                     ItemGrade grade = ItemGrade.valueOf(key.toUpperCase());
-                    highestGradeAtArea.put(area, (highestGradeAtArea.get(area).ordinal() < grade.ordinal() ? grade : highestGradeAtArea.get(area)));
                     for(String item : config.getConfig().getStringList(key)) {
                         if(!ItemSaver.isItemExist(item)) {
                             Bukkit.getLogger().severe(item + " - 이 아이템 세이버를 탐색할 수 없습니다.");
@@ -73,9 +67,16 @@ public class FishingManager implements Listener {
             }
             fishingData.put(area, data);
         }
-        for(String area : highestGradeAtArea.keySet()) {
-            highestGradeAtArea.put(area, highestGradeAtArea.put(area, highestGradeAtArea.get("default").ordinal() > highestGradeAtArea.get(area).ordinal() ? highestGradeAtArea.get("default") : highestGradeAtArea.get(area)));
-            System.out.println(area + " h- " + highestGradeAtArea.get(area));
+
+        for(ItemGrade grade : fishingData.get("default").keySet()) {
+            for(String s : fishingData.get("default").get(grade)) {
+                for(Area area : AreaManger.getAreaData().values()) {
+                    if(!fishingData.get(area.getName()).containsKey(grade)) {
+                        fishingData.get(area.getName()).put(grade, new HashSet<>());
+                    }
+                    fishingData.get(area.getName()).get(grade).add(s);
+                }
+            }
         }
         for (String area : fishingData.keySet()) {
             System.out.println("area - " + area);
@@ -102,19 +103,31 @@ public class FishingManager implements Listener {
         return ItemGrade.NORMAL;
     }
 
-    public long getFishPrice(ItemData fishData) {
+    public double getFishPrice(ItemData fishData) {
         long price;
+        /*
         switch (fishData.getGrade()) {
-            case NORMAL -> price = 20;
-            case UNCOMMON -> price = 25;
-            case UNIQUE -> price = 1000;
-            case EPIC -> price = 2200;
-            case LEGEND -> price = 10000;
-            case ANCIENT -> price = 70000;
+            case NORMAL -> price = 34;
+            case UNCOMMON -> price = 38;
+            case UNIQUE -> price = 1190;
+            case EPIC -> price = 2652;
+            case LEGEND -> price = 11866;
+            case ANCIENT -> price = 399398;
             default -> price = 0;
         }
-
-
+         */
+        switch (fishData.getGrade()) {
+            case NORMAL -> price = 100;
+            case UNCOMMON -> price = 200;
+            case UNIQUE -> price = 3200;
+            case EPIC -> price = 7500;
+            case LEGEND -> price = 32000;
+            case ANCIENT -> price = 399398;
+            default -> price = 0;
+        }
+        price *= fishData.getQuality();
+        price *= (fishData.getLevel() / 25D);
+        price /= 30;
         return price;
     }
 
@@ -123,25 +136,15 @@ public class FishingManager implements Listener {
         PlayerData pdc = new PlayerData(player);
         String area = pdc.getArea();
         int qualLevel = rodData.getAttrLevel("고품질 포획률 증가");
-        int gradeLevel = rodData.getAttrLevel("고등급 포획률 증가");
-        int addLevel = rodData.getAttrLevel("고레벨 포획률 증가");
-        int durLevel = rodData.getAttrLevel("내구력");
+        int gradeLevel = rodData.getAttrLevel("고등급 포획률 증가") / 2;
+        int addLevel = rodData.getAttrLevel("고레벨 포획률 증가") / 2;
 
         ItemGrade resultGrade = generateGrade(stackedArrayList[gradeLevel]);
-        if(resultGrade.ordinal() > highestGradeAtArea.get(area).ordinal()) {
-            resultGrade = highestGradeAtArea.get(area);
-        }
         while(fishingData.get(area).get(resultGrade) == null || fishingData.get(area).get(resultGrade).isEmpty()) {
-            resultGrade = ItemGrade.values()[resultGrade.ordinal() - 2];
-        }
-
-        if(resultGrade == null) {
-            Msg.warn(player, "낚시 도중 오류가 발생했습니다.");
-            return null;
+            resultGrade = ItemGrade.values()[resultGrade.ordinal() - 1];
         }
 
         Set<String> items = new HashSet<>(getFishingData(area, resultGrade));
-        items.addAll(getFishingData("default", resultGrade));
         if(items.isEmpty()) {
             Msg.warn(player, "오류: 비어있는 데이터를 참조했습니다.");
             return null;
@@ -149,16 +152,11 @@ public class FishingManager implements Listener {
         ItemData fishData = new ItemData(ItemSaver.getItem(Rand.getRandomCollectionElement(items)));
         fishData.setQuality(generateQualityByLevel(qualLevel));
         fishData.setLevel(new PlayerData(player).getLevel() - Rand.randInt(0, (10 - addLevel)));
-        if(Rand.randInt(0, durLevel) == 0) {
-            rodData.consumeDurability();
-        }
-        player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1.5f);
         player.getInventory().setItemInMainHand(rodData.getItemStack());
         return fishData;
     }
 
     public static double generateQualityByLevel(int level) {
-        int[] range = new int[]{100, 90, 80, 70, 60, 50};
         double[] stackedQualityArrayList = new double[100];
         for(int i = 0;i < 100; i++) {
             stackedQualityArrayList[i] = pdf(i, level);
@@ -177,6 +175,6 @@ public class FishingManager implements Listener {
     }
 
     private static double pdf(int x, int level) {
-        return Math.pow(Math.E, -(Math.pow((x - (50 + (level * 3))), 2)/500)) * 100;
+        return Math.pow(Math.E, -(Math.pow((x - (50 + (level * 1.5))), 2)/500)) * 100;
     }
 }

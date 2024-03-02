@@ -11,6 +11,7 @@ import me.rukon0621.guardians.dialogquest.DialogQuestManager;
 import me.rukon0621.guardians.dialogquest.Quest;
 import me.rukon0621.guardians.dialogquest.QuestInProgress;
 import me.rukon0621.guardians.helper.Msg;
+import me.rukon0621.guardians.listeners.DamagingListener;
 import me.rukon0621.guardians.listeners.LogInOutListener;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.offlineMessage.OfflineMessageManager;
@@ -98,7 +99,7 @@ public class WorldPeriodicEvent {
                         if(player.isDead()) continue;
                         //10초 주기로 칭호 리로드
                         if(second % 10 == 0) TitleWindow.reloadTitleOfPlayer(player);
-                        if(second % 2 == 0) {
+                        if(second % 2 == 0 || DamagingListener.getRemainCombatTime(player.getUniqueId()) > -1) {
                             double regen = Stat.REGEN.getTotal(player);
                             player.setHealth(Math.min(player.getHealth() + (regen / 2), player.getMaxHealth()));
                         }

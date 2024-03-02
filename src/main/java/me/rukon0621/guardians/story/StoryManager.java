@@ -4,6 +4,7 @@ import me.rukon0621.callback.LogManager;
 import me.rukon0621.dungeonwave.RukonWave;
 import me.rukon0621.dungeonwave.fieldwave.FieldWave;
 import me.rukon0621.guardians.GUI.ChannelWindow;
+import me.rukon0621.guardians.GUI.FishSellGUI;
 import me.rukon0621.guardians.GUI.item.*;
 import me.rukon0621.guardians.GUI.item.enhance.EnhanceGUI;
 import me.rukon0621.guardians.GUI.item.enhance.StoneRemoveWindow;
@@ -13,6 +14,7 @@ import me.rukon0621.guardians.craft.craft.CraftManager;
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.dialogquest.DialogQuestManager;
+import me.rukon0621.guardians.dialogquest.Quest;
 import me.rukon0621.guardians.dialogquest.QuestInProgress;
 import me.rukon0621.guardians.dropItem.DropManager;
 import me.rukon0621.guardians.equipmentLevelup.RuneLevelUpWindow;
@@ -167,6 +169,10 @@ public class StoryManager {
                 String[] data = script.split(":");
                 player.playSound(player.getLocation(), data[1].trim().toLowerCase(Locale.ROOT), Float.parseFloat(data[2].trim()), Float.parseFloat(data[3].trim()));
             }
+            else if (sct.startsWith("!SS")) {
+                String[] data = script.split(":");
+                player.stopSound(data[1].trim());
+            }
             else if (sct.startsWith("!TP")) {
                 String[] data = script.split(":");
                 if(data.length>2) {
@@ -198,6 +204,13 @@ public class StoryManager {
                 else LocationSaver.tpToLoc(player, data[1].trim());
             }
             else if (sct.startsWith("!GIVE")) {
+                if(RukonInstance.inst().getInstanceManager().getPlayerInstance(player) instanceof TeseionInstance teseionInstance) {
+                    if(teseionInstance.isPractice()) {
+                        Msg.warn(player, "연습 모드에서는 이 보상을 받을 수 없습니다.");
+                        return;
+                    }
+                }
+
                 String[] data = script.split(":");
                 int level;
                 try {
@@ -505,6 +518,15 @@ public class StoryManager {
             }
             else if(sct.startsWith("!DIALOG")) {
                 DialogQuestManager.openDialogInstantly(player, script.split(":")[1].trim());
+            }
+            else if(sct.startsWith("!EXQUEST")) {
+                String name = script.split(":")[1].trim();
+                Quest quest = DialogQuestManager.getQuestData().get(name);
+                if(quest == null) {
+                    Msg.warn(player,  name + " 퀘스트는 존재하지 않습니다.");
+                    return;
+                }
+                quest.startQuest(player);
             }
             else if(sct.startsWith("!SIGNAL")) {
                 if(RukonInstance.inst().getInstanceManager().getPlayerInstance(player) instanceof TeseionInstance instance) {
@@ -898,14 +920,19 @@ public class StoryManager {
 
     public static void javaAction(Player player, String actionKey) {
         try {
-            if(actionKey.equalsIgnoreCase("runeLevelUp")) {
+            if(actionKey.startsWith("callEvent;")) {
+                Bukkit.getServer().getPluginManager().callEvent(new JavaActionEvent(player, actionKey.replaceFirst("callEvent;", "").split(";")));
+            }
+
+            else if(actionKey.equalsIgnoreCase("runeLevelUp")) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         new RuneLevelUpWindow(player);
                     }
                 }.runTaskLater(plugin, 1);
-            } else if(actionKey.toLowerCase().contains("crafttable")) {
+            }
+            else if(actionKey.toLowerCase().contains("crafttable")) {
                 String name = actionKey.split("=")[1].trim();
                 new BukkitRunnable() {
                     @Override
@@ -1055,7 +1082,14 @@ public class StoryManager {
                     }
                 }.runTaskLater(main.getPlugin(), 1);
             }
-
+            else if(actionKey.equalsIgnoreCase("fishSelling")) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        new FishSellGUI(player);
+                    }
+                }.runTaskLater(main.getPlugin(), 1);
+            }
             //!javaAction:CASTSHOP=name=<moneyType>
             else if(actionKey.toUpperCase().startsWith("CASHSHOP")) {
                 new BukkitRunnable() {

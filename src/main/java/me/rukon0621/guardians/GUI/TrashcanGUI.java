@@ -21,7 +21,7 @@ public class TrashcanGUI extends ItemSelectableWindow {
     List<ItemStack> items = new ArrayList<>();
 
     public TrashcanGUI(Player player) {
-        super(player, "&f\uF000\uF036", 2);
+        super(player, "&f\uF000\uF036", 4);
 
         Button confirm = new Button() {
             @Override
@@ -52,9 +52,9 @@ public class TrashcanGUI extends ItemSelectableWindow {
             }
         };
 
-        map.put(12, confirm);
-        map.put(13, confirm);
-        map.put(14, confirm);
+        map.put(30, confirm);
+        map.put(31, confirm);
+        map.put(32, confirm);
         reloadGUI();
         open();
     }

@@ -3,10 +3,13 @@ package me.rukon0621.guardians.listeners;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import io.lumine.mythic.bukkit.utils.lib.jooq.impl.QOM;
 import me.rukon0621.buff.RukonBuff;
 import me.rukon0621.callback.ProxyCallBack;
 import me.rukon0621.dungeonwave.WaveData;
+import me.rukon0621.guardians.GUI.ChannelWindow;
 import me.rukon0621.guardians.areawarp.AreaManger;
+import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.dialogquest.DialogQuestManager;
 import me.rukon0621.guardians.equipment.EquipmentManager;
@@ -23,25 +26,28 @@ import me.rukon0621.rpvp.RukonPVP;
 import me.rukon0621.rpvp.data.RankData;
 import me.rukon0621.teseion.Main;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+
+import static me.rukon0621.guardians.main.mainChannel;
 
 public class LogInOutListener implements Listener, PluginMessageListener {
     private static boolean isServerFullyEnabled = false;
@@ -301,9 +307,40 @@ public class LogInOutListener implements Listener, PluginMessageListener {
             }.runTaskLater(plugin, 60L);
         }
 
+        ItemStack item = EquipmentManager.getEquipment(player, "사증");
+        if(!item.getType().equals(Material.AIR)) {
+            ItemData itemData = new ItemData(item);
+            itemData.setLevel(0);
+            EquipmentManager.setItem(player, "사증", itemData.getItemStack());
+        }
+
         if(pdc.getArea().equals("메리스")) {
             AreaManger.getArea("루테티아").warp(player, true);
             Msg.send(player, "크리스마스 이벤트가 끝나 메리스에서 루테티아로 귀환했습니다.");
+        }
+        else if(pdc.getArea().equals("공허의 땅") && !main.isVoidLandServer()) {
+            Location loc = player.getLocation();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    DataBase db = new DataBase();
+                    try {
+                        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE voidData SET lastLocation = ? WHERE uuid = ?");
+                        statement.setBytes(1, Serializer.serializeBukkitObject(loc));
+                        statement.setString(2, player.getUniqueId().toString());
+                        statement.executeUpdate();
+                        statement.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.runTask(RukonBuff.inst());
+            getLogoutEventBlocked().add(player);
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("connect");
+            out.writeUTF(player.getName());
+            out.writeUTF("voidLand");
+            player.sendPluginMessage(main.getPlugin(), mainChannel, out.toByteArray());
         }
 
         /*
@@ -322,9 +359,6 @@ public class LogInOutListener implements Listener, PluginMessageListener {
                 }
             }.runTaskLater(plugin, 20L);
          */
-
-
-
         //Offline Message
         new BukkitRunnable() {
             @Override

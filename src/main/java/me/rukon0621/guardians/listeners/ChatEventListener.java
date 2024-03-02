@@ -73,6 +73,15 @@ public class ChatEventListener implements Listener, PluginMessageListener {
             if(channel.contains("ch")) {
                 channel = channel.replaceAll("ch", "");
             }
+            else if(channel.contains("dev")) {
+                return "&7『 개발 서버 』";
+            }
+            else if (channel.equals("testServer")) {
+                channel = "테스트 ";
+            }
+            else if (channel.equals("voidLand")) {
+                return "&7『 공허의 땅 』";
+            }
             return String.format("&7『 %s채널 』", channel);
         }
 
@@ -274,7 +283,7 @@ public class ChatEventListener implements Listener, PluginMessageListener {
                 PlayerData pdc = new PlayerData(player);
                 if(pdc.getGuildID() == null || !pdc.getGuildID().equals(guildID)) continue;
                 Msg.send(player, msg, pfix);
-                player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1.5f);
+                player.playSound(player, Sound.ENTITY_ENDER_DRAGON_HURT, 1, 1.5f);
             }
         }
     }

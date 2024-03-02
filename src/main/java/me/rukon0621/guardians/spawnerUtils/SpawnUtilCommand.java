@@ -31,7 +31,7 @@ public class SpawnUtilCommand implements CommandExecutor {
         Objects.requireNonNull(main.getPlugin().getCommand("spawnutil")).setTabCompleter(spawnUtilCommandTabComp);
 
         SpawnerManager spawnerManager = mythicPlugin.getSpawnerManager();
-        for(MythicSpawner spawner : spawnerManager.listSpawners) {
+        for(MythicSpawner spawner : spawnerManager.getSpawners()) {
             spawner.setLeashRange(40);
         }
         spawnerManager.saveSpawners();

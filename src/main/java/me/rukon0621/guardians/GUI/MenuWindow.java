@@ -16,6 +16,7 @@ import me.rukon0621.guardians.party.PartyManager;
 import me.rukon0621.guardians.region.Region;
 import me.rukon0621.guardians.region.RegionManager;
 import me.rukon0621.guardians.skillsystem.SkillManager;
+import me.rukon0621.guardians.story.StoryManager;
 import me.rukon0621.pay.blessing.BlessingWindow;
 import me.rukon0621.pay.pass.PassWindow;
 import me.rukon0621.rinstance.RukonInstance;
@@ -56,6 +57,10 @@ public class MenuWindow implements Listener {
 
     public MenuWindow(Player player, int page) {
         this.player = player;
+        if(main.isVoidLandServer()) {
+            StoryManager.javaAction(player, "callEvent;openWindow;voidLand;Menu");
+            return;
+        }
         this.page = page;
         if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
             EquipmentManager.openEquipmentGUI(player);

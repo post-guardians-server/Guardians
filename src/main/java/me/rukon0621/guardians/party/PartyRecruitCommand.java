@@ -2,6 +2,8 @@ package me.rukon0621.guardians.party;
 
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.main;
+import me.rukon0621.guardians.story.StoryManager;
+import me.rukon0621.rinstance.RukonInstance;
 import net.playavalon.avnparty.AvNParty;
 import net.playavalon.avnparty.party.Party;
 import org.bukkit.command.Command;
@@ -29,6 +31,16 @@ public class PartyRecruitCommand implements CommandExecutor {
                 Msg.send(player, "&6/파티참가수락 <플레이어>");
                 return true;
             }
+
+            if(StoryManager.getPlayingStory(player) != null) {
+                Msg.warn(player, "스토리 진행 중에는 파티 참가를 수락할 수 없습니다.");
+                return true;
+            }
+            else if(RukonInstance.inst().getInstanceManager().isPlayerInInstance(player)) {
+                Msg.warn(player, "테세이온 또는 PVP 장에서는 파티 참가를 수락할 수 없습니다.");
+                return true;
+            }
+
             Player target = plugin.getServer().getPlayer(args[0]);
             if(target==null) {
                 Msg.warn(player, "해당 이름의 플레이어는 존재하지 않습니다.");

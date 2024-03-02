@@ -6,11 +6,14 @@ import me.rukon0621.guardians.listeners.DamagingListener;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guardians.story.StoryManager;
 import me.rukon0621.rinstance.RukonInstance;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class AfkCommand implements CommandExecutor {
 
@@ -25,6 +28,8 @@ public class AfkCommand implements CommandExecutor {
             Msg.warn(player, "지금은 이 명령어를 이용할 수 없습니다.");
             return true;
         }
+
+
         new AfkConfirmWindow(player);
         return true;
     }

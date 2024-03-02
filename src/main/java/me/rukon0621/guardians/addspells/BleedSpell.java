@@ -11,6 +11,7 @@ import me.rukon0621.guardians.data.Stat;
 import me.rukon0621.guardians.main;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -69,9 +70,14 @@ public class BleedSpell extends TargetedPowerSpell implements TargetedEntitySpel
     private boolean causeBleeding(LivingEntity caster, LivingEntity target, float power) {
         if (target == null) {
             return false;
-        } else if (target.isDead()) {
+        }
+        else if (target.isDead()) {
             return false;
-        } else {
+        }
+        else if (target.getType().equals(EntityType.HUSK)) {
+            return false;
+        }
+        else {
             float power2 = modifyPower(caster, 1);
             target.setNoDamageTicks(0);
             double localDamage = damage;

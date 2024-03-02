@@ -37,6 +37,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.sql.Date;
@@ -108,6 +109,7 @@ public class PlayerData {
         db.execute("ALTER TABLE playerData ADD offHand blob;");
         db.execute("ALTER TABLE playerData ADD guild text;");
         db.execute("ALTER TABLE playerData ADD voteDays int;");
+        db.execute("ALTER TABLE playerData ADD transmit mediumblob;");
         db.close();
     }
 
@@ -148,16 +150,23 @@ public class PlayerData {
                     statement.executeUpdate();
                     statement.close();
 
-                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET location = ?, inventory = ?, lastLogin = ?, waitingItems = ?, playingStory = ?, blueprints = ?, riding = ? WHERE uuid = '%s'", player.getUniqueId()));
-                    ZonedDateTime date = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-                    statement.setBytes(2, Serializer.serializeBukkitObject(invData));
-                    statement.setDate(3, Date.valueOf(date.toLocalDate()));
-                    statement.setBytes(4, Serializer.serializeBukkitObject(pdc.getWaitingItems()));
+                    if(!main.isVoidLandServer()) {
+                        statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET location = ? WHERE uuid = '%s'", player.getUniqueId()));
+                        statement.setBytes(1, Serializer.serializeBukkitObject(finalLocation));
+                        statement.executeUpdate();
+                        statement.close();
+                    }
 
-                    statement.setString(5, playedStory);
-                    statement.setBytes(1, Serializer.serializeBukkitObject(finalLocation));
-                    statement.setBytes(6, Serializer.serialize(pdc.getBlueprintsData()));
-                    statement.setBytes(7, Serializer.serializeBukkitObject(RukonRiding.inst().getRideManager().getRidingCache(player)));
+                    statement = db.getConnection().prepareStatement(String.format("UPDATE playerData SET inventory = ?, lastLogin = ?, waitingItems = ?, playingStory = ?, blueprints = ?, riding = ? WHERE uuid = '%s'", player.getUniqueId()));
+
+                    ZonedDateTime date = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+                    statement.setBytes(1, Serializer.serializeBukkitObject(invData));
+                    statement.setDate(2, Date.valueOf(date.toLocalDate()));
+                    statement.setBytes(3, Serializer.serializeBukkitObject(pdc.getWaitingItems()));
+
+                    statement.setString(4, playedStory);
+                    statement.setBytes(5, Serializer.serialize(pdc.getBlueprintsData()));
+                    statement.setBytes(6, Serializer.serializeBukkitObject(RukonRiding.inst().getRideManager().getRidingCache(player)));
 
                     statement.executeUpdate();
                     statement.close();
@@ -328,8 +337,14 @@ public class PlayerData {
             player.getInventory().setItemInOffHand((ItemStack) Serializer.deserializeBukkitObject(resultSet.getBytes(42)));
             try {
                 pdc.setGuildID(UUID.fromString(resultSet.getString(43)));
+                //System.out.println("players guild: " + resultSet.getString(43));
+                //System.out.println(pdc.getGuildID());
+                Guild.GuildBuff.applyAll(player, Guild.loadGuild(pdc.getGuildID()));
+                //System.out.println(Guild.loadGuild(pdc.getGuildID()).getName());
             } catch (NullPointerException e) {
+                //e.printStackTrace();
                 pdc.setGuildID(null);
+                Guild.GuildBuff.removeGuildBuff(player);
             }
             pdc.setVoteDays(resultSet.getInt(44));
             resultSet.close();
@@ -393,6 +408,19 @@ public class PlayerData {
     public static boolean isPlayerSlowStunned(Player player) {
         return slowStunnedPlayer.contains(player);
     }
+
+    public static void setTransmitData(UUID uuid, byte[] bytes) {
+        try {
+            DataBase db = new DataBase();
+            PreparedStatement statement = db.getConnection().prepareStatement("UPDATE playerData SET transmit = ? WHERE uuid = ?");
+            statement.setBytes(1, bytes);
+            statement.setString(2, uuid.toString());
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     private final Player player;
     private Map<String, Object> data;
     private boolean reset = false;
@@ -405,12 +433,10 @@ public class PlayerData {
         if(!checkNoob) {
             return;
         }
-
         if(!playerDataMap.containsKey(player)) {
             playerDataMap.put(player, new HashMap<>());
             data = playerDataMap.get(player);
         }
-
         attributeAbility.put(player, new HashMap<>());
 
         //Reset Part
@@ -430,7 +456,7 @@ public class PlayerData {
                     resetPlayerStatusData(latch);
                     reset = true;
                 }
-                else {
+                else  {
                     if(storyCode < 10) {
                         new BukkitRunnable() {
                             @Override
@@ -439,7 +465,6 @@ public class PlayerData {
                             }
                         }.runTask(plugin);
                     }
-
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -988,6 +1013,27 @@ public class PlayerData {
     }
     public List<ItemStack> getWeaponSkins() {
         return (List<ItemStack>) data.get("weaponSkins");
+    }
+
+    @NotNull
+    public Map<Integer, ItemStack> getTransmitData() {
+        try {
+            DataBase db = new DataBase();
+            PreparedStatement statement = db.getConnection().prepareStatement("SELECT transmit FROM playerData WHERE uuid = ?");
+            statement.setString(1, player.getUniqueId().toString());
+            ResultSet set = statement.executeQuery();
+            set.next();
+            Map<Integer, ItemStack> data = (Map<Integer, ItemStack>) NullManager.defaultNull(Serializer.deserializeBukkitObject(set.getBytes(1)), new HashMap<>());
+            statement.close();
+            set.close();
+            return data;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+    public void setTransmitData(Map<Integer, ItemStack> data) {
+        setTransmitData(player.getUniqueId(), Serializer.serializeBukkitObject(data));
     }
 
 }

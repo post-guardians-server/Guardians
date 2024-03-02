@@ -29,7 +29,7 @@ public class SkillTreeManager {
         basicSkillNames.add("회격 [ LV 1 ]");
         basicSkillNames.add("난사 [ LV 1 ]");
         basicSkillNames.add("정조준 [ LV 1 ]");
-        basicSkillNames.add("스플래쉬 [ LV 1 ]");
+        basicSkillNames.add("캐논 [ LV 1 ]");
     }
 
     public String unicodeOfTree(int treeIndex) {

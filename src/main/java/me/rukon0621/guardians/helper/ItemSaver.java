@@ -151,7 +151,6 @@ public class ItemSaver implements CommandExecutor {
             ItemData original = new ItemData(item);
             ItemData reloaded = getItemDataParsed(Msg.uncolor(item.getItemMeta().getDisplayName()), original.getLevel());
 
-
             if(original.hasKey("enhanceLevel")) {
                 reloaded.setEnhanceLevel(original.getEnhanceLevel());
             }
@@ -165,7 +164,7 @@ public class ItemSaver implements CommandExecutor {
             if(original.getDataMap().containsKey("exp")) {
                 reloaded.setExp(original.getExp());
             }
-            if(original.isEquipment()&&!original.getType().equals("사증") || TypeData.getType(original.getType()).isMaterialOf("버프 아이템") || TypeData.getType(original.getType()).isMaterialOf("낚시 포획물") || original.hasAttr("quality")) {
+            if((original.isEquipment()&&!original.getType().equals("사증")) || TypeData.getType(original.getType()).isMaterialOf("버프 아이템") || TypeData.getType(original.getType()).isMaterialOf("낚시 포획물") || original.hasAttr("quality")) {
                 reloaded.setQuality(original.getQuality());
             }
             reloaded.setSeason(-1);
@@ -177,7 +176,7 @@ public class ItemSaver implements CommandExecutor {
             }
             reloaded.setAmount(original.getAmount());
             return reloaded.getItemStack();
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             return item;
         }
     }

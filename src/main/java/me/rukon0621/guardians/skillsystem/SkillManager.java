@@ -395,6 +395,7 @@ public class SkillManager implements Listener {
         if(LogInOutListener.getLoadingPlayers().contains(player.getName())) return;
         Map<String ,String> skills = playerSkillData.get(player);
         if(player.getInventory().getHeldItemSlot()!=0) return;
+        e.setCancelled(true);
         if(RukonRiding.inst().getRideManager().isPlayerRiding(player)) {
             return;
         }

@@ -21,6 +21,7 @@ import me.rukon0621.guardians.craft.recipes.RecipeManager;
 import me.rukon0621.guardians.data.*;
 import me.rukon0621.guardians.dialogquest.*;
 import me.rukon0621.guardians.dropItem.*;
+import me.rukon0621.guardians.equipment.EquipmentExpManager;
 import me.rukon0621.guardians.equipment.EquipmentManager;
 import me.rukon0621.guardians.events.WorldPeriodicEvent;
 import me.rukon0621.guardians.fishing.FishingCommand;
@@ -102,6 +103,17 @@ public class main extends JavaPlugin {
         return channel;
     }
 
+    public static boolean isVoidLandServer() {
+        return Bukkit.getPort() == 56500;
+    }
+
+    public static boolean isUnusableSlot(int slot, int rows) {
+        for(int i : unusableSlots) {
+            if(i - (6 - rows) * 9 == slot) return true;
+        }
+        return false;
+    }
+
     @Override
     public void onLoad() {
         unusableSlots = new HashSet<>();
@@ -140,12 +152,17 @@ public class main extends JavaPlugin {
         notSolidBlock.add(Material.GRASS);
         notSolidBlock.add(Material.TALL_GRASS);
 
+
+        //테섭은 DB 분리
         if(getServer().getPort() == 56250) {
             channel = "test";
             DBStatic.getConnection("testGuardians");
         }
         else DBStatic.getConnection("guardians");
-        if (getServer().getPort() == 56220) channel = "dev";
+
+        //채널 이름 설정
+        if(getServer().getPort() == 56500) channel = "공허의 땅";
+        else if (getServer().getPort() == 56220) channel = "dev";
         else if(getServer().getPort() == 56221) channel = "dev2";
         else channel = String.valueOf(getServer().getPort() - 56210);
         //Managers
@@ -183,6 +200,7 @@ public class main extends JavaPlugin {
         new test();
         new SpellUseReloadCommand();
         new DialogCommands();
+        //new ReloadEqExpCommand();
         new DQDataCommands();
         new FishingCommand();
         new QuestCommands();
@@ -237,6 +255,7 @@ public class main extends JavaPlugin {
         new PartyCommand();
         new VoteWindowCommand();
         new VoteRewardSetCommand();
+        //new EqExpCommand();
 
         //Events
         new SystemEventsListener();

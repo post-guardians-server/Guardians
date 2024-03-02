@@ -6,8 +6,8 @@ public enum ItemGrade {
     UNCOMMON(302, "언커먼", "#94ef98", "#94ef98언커먼",2, "\uE01B", 2, 23),
     UNIQUE(303, "유니크", "#ffd966", "#ffd966유니크",3, "\uE01C", 3, 1.38),
     EPIC(304, "에픽", "#ba95e5", "#ba95e5에픽",4, "\uE01D", 4, 0.5),
-    LEGEND(305, "레전드", "#fd7c47", "#fd9961레#fd7c47전#fd5e2c드",5, "\uE01E", 5, 0.1),
-    ANCIENT(306, "에이션트", "#ff67af", "#ffaee8에#ff8acb이#ff67af션#ff4392트",6, "\uE01F", 6, 0.01);
+    LEGEND(305, "레전드", "#fd7c47", "#fd9961레#fd7c47전#fd5e2c드",5, "\uE01E", 5, 0.115D),
+    ANCIENT(306, "에이션트", "#ff67af", "#ffaee8에#ff8acb이#ff67af션#ff4392트",6, "\uE01F", 6, 0.005);
 
     private final int blueprintCMD;
     private final String str;

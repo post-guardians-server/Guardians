@@ -9,9 +9,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 
 @SerializableAs("adamantData")
 public class DropAdamantData implements ConfigurationSerializable {
@@ -24,10 +27,36 @@ public class DropAdamantData implements ConfigurationSerializable {
         this.grade = grade;
     }
 
-    public StoneData generateStoneData() {
-        Stat stat = Rand.getRandomCollectionElement(stats.keySet());
-        return new StoneData(grade, stat, Rand.randDouble(stats.get(stat).getFirst(), stats.get(stat).getSecond()));
+    public ItemGrade getGrade() {
+        return grade;
     }
+
+    public Map<Stat, Couple<Double, Double>> getStats() {
+        return stats;
+    }
+
+    @NotNull
+    public StoneData generateStoneData() {
+        return Objects.requireNonNull(generateStoneData(Rand.getRandomCollectionElement(stats.keySet())));
+    }
+
+    @Nullable
+    public StoneData generateStoneData(Stat stat) {
+        if(!stats.containsKey(stat)) return null;
+        double v1 = stats.get(stat).getFirst(), v2 = stats.get(stat).getSecond();
+
+        double d = new Random().nextGaussian((v2 + v1) / 2, (v2 - v1) / 3.98);
+        if(d < v1) d = v1;
+        else if(d > v2) d = v2;
+
+        return new StoneData(grade, stat, d);
+    }
+
+    public Couple<Double, Double> getAvailableValue(Stat stat) {
+        if(!stats.containsKey(stat)) return null;
+        return stats.get(stat);
+    }
+
 
     public static DropAdamantData deserialize(Map<String, Object> data) {
         Map<Stat, Couple<Double, Double>> stats = new HashMap<>();

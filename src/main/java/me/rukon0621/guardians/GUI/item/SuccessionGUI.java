@@ -130,7 +130,7 @@ public class SuccessionGUI extends ItemSelectableWindow {
                     dataB.removeStoneData(Rand.randInt(0, dataB.getAllStoneData().size() - 1));
                 }
                 dataB.setLevel(dataA.getLevel() - decreasingLevel);
-                dataB.setExp((long) (dataA.getExpPercentage() / 100 * ItemData.getMaxExpAtLevel(dataB.getLevel())));
+                dataB.setExp((long) (dataA.getExpPercentage() / 100 * dataB.getMaxExp()));
                 dataB.setCraftLevel(Math.max(dataA.getCraftLevel(), dataB.getCraftLevel()));
                 dataA.setQuality(0);
                 dataA.setEnhanceLevel(EnhanceLevel.ZERO);

@@ -153,6 +153,13 @@
             <systemPath>C:/pgzPlugins/RukonUtils-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>RkUtils</groupId>
+            <artifactId>RkUtils</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>C:/pgzPlugins/RkUtils-1.0.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>RukonBackpack</groupId>
             <artifactId>RukonBackpack</artifactId>
             <scope>system</scope>
@@ -188,7 +195,7 @@
         <dependency>
             <groupId>io.lumine</groupId>
             <artifactId>Mythic-Dist</artifactId>
-            <version>5.4.1</version>
+            <version>5.6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 /**
@@ -74,6 +75,25 @@ public class ItemData {
         }
         return false;
     }
+    /**
+     * 해당 아이템이 있는지 확인함
+     * @param player player
+     * @param itemStack 확인할 아이템
+     * @return 아이템이 있는가 (이름이 없으면 무조건 false 반환)
+     */
+    public static boolean hasItemOnlyName(Player player, ItemStack itemStack) {
+        if(!itemStack.hasItemMeta()) return false;
+        if(!itemStack.getItemMeta().hasDisplayName()) return false;
+        String targetName = itemStack.getItemMeta().getDisplayName();
+        for(ItemStack item : player.getInventory().getStorageContents()) {
+            if(item==null) continue;
+            if(!item.hasItemMeta()) continue;
+            if(!item.getItemMeta().hasDisplayName()) continue;
+            if(!item.getItemMeta().getDisplayName().equals(targetName)) continue;
+            return true;
+        }
+        return false;
+    }
 
     protected static HashMap<String, HashMap<String, String>> attrParsingMap;
 
@@ -88,15 +108,18 @@ public class ItemData {
         return new Configure("attrData.yml", FileUtil.getOuterPluginFolder().getPath());
     }
 
+    @Deprecated
     /**
      * 아이템 레벨업시 각 레벨당 필요한 경험치의 양
      * @param level 필요 경험치 양을 구할 레벨
      * @return 레벨당 필요경험치
      */
-    public static long getMaxExpAtLevel(int level) {
-        if(level>maxLevel) return levelData.get(maxLevel);
-        return levelData.getOrDefault(level, levelData.get(1));
+    public static double getMaxExpAtLevel(int level) {
+        return (double) getLongedMaxExpAtLevel(level) / 1000L;
     }
+
+
+    @Deprecated
     /**
      * 아이템 레벨업시 각 레벨당 필요한 경험치의 양
      * @param level 필요 경험치 양을 구할 레벨
@@ -317,7 +340,7 @@ public class ItemData {
             }
             else if(lore.startsWith("경험치: ")) {
                 double proportion = Double.parseDouble(lore.split(": ")[1].replaceAll("%", "").trim());
-                setExpLonged(Math.round(getLongedMaxExpAtLevel(getLevel()) / 100D * proportion));
+                setExpLonged(Math.round(getLongedMaxExp() / 100D * proportion));
             }
             else if(lore.startsWith("타입: ")) {
                 String value = lore.split(": ")[1].trim();
@@ -477,9 +500,14 @@ public class ItemData {
         }
     }
 
+    public int getMaxLevel() {
+        //return getType().equals("사증") ? main.getPlugin().getEquipmentExpManager().getMaxLevel() : maxLevel;
+        return maxLevel;
+    }
+
     public ItemClass getItem() {
         parseAllAttribute();
-        if(isEquipment() && !getType().equals("낚싯대")) {
+        if(isEquipment() && (!getType().equals("낚싯대") || (!getType().equals("사증")))) {
             if(!hasAttr("grade")) {
                 setGrade(ItemGrade.UNKNOWN);
             }
@@ -564,25 +592,6 @@ public class ItemData {
                     else {
                         if(key.equals("attackSpeed")) item.addLore(String.format("#f9aa5d공격 속도: %s", getAttackSpeed()));
                     }
-                    /*
-                    switch (key) {
-                        case "attackDamagePercentage" -> item.addLore(String.format("#f09999공격력: %.2f%%", getAttackDamagePercentage()));
-                        case "attackDamage" -> item.addLore(String.format("#f09999공격력: %.2f", getAttackDamage()));
-                        case "attackSpeed" -> item.addLore(String.format("#f9aa5d공격 속도: %s", getAttackSpeed()));
-                        case "armorPercentage" -> item.addLore(String.format("#8accad방어력: %.2f%%", getArmorPercentage()));
-                        case "armor" -> item.addLore(String.format("#8accad방어력: %.2f", getArmor()));
-                        case "healthPercentage" -> item.addLore(String.format("#f9aa5d추가 체력: %.2f%%", getHealthPercentage()));
-                        case "health" -> item.addLore(String.format("#f9aa5d추가 체력: %.2f", getHealth()));
-                        case "criticalChance" -> item.addLore(String.format("#fff866치명타 확률: %.2f%%", getCriticalChance()));
-                        case "criticalDamage" -> item.addLore(String.format("#ff3333치명타 피해량: %.2f%%", getCriticalDamage()));
-                        case "luckLevel" -> item.addLore(String.format("#61fd6d행운력: %.2f", getLuckLevel()));
-                        case "regen" -> item.addLore(String.format("#ffc7ec재생력: %.2f", getRegen()));
-                        case "regenPercentage" -> item.addLore(String.format("#ffc7ec재생력: %.2f%%", getRegenPercentage()));
-                        case "evade" -> item.addLore(String.format("#93FF33회피력: %.2f", getEvade()));
-                        case "movementSpeed" -> item.addLore(String.format("#d3f28d이동속도: %.2f", getMovementSpeed()));
-                        case "armorIgnore" -> item.addLore(String.format("#b12dd0방어 관통력: %.2f", getArmorIgnore()));
-                    }
-                     */
                 }
                 else if (section==20) {
                     if(badAttrList.contains(key)) item.addLore(String.format("&f\uE001&7%s Lv.%d", key, getAttrLevel(key)));
@@ -614,7 +623,7 @@ public class ItemData {
             int lure = getAttrLevel("미끼");
             if(lure > 0) {
                 item.removeEnchant(Enchantment.LURE);
-                item.addEnchant(Enchantment.LURE, lure, true);
+                item.addEnchant(Enchantment.LURE, Math.max(1, (lure / 2)), true);
                 item.addFlag(ItemFlag.HIDE_ENCHANTS);
             }
         }
@@ -655,7 +664,8 @@ public class ItemData {
         if(list.contains("value")) {
             sorted.add("value");
         }
-        if((isEquipment()&&!getType().equals("사증")) || TypeData.getType(getType()).isMaterialOf("버프 아이템") || TypeData.getType(getType()).isMaterialOf("낚시 포획물")) {
+        TypeData typeData = TypeData.getType(getType());
+        if((isEquipment()&&!getType().equals("사증")) || (typeData != null && (typeData.isMaterialOf("버프 아이템") || typeData.isMaterialOf("낚시 포획물")))) {
             sorted.add("quality");
         }
         //if(list.contains("season")) sorted.add("season");
@@ -823,7 +833,7 @@ public class ItemData {
      * @return 최고 레벨을 달성하고 남은 경험치양을 반환
      */
     private long addExpByLong(long expLonged, boolean qualityProtecting, int levelLimit) {
-        if(getLevel() >= Math.min(levelLimit, maxLevel)) {
+        if(getLevel() >= Math.min(levelLimit, getMaxLevel())) {
             long remain = getExpLonged();
             setExpLonged(0);
             return remain;
@@ -873,8 +883,6 @@ public class ItemData {
         }
         return statMap;
     }
-
-
     private void reloadItemStat(int originalLevel, int newLevel, EnhanceLevel enLevel, EnhanceLevel newEnLevel , double quality, double newQuality) {
         double scale = 1;
         if(isRune()) scale = 2.5;
@@ -943,6 +951,11 @@ public class ItemData {
      * @return 현재 레벨에서의 최대 경험치 (필요 경험치)
      */
     private long getLongedMaxExp() {
+        /*
+        if(getName().endsWith("사증 』")) {
+            return (long) (main.getPlugin().getEquipmentExpManager().getMaxExpAtLevel(getLevel()) * 1000L);
+        }
+         */
         return getLongedMaxExpAtLevel(getLevel());
     }
 
@@ -973,8 +986,8 @@ public class ItemData {
      * @return 현재 경험치의 바율을 나타냄
      */
     public double getExpPercentage() {
-        if(getLevel()==maxLevel) return 0;
-        return (double) getExpLonged() / getLongedMaxExpAtLevel(getLevel()) * 100D;
+        if(getLevel()==getMaxLevel()) return 0;
+        return (double) getExpLonged() / getLongedMaxExp() * 100D;
     }
     public void setExp(double value) {
         setExpLonged((long) (value * 1000L));
@@ -1016,7 +1029,10 @@ public class ItemData {
         return getDurability() <= 0;
     }
 
-    public void consumeDurability() {
+    public void consumeDurability(boolean ignoreDurabilityAttribute) {
+        if(!ignoreDurabilityAttribute) {
+            if(Rand.randInt(0, getAttrLevel("내구력")) != 0) return;
+        }
         setDurability(getDurability() - 1);
     }
 
@@ -1076,6 +1092,9 @@ public class ItemData {
         if(!getSection(section).contains(keyName)) getSection(section).add(keyName);
         reloadItemStat(getLevel(), getLevel(), getEnhanceLevel(), getEnhanceLevel(), getQuality(), value);
         dataMap.put(keyName, value);
+    }
+    public boolean hasQuality() {
+        return hasKey("quality");
     }
 
     public int getSeason() {

@@ -276,7 +276,8 @@ public class QuestInProgress implements ConfigurationSerializable {
 
         //연계 퀘스트가 없으면 보상 띄우기 또는 보상이 비어 있음
         if(quest.getChainQuest().equals("null")) {
-            DialogQuestManager.openQuestDataList(player, name, true, true);
+            if(quest.getRewards().isEmpty()) player.closeInventory();
+            else DialogQuestManager.openQuestDataList(player, name, true, true);
             Msg.send(player, "&a축하합니다! 퀘스트를 클리어하셨습니다!", pfix);
             player.playSound(player, Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, (float) Rand.randDouble(1.2, 1.5));
         }

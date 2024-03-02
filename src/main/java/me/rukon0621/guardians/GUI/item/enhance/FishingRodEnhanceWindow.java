@@ -16,9 +16,6 @@ import static me.rukon0621.guardians.main.isDevServer;
 import static me.rukon0621.guardians.main.pfix;
 
 public class FishingRodEnhanceWindow extends SingleEquipmentSelectWindow {
-
-
-
     private enum FAIL_STATUS {
 
         NO_EQUIPMENT("부여할 낚싯대를 넣어주세요.") {
@@ -102,8 +99,8 @@ public class FishingRodEnhanceWindow extends SingleEquipmentSelectWindow {
 
     public int getMaxLevel() {
         return switch (attr) {
-            case "미끼", "내구력" -> 3;
-            case "고등급 포획률 증가", "고레벨 포획률 증가", "고품질 포획률 증가" -> 7;
+            case "미끼", "내구력" -> 6;
+            case "고등급 포획률 증가", "고레벨 포획률 증가", "고품질 포획률 증가" -> 14;
             default -> 1;
         };
     }

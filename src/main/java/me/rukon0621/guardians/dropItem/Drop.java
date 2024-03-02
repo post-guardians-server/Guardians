@@ -56,10 +56,11 @@ public class Drop implements ConfigurationSerializable {
 
     //추가적으로 등장할 수 있는 속성 정보
     private final ArrayList<DropAttribute> dropAttrs;
+    private final int levelFixing;
 
     public Drop(String itemSaver, int minMinusRange, int maxMinusRange, int loopNumber,
                 ArrayList<DropAttribute> dropAttrs, double chance,
-                int levelAbove, int craftLevelDiff, int levelBelow, boolean originalItem, @Nullable DropAdamantData adamantData) {
+                int levelAbove, int craftLevelDiff, int levelBelow, boolean originalItem, @Nullable DropAdamantData adamantData, int levelFixing) {
         this.itemSaver = itemSaver;
         this.minMinusRange = minMinusRange;
         this.maxMinusRange = maxMinusRange;
@@ -71,6 +72,8 @@ public class Drop implements ConfigurationSerializable {
         this.levelBelow = levelBelow;
         this.originalItem = originalItem;
         this.adamantData = adamantData;
+        this.levelFixing = levelFixing;
+        if(adamantData != null) DropManager.addAdamantData(levelFixing, adamantData);
     }
 
     /**
@@ -112,6 +115,10 @@ public class Drop implements ConfigurationSerializable {
      */
     public ArrayList<ItemStack> makeDropList(Player player, int level, double contribution, boolean SHOW_MODE, boolean ignorePartyAndLuck) {
         PlayerData pdc = new PlayerData(player);
+
+        //레벨 고정
+        if(levelFixing != -1) level = levelFixing;
+
 
         if(!ignorePartyAndLuck) {
             double partyBonus = PartyManager.getPartyBonus(player);
@@ -218,6 +225,12 @@ public class Drop implements ConfigurationSerializable {
                             idata.setQuality(Rand.randDouble(35, 50));
                         }
                         if(!SHOW_MODE && TypeData.getType(idata.getType()).isMaterialOf("아다만트석")) {
+
+                            if(levelFixing == -1) {
+                                Msg.warn(player, "LevelFixing이 설정되지 않은 아다만트석 드롭 데이터를 구현될 수 없습니다.");
+                                return new ArrayList<>();
+                            }
+
                             if(!StoryManager.getReadStory(player).contains("일일던전설명")) {
                                 StoryManager.addStory(player, "일일던전설명");
                                 new BukkitRunnable() {
@@ -242,6 +255,7 @@ public class Drop implements ConfigurationSerializable {
 
 
                                 if(ch2<=100) ch2 = ch2 * contribution * (1 + Stat.LUCK.getTotal(player)/100);
+                                //if(ch2<=100) ch2 *= contribution; // * (1 + Stat.LUCK.getTotal(player)/100);
                                 if(!Rand.chanceOf(ch2)) continue;
                                 idata.addAttr(attr.getAttributeName(), attr.getAttrLevel());
                             }
@@ -272,6 +286,7 @@ public class Drop implements ConfigurationSerializable {
         if(craftLevelDiff > 0) data.put("craftLevelDiff", craftLevelDiff);
         if(originalItem) data.put("original", true);
         if(adamantData!=null) data.put("adamantData", adamantData);
+        if(levelFixing!=-1) data.put("levelFixing", adamantData);
         return data;
     }
 
@@ -285,11 +300,16 @@ public class Drop implements ConfigurationSerializable {
         int craftLevelDiff = (int) data.getOrDefault("craftLevelDiff", 0);
         boolean original = (boolean) data.getOrDefault("original", false);
         DropAdamantData dropAdamantData;
+        int levelFixing;
         if(data.containsKey("adamantData")) {
             dropAdamantData = (DropAdamantData) data.get("adamantData");
         }
         else dropAdamantData = null;
-        return new Drop((String) data.get("itemSaver"), minusRange, maxMinusRange, loopNumber, (ArrayList<DropAttribute>) data.getOrDefault("dropAttrs", new ArrayList<>()), chance.doubleValue(), levelAbove, craftLevelDiff, levelBelow, original, dropAdamantData);
+        if(data.containsKey("levelFixing")) {
+            levelFixing = (int) data.get("levelFixing");
+        }
+        else levelFixing = -1;
+        return new Drop((String) data.get("itemSaver"), minusRange, maxMinusRange, loopNumber, (ArrayList<DropAttribute>) data.getOrDefault("dropAttrs", new ArrayList<>()), chance.doubleValue(), levelAbove, craftLevelDiff, levelBelow, original, dropAdamantData, levelFixing);
     }
 
     public String getItemSaver() {

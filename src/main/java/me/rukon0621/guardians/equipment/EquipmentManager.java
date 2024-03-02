@@ -7,10 +7,7 @@ import me.rukon0621.guardians.GUI.WeaponSkinWindow;
 import me.rukon0621.guardians.areawarp.AreaEnvironment;
 import me.rukon0621.guardians.areawarp.AreaManger;
 import me.rukon0621.guardians.bar.BarManager;
-import me.rukon0621.guardians.data.ItemData;
-import me.rukon0621.guardians.data.LevelData;
-import me.rukon0621.guardians.data.PlayerData;
-import me.rukon0621.guardians.data.Stat;
+import me.rukon0621.guardians.data.*;
 import me.rukon0621.guardians.helper.*;
 import me.rukon0621.guardians.main;
 import me.rukon0621.guild.element.Guild;
@@ -50,7 +47,6 @@ public class EquipmentManager implements Listener {
     private static HashMap<Player, HashMap<String, ItemStack>> equipmentData;
     private static HashMap<Player, HashMap<String, ItemData>> equipmentItemData;
     private static final Map<Player, HashMap<String, Number>> eqStatusData = new HashMap<>();
-    private static final String[] expTarget = new String[]{"무기", "투구", "갑옷", "바지", "부츠", "목걸이", "벨트", "반지"};
     private static HashMap<String, Integer> equipmentSlotData;
     private static HashMap<String, String> equipmentTranslateData;
     private static HashMap<Player, Integer> playerInformationPage;
@@ -103,20 +99,6 @@ public class EquipmentManager implements Listener {
         equipmentSlotData.put("사증", 23);
     }
 
-    public static List<String> addExp(Player player, double exp) {
-        List<String> levelupList = new ArrayList<>();
-        int levelLimit = new PlayerData(player).getLevel();
-        for(String koreanKeyName : expTarget) {
-            if(getItem(player, koreanKeyName).getType().equals(Material.AIR)) continue;
-            ItemData itemData = new ItemData(getItem(player, koreanKeyName));
-            int lv = itemData.getLevel();
-            itemData.addExp(exp, false, levelLimit);
-            if(lv != itemData.getLevel()) levelupList.add(koreanKeyName);
-            setItem(player, koreanKeyName, itemData.getItemStack());
-        }
-        return levelupList;
-    }
-
     public static void openEquipmentGUI(Player player) {
         InvClass inv = new InvClass(6, GuiName);
         HashMap<String, ItemStack> equipments = equipmentData.get(player);
@@ -141,14 +123,15 @@ public class EquipmentManager implements Listener {
             stat.setCollection(player, 0);
             stat.setEnvironment(player, 0);
             stat.setAdamantStone(player, 0);
+            //stat.setPendant(player, 0);
         }
         PlayerData pdc = new PlayerData(player);
         HashMap<String, ItemStack> map = new HashMap<>();
         HashMap<String, Number> equipmentStatus = new HashMap<>();
 
-        if(false) {
-        //if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
-            ItemStack item = ItemSaver.getItem("PVP스텟 조정기").getItem().clone();
+        //if(false) {
+        if(RukonPVP.inst().getPvpManager().isPlayerInBattleInstance(player)) {
+            ItemStack item = ItemSaver.getItem("PVP 스텟 조정기 " + TypeData.getWeaponType(player)).getItem().clone();
             ItemData itemData = new ItemData(item);
             itemData.setLevel(pdc.getLevel());
             equipmentStatus = itemData.applyEquipmentStatToPlayer(player, equipmentStatus);
@@ -229,12 +212,28 @@ public class EquipmentManager implements Listener {
             }
 
             key = "사증";
-            setPendant(player, getPendant(player));
-            map.put(key, getPendant(player));
+            setRiding(player, getRiding(player));
+            map.put(key, getRiding(player));
             if(!map.get(key).getType().equals(Material.AIR)) {
                 itemDataMap.put(key, new ItemData(map.get(key)));
                 equipmentStatus = itemDataMap.get(key).applyEquipmentStatToPlayer(player, equipmentStatus);
             }
+            /*
+            key = "사증";
+            setPendant(player, getPendant(player));
+            map.put(key, getPendant(player));
+            if(!map.get(key).getType().equals(Material.AIR)) {
+                itemDataMap.put(key, new ItemData(map.get(key)));
+                itemDataMap.get(key).applyEquipmentStatToPlayer(player, new HashMap<>()).forEach((k, v) -> {
+
+                    Stat stat = Stat.getStatByCodeName(k);
+                    if(stat != null) {
+                        stat.setPendant(player, stat.getPendant(player) + v.doubleValue());
+                    }
+                });
+            }
+
+             */
             //라이딩 장착 장비창 만들어야함
             //        //실제 인벤토리 반영
             if(changeWeaponInventorySlot) {
@@ -443,6 +442,12 @@ public class EquipmentManager implements Listener {
         if(page==1){
             it.addLore("&7Lv. &f" + pdc.getLevel());
             it.addLore(String.format("&7Exp. %d / %d", pdc.getExp(), LevelData.expAtLevel.get(pdc.getLevel())));
+
+            if(!getPendant(player).getType().equals(Material.AIR)) {
+                ItemData itemData = new ItemData(getPendant(player));
+                it.addLore(String.format("&7사증 경험치: %.1f / %.1f", itemData.getExp(), itemData.getMaxExp()));
+            }
+
             if(pdc.getGuildID() != null) {
                 it.addLore("&7소속 길드: " + pdc.getGuildName());
             }
@@ -627,7 +632,7 @@ public class EquipmentManager implements Listener {
         ItemData idata = new ItemData(e.getCurrentItem());
         if(!idata.isEquipment()) return;
         PlayerData pdc = new PlayerData(player);
-        if(idata.getLevel()>pdc.getLevel()) {
+        if(idata.getLevel()>pdc.getLevel() && !idata.getType().equals("사증")) {
             Msg.warn(player, "&4장비의 레벨이 플레이어보다 높아 이 장비를 사용할 수 없습니다.");
             return;
         }
@@ -844,7 +849,7 @@ public class EquipmentManager implements Listener {
         setItem(player, "사증", item);
     }
 
-    public static void loadEquipmentsFromDataBase(Player player, CountDownLatch latch, String uuid) {
+    public static void loadEquipmentsFromDataBase(Player player, CountDownLatch latch, String uuid)  {
         if(!equipmentData.containsKey(player)) {
             equipmentData.put(player, new HashMap<>());
         }
@@ -852,6 +857,7 @@ public class EquipmentManager implements Listener {
             DataBase dataBase = new DataBase();
             ResultSet resultSet = dataBase.executeQuery(String.format("SELECT * FROM equipmentData WHERE uuid = '%s'", uuid));
             resultSet.next();
+            /*
             ItemStack weapon = (ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(2)), new ItemStack(Material.AIR));
             if(!weapon.getType().equals(Material.AIR)) {
                 new BukkitRunnable() {
@@ -876,7 +882,34 @@ public class EquipmentManager implements Listener {
             setRunes(player, runes);
             setRiding(player, (ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(13)), new ItemStack(Material.AIR)));
             setPendant(player, (ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(14)), new ItemStack(Material.AIR)));
+             */
+
+            ItemStack weapon = (ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(2)), new ItemStack(Material.AIR));
+            if(!weapon.getType().equals(Material.AIR)) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.getInventory().setItem(0, weapon);
+                    }
+                }.runTask(plugin);
+            }
+            setWeapon(player, ItemSaver.reloadItem(weapon));
+            setHelmet(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(3)), new ItemStack(Material.AIR))));
+            setChest(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(4)), new ItemStack(Material.AIR))));
+            setLeggings(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(5)), new ItemStack(Material.AIR))));
+            setBoots(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(6)), new ItemStack(Material.AIR))));
+            setNecklace(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(7)), new ItemStack(Material.AIR))));
+            setBelt(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(8)), new ItemStack(Material.AIR))));
+            setRing(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(9)), new ItemStack(Material.AIR))));
+            ArrayList<ItemStack> runes = new ArrayList<>();
+            for(int i = 10; i < 13; i++) {
+                runes.add(ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(i)), new ItemStack(Material.AIR))));
+            }
+            setRunes(player, runes);
+            setRiding(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(13)), new ItemStack(Material.AIR))));
+            setPendant(player, ItemSaver.reloadItem((ItemStack) NullManager.defaultNull(Serializer.deserializeBukkitObject(resultSet.getBytes(14)), new ItemStack(Material.AIR))));
             dataBase.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

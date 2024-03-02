@@ -127,6 +127,12 @@ public class ItemDataCommands implements CommandExecutor {
             double per = idata.getExpPercentage();
             idata.setLevel(level);
             idata.setExp(idata.getMaxExp() * per / 100D);
+            /*
+            if(idata.getType().equals("사증")) {
+                player.getInventory().setItemInMainHand(main.getPlugin().getEquipmentExpManager().reloadCertificateItem(idata));
+            }
+            else
+             */
             player.getInventory().setItemInMainHand(idata.getItemStack());
             Msg.send(player, "성공적으로 레벨을 설정하였습니다.", pfix);
         }
@@ -263,8 +269,8 @@ public class ItemDataCommands implements CommandExecutor {
             player.getInventory().setItemInMainHand(data.getItemStack());
             Msg.send(player, "성공적으로 등급을 설정하였습니다.", pfix);
         }
-        else if(args[0].equals("가공횟수")) {
-            if(args.length<2) {
+        else if(args[0].startsWith("가공")) {
+            if(args.length < 2) {
                 usage(player, "가공횟수", true);
                 return true;
             }

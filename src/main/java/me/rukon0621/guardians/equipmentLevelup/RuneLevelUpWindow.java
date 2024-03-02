@@ -150,7 +150,7 @@ public class RuneLevelUpWindow implements Listener {
                 }
                 else {
                     itemData.setLevel(level);
-                    itemData.setExp((long) (percent * ItemData.getMaxExpAtLevel(level) / 100));
+                    itemData.setExp((long) (percent * itemData.getMaxExp() / 100));
                     itemData.setExp(1);
                 }
                 for(int i : runeSlots) {

@@ -70,6 +70,9 @@ public class InvClass {
         return MailBoxManager.giveOrMail(player, item);
     }
 
+
+
+    @Deprecated
     //Check if player has specific amount of item.
     public static boolean hasItem(Player player, ItemStack item) {
         int amount = 0;
@@ -82,6 +85,7 @@ public class InvClass {
         return amount >= item.getAmount();
     }
 
+    @Deprecated
     public static boolean hasItem(Player player, ItemStack item, ArrayList<ItemStack> items) {
         int amount = 0;
         for(ItemStack i : items) {
@@ -93,6 +97,7 @@ public class InvClass {
         return amount >= item.getAmount();
     }
 
+    @Deprecated
     public static boolean removeItem(Player player, ItemStack item) {
         for(ItemStack i : player.getInventory().getContents()) {
             if(i==null) continue;
@@ -106,6 +111,7 @@ public class InvClass {
     }
 
 
+    @Deprecated
     public static boolean removeItem(Player player, ItemStack item, ArrayList<ItemStack> items) {
         for(ItemStack i : items) {
             if(i==null) continue;

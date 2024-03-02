@@ -19,6 +19,8 @@ permissions:
   cosmeticscore.user.cosmetics.seeingui.*:
     default: true
 commands:
+  사증:
+    permission: guardians.oper
   reloadFishing:
     permission: guardians.oper
     aliases:
@@ -51,6 +53,11 @@ commands:
     aliases:
       - 데일리이벤트
       - 일일이벤트
+  reloadEqExp:
+    usage: reloadEqExp
+    permission: guardians.oper
+    aliases:
+      - 사증경험치리로드
   test:
     usage: /test
     permission: guardians.oper

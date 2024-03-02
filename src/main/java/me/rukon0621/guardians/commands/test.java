@@ -32,7 +32,10 @@ public class test extends AbstractCommand {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(!(sender instanceof Player player)) return false;
+        if(!(sender instanceof Player player)) {
+            System.out.println("updated");
+            return true;
+        }
 
         Msg.send(player, String.valueOf(InvulSpell.isInvincible(player)));
 

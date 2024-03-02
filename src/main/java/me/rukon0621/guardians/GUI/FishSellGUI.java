@@ -2,10 +2,13 @@ package me.rukon0621.guardians.GUI;
 
 import me.rukon0621.guardians.data.ItemData;
 import me.rukon0621.guardians.data.LevelData;
+import me.rukon0621.guardians.data.PlayerData;
+import me.rukon0621.guardians.data.TypeData;
 import me.rukon0621.guardians.helper.InvClass;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
 import me.rukon0621.guardians.mailbox.MailBoxManager;
+import me.rukon0621.guardians.main;
 import me.rukon0621.gui.buttons.Button;
 import me.rukon0621.gui.windows.ItemSelectableWindow;
 import org.bukkit.Material;
@@ -17,46 +20,61 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrashcanGUI extends ItemSelectableWindow {
+public class FishSellGUI extends ItemSelectableWindow {
     List<ItemStack> items = new ArrayList<>();
 
-    public TrashcanGUI(Player player) {
-        super(player, "&f\uF000\uF036", 4);
+    private long price = 0;
+    public FishSellGUI(Player player) {
+        super(player, "&f\uF000\uF045", 4);
 
         Button confirm = new Button() {
             @Override
             public void execute(Player player, ClickType clickType) {
                 if(!clickType.equals(ClickType.SHIFT_LEFT)) {
-                    Msg.warn(player, "아이템을 버리려면 쉬프트 좌클릭하십시오.");
+                    Msg.warn(player, "아이템을 판매하려면 쉬프트 좌클릭하십시오.");
                     return;
                 }
                 items.clear();
+                PlayerData pdc = new PlayerData(player);
+                pdc.setMoney(pdc.getMoney() + price);
+                Msg.send(player, "물고기를 모두 판매하여 " + price + "디나르를 획득하였습니다.");
                 player.closeInventory();
-                player.playSound(player, Sound.ENTITY_GENERIC_EXTINGUISH_FIRE,  1, .8f);
+                player.playSound(player, Sound.BLOCK_CHAIN_PLACE,  1, .8f);
+                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_CHIME,  1, .8f);
             }
 
             @Override
             public ItemStack getIcon() {
-                ItemClass item = new ItemClass(new ItemStack(Material.SCUTE), "&c아이템 버리기");
+                ItemClass item = new ItemClass(new ItemStack(Material.SCUTE), "&e낚시 포획물 판매하기");
                 item.setCustomModelData(7);
                 if(items.isEmpty()) {
-                    item.addLore("&c버릴 아이템을 넣어주세요.");
+                    item.addLore("&c판매할 아이템을 넣어주세요.");
                 }
                 else {
-                    item.addLore("&e쉬프트 좌클릭&f하여 쓰레기통에 넣은 아이템을 모두 버립니다.");
-                    item.addLore("&c버린 아이템은 되찾을 수 없습니다.");
+                    item.addLore("&e쉬프트 좌클릭&f하여 아이템을 모두 판매합니다.");
+                    item.addLore("&7물고기의 비용은 등급, 품질, 레벨의 영향을 받습니다.");
                     item.addLore(" ");
-                    item.addLore("&7이 창을 그냥 닫으면 아이템은 보존됩니다.");
+                    item.addLore("&f판매 가격: &e" + price + " 디나르");
                 }
                 return item.getItem();
             }
         };
 
-        map.put(12, confirm);
-        map.put(13, confirm);
-        map.put(14, confirm);
+        map.put(30, confirm);
+        map.put(31, confirm);
+        map.put(32, confirm);
         reloadGUI();
         open();
+    }
+
+    @Override
+    protected void reloadGUI() {
+        price = 0;
+        for(ItemStack item : items) {
+            if(item.getType().equals(Material.AIR)) continue;
+            price += main.getPlugin().getFishingManager().getFishPrice(new ItemData(item)) * item.getAmount();
+        }
+        super.reloadGUI();
     }
 
     @Override
@@ -72,18 +90,18 @@ public class TrashcanGUI extends ItemSelectableWindow {
 
         ItemStack item = player.getOpenInventory().getItem(i);
         ItemData itemData = new ItemData(item);
-        if(itemData.isImportantItem() || itemData.isQuestItem()||itemData.getType().equals(LevelData.EXP_BOOK_TYPE_NAME)) {
-            Msg.warn(player, "이 아이템은 버릴 수 없습니다.");
+        if(!(TypeData.getType(itemData.getType()).isMaterialOf("낚시 포획물") || itemData.getType().equals("쓰레기"))) {
+            Msg.warn(player, "이 아이템은 낚시 포획물이 아닙니다.");
             return;
         }
-        map.put(j, new TrashButton(item, j));
+        map.put(j, new FishButton(item, j));
         player.getOpenInventory().setItem(i, new ItemStack(Material.AIR));
         reloadGUI();
         player.playSound(player, Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, .8f);
     }
 
-    class TrashButton extends SelectedItemButton {
-        protected TrashButton(ItemStack item, int slot) {
+    class FishButton extends SelectedItemButton {
+        protected FishButton(ItemStack item, int slot) {
             super(item, slot);
             items.add(originalItem);
         }
@@ -104,7 +122,7 @@ public class TrashcanGUI extends ItemSelectableWindow {
         public ItemStack getIcon() {
             ItemClass it = new ItemClass(originalItem.clone());
             it.addLore(" ");
-            it.addLore("&7클릭하여 쓰레기통에서 다시 아이템을 뺍니다.");
+            it.addLore("&7클릭하여 아이템을 철회합니다.");
             return it.getItem();
         }
     }

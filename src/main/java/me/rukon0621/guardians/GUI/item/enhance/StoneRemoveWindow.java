@@ -7,11 +7,13 @@ import me.rukon0621.guardians.data.PlayerData;
 import me.rukon0621.guardians.data.StoneData;
 import me.rukon0621.guardians.helper.ItemClass;
 import me.rukon0621.guardians.helper.Msg;
+import me.rukon0621.guardians.mailbox.MailBoxManager;
 import me.rukon0621.gui.buttons.Button;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import static me.rukon0621.guardians.main.pfix;
 
 public class StoneRemoveWindow extends SingleEquipmentSelectWindow {
 
+    private static final int decreasingProportion = 30;
     private static long getPrice(int level, ItemGrade grade) {
         return StoneData.getGrantPrice(level, grade) * 2;
     }
@@ -86,19 +89,28 @@ public class StoneRemoveWindow extends SingleEquipmentSelectWindow {
                 return;
             }
             pdc.setMoney(pdc.getMoney());
+            StoneData st = equipmentData.getStoneData(indexBasedOne);
+            if(st == null) {
+                Msg.warn(player, "아다만트석 데이터가 더이상 존재하지 않습니다.");
+                return;
+            }
+            StoneData newStone = new StoneData(st.getGrade(), st.getStat(), st.getValue() * (1 - decreasingProportion * 0.01D));
             equipmentData.removeStoneData(indexBasedOne);
             selectedEquipment = equipmentData.getItemStack();
             player.playSound(player, Sound.ITEM_TOTEM_USE, 0.8f, 1.5f);
             player.closeInventory();
-            Msg.send(player, "아다만트석의 힘을 제거했습니다.", pfix);
+            MailBoxManager.giveOrMail(player, newStone.getStoneItem().getItem());
+            Msg.send(player, "아다만트석을 추출합니다.", pfix);
         }
 
         @Override
         public ItemStack getIcon() {
             ItemClass item = stoneData.getStoneItem();
             item.addLore(" ");
-            item.addLore("&c제거 비용: " + price + "디나르");
-            item.addLore("&f클릭해서 제거합니다.");
+            item.addLore("&c추출 비용: " + price + "디나르");
+            item.addLore("&f클릭해서 아다만트석을 추출합니다.");
+            item.addLore("&7- 추출된 아다만트석의 레벨은 &b장비의 레벨과 동일&f해집니다.");
+            item.addLore("&7- 본래의 힘을 일부 소실하여 아다만트석의 &c스텟 수치가 " + decreasingProportion + "% 감소&ㄹ합니다.");
             return item.getItem();
         }
     }

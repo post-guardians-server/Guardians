@@ -33,11 +33,10 @@ public class RepairWindow extends Window {
                 }
                 if(clickType.equals(ClickType.LEFT)) {
                     ItemStack requiredItem = ItemSaver.getItem("장비 수리키트").getItem().clone();
-                    if(!InvClass.hasItem(player, requiredItem)) {
+                    if(! ItemData.removeItem(player, new ItemData(requiredItem), false)) {
                         Msg.warn(player, "수리 키트를 가지고 있지 않습니다.");
                         return;
                     }
-                    InvClass.removeItem(player, item);
                 }
                 else if (clickType.equals(ClickType.RIGHT)) {
                     PaymentData pdc = new PaymentData(player);
